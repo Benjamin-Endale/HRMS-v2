@@ -1,0 +1,83 @@
+import React from 'react'
+
+const Header = ({ readPath }) => {
+  // Object with code-friendly keys
+  const parag = {
+    Dashboard: "Welcome back! Here's what's happening at your organization today.",
+    Organization: "Manage company structure, departments, and organizational hierarchy.",
+    Employee: "Manage employee profile, roles, and organizational structure.",
+    Attendance: "Monitor employee attendance, working hours, and presence status.",
+    Leave_Management: "Manage employee leave requests, balances, and policies.",
+    Recruitment_and_ATS: "Manage job postings, candidates, and hiring process",
+    Performance_Management:"Track goals, conduct reviews, and manage employee performance.",
+    Announcements_and_Notifications:"Manage company-wide communications and employee notifications.",
+    Assets:"",
+    Add_New_Employee:"Enter employee details to create a new profile",
+    All_Organizations: 'Manage all organizations in your HRMS platform',
+    Create_Organization: 'Set up a new organization in your HRMS platform',
+    Organization_Settings: 'Set up a new organization in your HRMS platform',
+    Super_Administrators: 'Manage system administrators and their permissions',
+    User_Statics: '',
+    Training_and_Development: 'Manage training programs, enrollments, and employee development'
+  }
+
+  // Map human-readable titles to object keys
+  const keyMap = {
+    "Dashboard": "Dashboard",
+    "Organization": "Organization",
+    "Employees": "Employee",
+    "Attendance": "Attendance",
+    "LeaveManagment": "Leave_Management",
+    "Performance":"Performance_Management",
+    "Training":"Training_and_Development",
+    "Announcement":"Announcements_and_Notifications",
+    "EmployeeRegistration/AddNewemployee": 'Add_New_Employee',
+    "EmployeeRegistration/AddNewemployeesecond": 'Add_New_Employee',
+    "EmployeeRegistration/Compensation": "Add_New_Employee",
+    "EmployeeRegistration/System": "Add_New_Employee",
+    "Allorganization": 'All_Organizations',
+    "Createorganization": "Create_Organization",
+    "Organizationsetting":'Organization_Settings',
+    "Recruitment": "Recruitment_and_ATS",
+    'Superadmin':'Super_Administrators',
+    'Userstatics': 'User_Statics',
+    'Jobposting' : "Recruitment_and_ATS",
+    "Candidates": "Recruitment_and_ATS",
+    "Interviews": "Recruitment_and_ATS",
+    'Performance': 'Performance_Management',
+    'Overview': 'Performance_Management',
+    'Goals': 'Performance_Management',
+    'Reviews': 'Performance_Management',
+    'FeedBack': 'Performance_Management',
+    'Enrolment':'Training_and_Development',
+    'OverviewTraining':'Training_and_Development',
+    'Program':'Training_and_Development',
+    'FeedBackTraning':'Training_and_Development'
+  }
+
+  // Safely access the right key
+  const description = parag[keyMap[readPath]] || ""
+
+  return (
+    <div className='flex items-center w-full'>
+      <header className='w-[calc(100%-3.0625rem)] flex items-center justify-between'>
+        <div className='flex flex-col  leading-none space-y-[0.4375rem]'>
+          <h1 className='text-white text-[2rem] font-semibold'>{keyMap[readPath].replace(/_/g, ' ')} </h1>
+          <h4 className='text-limegray text-[15px] font-medium'>{description}</h4>
+        </div>
+        <div className='h-full w-[13.375rem] text-nowrap'>
+          <div className='flex items-center justify-between'>
+            <div className='w-[138px]'>
+              <span className='text-accountColor font-medium'>Welcome, Benjamin</span>
+            </div>
+            <div className='border rounded-full flex p-[15px] items-center justify-center bg-black'>
+              <img src="/svg/HeaderSvg/ProfileIcon.svg" alt="ProfileIcon" />
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
+  )
+}
+
+export default Header

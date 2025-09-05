@@ -1,26 +1,172 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+body {
+  font-family: var(--font-urbanist), system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme{
+  --color-lemongreen:#BEE532;
+  --color-graysh:#4F4F4F;
+  --color-limegray:#5D6150;
+  --color-blackish:#1B1F0E;
+  --color-accountColor:#899072;
+  --color-input: #3F4236;
+  --color-inputBack: #1D2015;
+  --color-formColor: #DFDFDF;
+  --color-limeLight: #899072;
+  --color-yellowCust:#F7AB1E;
+  --color-Error:#E3694A;
+  --color-bgColor:rgba(190, 229, 50, 0.05);
+}
+@layer utilities{
+  .iconheader {
+    @apply flex items-center gap-[20px]
+  }
+  .headertxt{
+    @apply text-[20px] font-semibold text-white  leading-none
+  }
+  .maindivider{
+    @apply flex gap-[20px]
+  }
+  .halfdivider{
+    @apply flex flex-col gap-[16px]
+  }
+
+  .navBarhover{
+    @apply  w-[0.5625rem] h-[2.0625rem]  bg-lemongreen rounded-r-[0.25rem]
+  }
+
+  .navLinkconfig{
+    @apply flex gap-[1.375rem] items-center justify-center
+  }
+  .cardDash{
+    @apply w-[28rem] h-[14.8125rem] border border-none  rounded-[1.875rem] p-[2.1875rem]
+  }
+  .carDash1{
+    @apply w-[29.375rem] h-[14.8125rem] border border-none  rounded-[1.875rem] p-[2.1875rem]
+  }
+  .carDash2{
+    @apply w-[29.9375rem] h-[14.8125rem] border border-none  rounded-[1.875rem] p-[2.1875rem] bg-[rgba(190,229,50,0.05)]
+  }
+  .center-center{
+    @apply flex justify-center items-center
+  }
+  .between-center{
+    @apply flex justify-between items-center
+  }
+  .between{
+    @apply flex justify-between
+  }
+  .cardActivitydash{
+    @apply flex border-none rounded-[15px] bg-[rgba(190,229,50,0.03)] pl-[1.4375rem] pr-[0.5625rem] py-[1.125rem] gap-[22px]
+  }
+  .textLimegray{
+    @apply text-[0.9375rem] text-limegray font-medium
+  }
+
+  .textLimegray1{
+    @apply text-[1rem] text-limegray font-medium
+  }
+  .textLimelight{
+    @apply text-[0.9375rem] text-limeLight font-medium
+  }
+
+  .tableBordercolor{
+    @apply border-b border-[rgba(93,97,80,0.3)]
+  }
+
+  .textWhite{
+    @apply text-formColor text-xl font-semibold
+  }
+  .textFormColor{
+    @apply text-formColor text-xl font-semibold
+  }
+
+  .textFormColor1{
+    @apply text-formColor text-[1rem] font-semibold
+  }
+
+  .textLimeGray1{
+    @apply text-limegray text-[1rem] font-semibold
+  }
+
+  .inputMod{
+    @apply bg-inputBack w-full h-[3.125rem] placeholder-input text-formColor rounded-[10px] pl-[1.1875rem]
+  }
+
+  
+  .inputModfile{
+    @apply flex justify-center items-center border h-[3.125rem] w-full gap-[0.6875rem] bg-inputBack rounded-[10px] 
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.customBorder{
+  border: 2px solid rgba(223, 223, 223, 0.03) ;
+  border-left: none;
+  border-top: none;
+  border-bottom: none;
+}
+
+.customBorder1{
+  border: 1px solid rgba(93, 97, 80, 0.13) ;
+  border-left: none;
+  border-top: none;
+  border-right: none;
+}
+
+
+
+.scrollBar::-webkit-scrollbar {
+  width: 1px;
+}
+
+.scrollBar::-webkit-scrollbar-track {
+  background-color: rgba(223, 223, 223, 0.03); 
+}
+
+.scrollBar::-webkit-scrollbar-thumb {
+  background-color: rgba(223, 223, 223, 0.03); 
+}
+
+
+.scrollBarDash::-webkit-scrollbar {
+  width: 3px;
+}
+
+.scrollBarDash::-webkit-scrollbar-track {
+  background-color: #5D6150; 
+
+}
+
+.scrollBarDash::-webkit-scrollbar-thumb {
+  background-color: #333C2D; 
+}
+
+
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: hidden; 
+}
+.scrollbar-hide {
+  scrollbar-width: none;     
+}
+
+
+.organizationCard{
+  @apply  border border-graysh/30 flex flex-col justify-center pl-[2rem] w-[21.0625rem] h-[13.8125rem] rounded-[1.375rem] cursor-pointer
+
+}
+
+.organizationCard1{
+  @apply border border-graysh/30 flex flex-col justify-center w-[21.0625rem] h-[13.8125rem] rounded-[1.375rem] cursor-pointer
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+filter: invert(100%) sepia(20%) saturate(7445%) hue-rotate(17deg) brightness(102%) contrast(86%);
+}
+
+.backgroundColor{
+  @apply bg-[rgba(190,229,50,0.05)]
 }
