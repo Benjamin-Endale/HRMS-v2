@@ -1,7 +1,15 @@
-import React from 'react'
+'use client'
+import React , {useState} from 'react'
+import AddOrg from '../Modals/AddOrg/AddOrg'
+import ModalContainerOrg from '../Modals/AddOrg/ModalContainerOrg'
+import ModalContainerDep from '../Modals/AddDep/ModalContainerDep'
+import AddDep from '../Modals/AddDep/AddDep'
 
 
 const page = () => {
+  const [isOpen,setisOpen] = useState(false)
+    const [isOpenDep,setisOpenDep] = useState(false)
+
   return (
     <>
     {/* theMaincontainer */}
@@ -19,12 +27,24 @@ const page = () => {
           {/* firstsectionHeaderEnd */}
 
           {/* secondPartheader */}
-          <div className='w-[14.875rem] h-[3.4375rem]  rounded-[0.625rem] bg-lemongreen'>
-            <button type='button'  className='cursor-pointer w-full h-full rounded-[0.625rem] flex items-center justify-center gap-[10px]'>
-              <img src="/svg/SvgImage/PlusSign.svg" alt="" />
-              <span>Edit Organization</span>
-            </button>
-            
+          <div className='flex gap-[1.375rem]'>
+            <div className='w-[14.875rem] h-[3.4375rem] border border-limegray rounded-[0.625rem]'>
+              <button  type='button'  className='cursor-pointer w-full h-full rounded-[0.625rem] flex items-center text-formColor justify-center gap-[10px]'>
+                <img src="/image/Icon/Action/WhiteCircle.png" alt="" />
+                <span>Edit Organization</span>
+              </button>
+            </div>
+            <div className='w-[14.875rem] h-[3.4375rem] bg-lemongreen rounded-[0.625rem]'>
+              
+              <button type='button' onClick={()=>setisOpen(true)} className='cursor-pointer w-full h-full rounded-[0.625rem] flex items-center justify-center gap-[10px]'>
+                <img src="/svg/SvgImage/PlusSign.svg" alt="" />
+                <span>Add Organization</span>
+              </button>            
+                {/* Modal */}
+                <ModalContainerOrg  open={isOpen}>
+                    <AddOrg onClose={() => setisOpen(false)} />
+                </ModalContainerOrg>
+            </div>
           </div>
           {/* secondPartheaderEnd */}
         </div>
@@ -90,10 +110,14 @@ const page = () => {
                 </div>
               </div>
               <div className='organizationCard1 '>
-                <div className='flex-col center-center gap-[8px]'>
-                  <img src="/svg/SvgImage/BigPlusSign.svg" alt="" />
+                <div onClick={()=>setisOpenDep(true)} className='flex-col center-center gap-[8px]'>
+                  <img src="/svg/SvgImage/BigPlusSign.svg" onClick={()=>setisOpenDep(true)} alt="" />
                   <h4 className='text-limegray'>Add Department </h4>
                 </div>
+                {/* Modal */}
+                <ModalContainerDep  open={isOpenDep}>
+                    <AddDep onClose={() => setisOpenDep(false)} />
+                </ModalContainerDep>
               </div>              
           </div>
         </div>

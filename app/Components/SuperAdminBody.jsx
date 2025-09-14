@@ -1,10 +1,11 @@
+'use client'
 import React from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import Link from 'next/link';
 
 
 const SuperAdminBody = ({readPath}) => {
   return (
-    <aside className='border customBorder scrollBar w-[20.5rem]  h-screen flex flex-col gap-[4.25rem] relative  pt-[3.5rem] overflow-y-auto font-semibold'>
+    <aside className='border customBorder scrollBar  w-[20.5rem]  h-screen flex flex-col gap-[4.25rem] relative  pt-[3.5rem] overflow-y-auto font-semibold'>
         <div className=' flex items-center gap-[1.25rem] pl-[2.75rem]'>
             <img className='w-[2.0625rem] h-[2.3125rem]' src="/image/logo.png" alt="" />
             <div >
@@ -16,18 +17,18 @@ const SuperAdminBody = ({readPath}) => {
             <section className='space-y-[1.5625rem] w-full  pl-[2.75rem] relative'>
                 {/* All Organization */}
                 <div>
-                    <h4 className={`${['allorganization', 'createorganization' ,'organizationsetting'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>ORGANIZATIONS</h4>
+                    <h4 className={`${['SuperAdmin/AllOrganization', 'createorganization' ,'organizationsetting'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>ORGANIZATIONS</h4>
                 </div>
                 <div className='flex items-center' >
-                    <div className={`${readPath === 'allorganization' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                    <div className={`${readPath === '/SuperAdmin/AllOrganization' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                     <div className='navLinkconfig'>
-                        <svg  width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" stroke= {readPath === 'allorganization' ? 'white' : '#5D6150'} stroke-width="1.3125">
+                        <svg  width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" stroke= {readPath === '/SuperAdmin/AllOrganization' ? 'white' : '#5D6150'} stroke-width="1.3125">
         <path d="M2.1875 5.6875C2.1875 4.03758 2.1875 3.21262 2.70007 2.70007C3.21262 2.1875 4.03758 2.1875 5.6875 2.1875C7.33742 2.1875 8.16238 2.1875 8.67493 2.70007C9.1875 3.21262 9.1875 4.03758 9.1875 5.6875V15.3125C9.1875 16.9624 9.1875 17.7873 8.67493 18.2999C8.16238 18.8125 7.33742 18.8125 5.6875 18.8125C4.03758 18.8125 3.21262 18.8125 2.70007 18.2999C2.1875 17.7873 2.1875 16.9624 2.1875 15.3125V5.6875Z" />
         <path d="M11.8125 13.5625C11.8125 11.9126 11.8125 11.0877 12.3251 10.5751C12.8377 10.0625 13.6626 10.0625 15.3125 10.0625C16.9624 10.0625 17.7873 10.0625 18.2999 10.5751C18.8125 11.0877 18.8125 11.9126 18.8125 13.5625V15.3125C18.8125 16.9624 18.8125 17.7873 18.2999 18.2999C17.7873 18.8125 16.9624 18.8125 15.3125 18.8125C13.6626 18.8125 12.8377 18.8125 12.3251 18.2999C11.8125 17.7873 11.8125 16.9624 11.8125 15.3125V13.5625Z"/>
         <path d="M11.8125 4.8125C11.8125 3.99711 11.8125 3.58941 11.9457 3.2678C12.1233 2.83901 12.464 2.49833 12.8928 2.32071C13.2144 2.1875 13.6221 2.1875 14.4375 2.1875H16.1875C17.0029 2.1875 17.4106 2.1875 17.7322 2.32071C18.161 2.49833 18.5017 2.83901 18.6793 3.2678C18.8125 3.58941 18.8125 3.99711 18.8125 4.8125C18.8125 5.62789 18.8125 6.03559 18.6793 6.3572C18.5017 6.78599 18.161 7.12667 17.7322 7.30429C17.4106 7.4375 17.0029 7.4375 16.1875 7.4375H14.4375C13.6221 7.4375 13.2144 7.4375 12.8928 7.30429C12.464 7.12667 12.1233 6.78599 11.9457 6.3572C11.8125 6.03559 11.8125 5.62789 11.8125 4.8125Z"/>
                         </svg>
                         <div>
-                            <NavLink to='/allorganization'><h4 className={`${readPath === 'allorganization' ? 'text-white' : 'text-limegray'} ` }>All Organizations</h4></NavLink>
+                            <Link href='/SuperAdmin/AllOrganization'><h4 className={`${readPath === '/SuperAdmin/AllOrganization' ? 'text-white' : 'text-limegray'} ` }>All Organizations</h4></Link>
                         </div>
                     </div>
                 </div>
@@ -47,7 +48,7 @@ const SuperAdminBody = ({readPath}) => {
 <path d="M8.75 12.25H12.25"  stroke-linecap="round"/>
                         </svg>
                         <div>
-                            <NavLink to='/createorganization'><h4 className={`${readPath === 'createorganization' ? 'text-white' : 'text-limegray'} ` }>Create Organization </h4></NavLink>
+                            <Link href='/createorganization'><h4 className={`${readPath === 'createorganization' ? 'text-white' : 'text-limegray'} ` }>Create Organization </h4></Link>
                         </div>
                     </div>
                 </div>
@@ -62,7 +63,7 @@ const SuperAdminBody = ({readPath}) => {
                         <path d="M15.75 12.25C17.2849 12.5866 18.375 13.439 18.375 14.4375C18.375 15.3381 17.488 16.12 16.1875 16.5116"  stroke-linecap="round"/>
                         </svg>
                         <div>
-                            <NavLink to='/organizationsetting'><h4 className={`${readPath === 'organizationsetting'  ? 'text-white' : 'text-limegray'}`}>Organization Settings</h4></NavLink>
+                            <Link href='/organizationsetting'><h4 className={`${readPath === 'organizationsetting'  ? 'text-white' : 'text-limegray'}`}>Organization Settings</h4></Link>
                         </div>
                     </div>
                 </div>
@@ -82,7 +83,7 @@ const SuperAdminBody = ({readPath}) => {
                         <path d="M12.25 18.2301C11.6955 18.3243 11.1081 18.375 10.5 18.375C7.11726 18.375 4.375 16.808 4.375 14.875C4.375 12.942 7.11726 11.375 10.5 11.375C11.9993 11.375 13.3728 11.6828 14.4375 12.1939" />
                         </svg>
                         <div>
-                            <NavLink to='/superadmin'><h4 className={`${readPath === 'superadmin' ? 'text-white' : 'text-limegray'}`}>Super Admin</h4></NavLink>
+                            <Link href='/superadmin'><h4 className={`${readPath === 'superadmin' ? 'text-white' : 'text-limegray'}`}>Super Admin</h4></Link>
                         </div>
                     </div>
                 </div>
@@ -101,14 +102,13 @@ const SuperAdminBody = ({readPath}) => {
 <path d="M10.5 14C12.433 14 14 12.433 14 10.5C14 8.567 12.433 7 10.5 7"  stroke-linecap="round"/>
                         </svg>
                         <div>
-                            <NavLink to='/userstatics'><h4 className={`${readPath === 'userstatics' ? 'text-white' : 'text-limegray'}`}>User Statics</h4></NavLink>
+                            <Link href='/userstatics'><h4 className={`${readPath === 'userstatics' ? 'text-white' : 'text-limegray'}`}>User Statics</h4></Link>
                         </div>
                     </div>
                 </div>
             </section>
         </nav>
     </aside>
-
     )
 }
 

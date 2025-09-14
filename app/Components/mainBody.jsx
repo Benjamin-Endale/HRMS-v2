@@ -83,35 +83,35 @@ const MainBody = ({ readPath }) => {
                 {/* Talent */}
                 <section className='space-y-[1.5625rem] w-full  pl-[2.75rem] relative'> 
                     <div>
-                        <h4 className= {`${['Recruitment', 'Performance' , 'Training' , 'jobposting', 'candidates', 'interviews' , 'overview', 'reviews' , 'goals' , 'feedBack' ,"program", "enrolment", "feedBackTraning", 'overviewTraining'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>TALENT</h4>
+                        <h4 className= {`${['Recruitment', 'PerformancePages/Overview' , 'Training' , 'RecruitmentPages/Jobposting', 'RecruitmentPages/Candidates', 'RecruitmentPages/Interviews' , 'PerformancePages/Reviews' ,  "PerformancePages/Goals", "/RecruitmentPages/Shortlist" , "PerformancePages/FeedBack" ,"TrainingPages/Program", "TrainingPages/Enrolment", "TrainingPages/Feedback", 'TrainingPages/OverviewTraining'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>TALENT</h4>
                     </div>
                     {/* Recruitment */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'Recruitment' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === "RecruitmentPages/Jobposting" || readPath === "RecruitmentPages/Candidates" || readPath === "RecruitmentPages/Interviews"  || readPath === "RecruitmentPages/Shortlist" ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Recruitment readPath={readPath}/>
                             <div>
-                                <Link href="/Recruitment"><h4 className={`${readPath === 'Recruitment' ? 'text-white' : 'text-limegray'} ` }>Recruitment</h4></Link>
+                                <Link href="/RecruitmentPages/Jobposting"><h4 className={`${readPath === 'Recruitment' || readPath === "RecruitmentPages/Jobposting" || readPath === "RecruitmentPages/Candidates" || readPath === "RecruitmentPages/Interviews" ? 'text-white' : 'text-limegray'} ` }>Recruitment</h4></Link>
                             </div>
                         </div>
                     </div>                    
                     {/* Performance */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'Performance' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'PerformancePages/Overview' || readPath === "PerformancePages/Goals" || readPath === "PerformancePages/FeedBack" || readPath === "PerformancePages/Reviews"  ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Performance readPath={readPath}/>
                             <div>
-                                <Link href="/Performance"><h4 className={`${readPath === 'Performance' ? 'text-white' : 'text-limegray'} ` }>Performance</h4></Link>
+                                <Link href="/PerformancePages/Overview"><h4 className={`${readPath === 'PerformancePages/Overview' || readPath === "PerformancePages/Goals" || readPath === "PerformancePages/Reviews" || readPath === "PerformancePages/FeedBack" ? 'text-white' : 'text-limegray'} ` }>Performance</h4></Link>
                             </div>
                         </div>
                     </div>    
                     {/* Training */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'Training' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'Training' || readPath === 'TrainingPages/OverviewTraining'  || readPath === 'TrainingPages/Feedback' || readPath === 'TrainingPages/Enrolment' || readPath === 'TrainingPages/Program'? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Training readPath={readPath}/>
                             <div>
-                                <Link href="/Training"><h4 className={`${readPath === 'Training' ? 'text-white' : 'text-limegray'} ` }>Training</h4></Link>
+                                <Link href="/TrainingPages/OverviewTraining"><h4 className={`${readPath === 'Training' || readPath === 'TrainingPages/OverviewTraining'  || readPath === 'TrainingPages/Feedback' || readPath === 'TrainingPages/Enrolment' || readPath === 'TrainingPages/Program'? 'text-white' : 'text-limegray'} ` }>Training</h4></Link>
                             </div>
                         </div>
                     </div> 

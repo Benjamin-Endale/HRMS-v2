@@ -1,9 +1,8 @@
 import React from 'react'
+import { redirect } from 'next/navigation';
 
 const page = () => {
-  return (
-    <div>page</div>
-  )
+    redirect('/RecruitmentPages/Jobposting');
 }
 
-export default page
+export default page 
