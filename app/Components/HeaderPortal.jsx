@@ -18,12 +18,21 @@ const HeaderPortal = ({ readPath }) => {
   // Map human-readable titles to object keys
   const keyMap = {
     'EmployeePortal/Dashboard':'Dashboard',
-    'EmployeePortal/Attendance':'Attendace',
+    'EmployeePortal/Attendance':'Attendance',
     'EmployeePortal/LeaveRequest':'Leave_Request',
     'EmployeePortal/Performance':'Performance',
     'EmployeePortal/Training':'Training',
     'EmployeePortal/Announcement':'Announcement',
-    'EmployeePortal/Setting':'Setting'
+    'EmployeePortal/Setting':'Setting',
+    'EmployeePortal/LeaveRequest/Approved':'Leave_request',
+    'EmployeePortal/LeaveRequest/Pending': 'Leave_request',
+    'EmployeePortal/LeaveRequest/Rejected': 'Leave_request',
+    'EmployeePortal/Performance/Feedback': 'Performance',
+    'EmployeePortal/Performance/Goals': 'Performance',
+    'EmployeePortal/Performance/MyPerformance': 'Performance',
+    'EmployeePortal/Performance/Reviews': 'Performance',
+
+
   }
 
   // Safely access the right key

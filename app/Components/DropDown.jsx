@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react"; 
 
 
-export function Dropdown({ label, options, selected, onSelect, placeholder, className }) {
+export function Dropdown({ label, options, selected, onSelect, placeholder, className , color , ClassForborder }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -21,7 +21,7 @@ export function Dropdown({ label, options, selected, onSelect, placeholder, clas
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="inputMod flex items-center justify-between pr-[1.5625rem]"
+        className={` ${ClassForborder || "inputMod"}  flex items-center justify-between pr-[1.5625rem]`}
       >
         <span className={`${selected ? "textFormColor1" : "text-limegray select-none"}`}>
           {selected || placeholder}
@@ -30,7 +30,7 @@ export function Dropdown({ label, options, selected, onSelect, placeholder, clas
       </button>
 
       {open && (
-        <ul className="bg-inputBack rounded-[10px] flex max-h-[12.5rem] overflow-y-auto scrollBarDash space-y-5 py-5 w-full top-[6.3125rem] absolute z-10 text-formColor flex-col center-center border border-limeLight">
+        <ul className={`${color || 'bg-inputBack'}  rounded-[10px] flex  max-h-[12.5rem] overflow-y-auto scrollBarDash space-y-5 py-5 w-full top-[6.3125rem] absolute z-10 text-formColor flex-col text-center border border-limeLight`}>
           {options.map((opt) => (
             <li
               key={opt}

@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 
 
 
-const SubNavigation = ({ readPath , children }) => {
+const SubNavigation = ({ readPath }) => {
   const router = useRouter()
   const pathname = usePathname()
 

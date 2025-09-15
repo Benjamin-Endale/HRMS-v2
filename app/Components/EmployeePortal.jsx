@@ -29,7 +29,7 @@ const EmployeePortal = ({ readPath }) => {
                 {/* Core */}
                 <section className='space-y-[1.5625rem] w-full  pl-[2.75rem] relative'> 
                     <div>
-                        <h4 className={`${['EmployeePortal/Dashboard','EmployeePortal/Attendance','EmployeePortal/LeaveRequest'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>CORE</h4>
+                        <h4 className={`${['EmployeePortal/Dashboard','EmployeePortal/Attendance' ,'EmployeePortal/LeaveRequest/Pending','EmployeePortal/LeaveRequest/Approved','EmployeePortal/LeaveRequest/Rejected'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>CORE</h4>
                     </div>
                     <div className='flex items-center' >
                         <div className={`${readPath === 'EmployeePortal/Dashboard' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
@@ -52,11 +52,11 @@ const EmployeePortal = ({ readPath }) => {
                     </div>
                     {/* Leave Management */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'EmployeePortal/LeaveRequest' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'EmployeePortal/LeaveRequest/Approved' || readPath === 'EmployeePortal/LeaveRequest/Pending' || readPath === 'EmployeePortal/LeaveRequest/Rejected' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <LeaveManegment readPath={readPath}/>
                             <div>
-                                <Link href="/EmployeePortal/LeaveRequest"><h4 className={`${readPath === 'EmployeePortal/LeaveRequest' ? 'text-white' : 'text-limegray'} ` }>Leave Request</h4></Link>
+                                <Link href="/EmployeePortal/LeaveRequest/Approved"><h4 className={`${readPath === 'EmployeePortal/LeaveRequest/Approved' || readPath === 'EmployeePortal/LeaveRequest/Pending' || readPath === 'EmployeePortal/LeaveRequest/Rejected' ? 'text-white' : 'text-limegray'} ` }>Leave Request</h4></Link>
                             </div>
                         </div>
                     </div>
@@ -64,7 +64,7 @@ const EmployeePortal = ({ readPath }) => {
                 {/* Talent */}
                 <section className='space-y-[1.5625rem] w-full  pl-[2.75rem] relative'> 
                     <div>
-                        <h4 className= {`${['EmployeePortal/Performance','EmployeePortal/Training'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>TALENT</h4>
+                        <h4 className= {`${['EmployeePortal/Performance/MyPerformance', 'EmployeePortal/Performance/Reviews', 'EmployeePortal/Performance/Feedback', 'EmployeePortal/Performance/Goals','EmployeePortal/Training'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>TALENT</h4>
                     </div>                
                     {/* Performance */}
                    <div className='flex items-center' >
@@ -72,7 +72,7 @@ const EmployeePortal = ({ readPath }) => {
                         <div className='navLinkconfig'>
                             <Performance readPath={readPath}/>
                             <div>
-                                <Link href="/EmployeePortal/Performance"><h4 className={`${readPath === 'EmployeePortal/Performance'  ? 'text-white' : 'text-limegray'} ` }>Performance</h4></Link>
+                                <Link href="/EmployeePortal/Performance/MyPerformance"><h4 className={`${readPath === 'EmployeePortal/Performance' || readPath === 'EmployeePortal/Performance'  || readPath === "PerformancePages/Goals" || readPath === 'PerformancePages/FeedBack' || readPath === 'PerformancePages/Reviews' || readPath === 'EmployeePortal/Performance/Goals' || readPath === "EmployeePortal/Performance/Reviews" || readPath === "EmployeePortal/Performance/Feedback" || readPath === "EmployeePortal/Performance/MyPerformance" ? 'text-white' : 'text-limegray'} ` }>Performance</h4></Link>
                             </div>
                         </div>
                     </div>    
