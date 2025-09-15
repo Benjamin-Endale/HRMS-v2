@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react"; 
 
 
-export function Dropdown({ label, options, selected, onSelect, placeholder, className , color , ClassForborder }) {
+export function Dropdown({ label, options, selected, onSelect, placeholder, className , color , ClassForborder,src }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -23,7 +23,8 @@ export function Dropdown({ label, options, selected, onSelect, placeholder, clas
         onClick={() => setOpen(!open)}
         className={` ${ClassForborder || "inputMod"}  flex items-center justify-between pr-[1.5625rem]`}
       >
-        <span className={`${selected ? "textFormColor1" : "text-limegray select-none"}`}>
+        <span className={`${selected ? "textFormColor1" : "text-limegray select-none"} flex gap-[1rem]`}>
+          {src && <img src={src} alt=""/>}
           {selected || placeholder}
         </span>
         <img className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} src="/image/Icon/ArrowDown.png" alt="" />
