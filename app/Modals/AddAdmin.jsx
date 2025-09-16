@@ -1,10 +1,8 @@
 import React, {useState} from 'react'
-
+import { Dropdown } from '../Components/DropDown'
 
 export default function AddAdmin({onClose}) {
-    const [dropdownOpenR, setDropdownOpenR] = useState(false);
-    const [selectedRole, setSelectedRole] = useState('Employee')
-    const Role = ['Employee','Admin','HR','CTO']
+    const [selectedRole, setSelectedRole] = useState()
   return (
     <div className='px-[3rem] pt-[2.875rem] space-y-[3.125rem] font-semibold w-full '>
         <div className='flex justify-between'>
@@ -35,28 +33,15 @@ export default function AddAdmin({onClose}) {
                             <input id='phoneNumber' type="text" placeholder='ex. example@Gmail.com' className='inputMod'/>
                         </div>
                         {/* Role */}
-                        <div className='flex flex-col gap-[1rem] relative'>
-                            <label htmlFor="firstName" className='text-formColor'>Role</label>
-                            <div className='inputMod flex items-center justify-between pr-[1.5625rem]' >
-                                <button type="button" className='text-formColor text-left' onClick={() => setDropdownOpenR(!dropdownOpenR)}>{selectedRole}</button>
-                                <svg onClick={() => setDropdownOpenR(!dropdownOpenR)} className={`transition-transform duration-200 ${dropdownOpenR ? 'rotate-180' : ''}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 9L12 15L5 9" stroke="#BEE532" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div className={`${dropdownOpenR ? 'flex' : 'hidden'} bg-inputBack rounded-[10px] h-[11.25rem]  w-full top-[6.3125rem] absolute z-10 text-formColor flex-col center-center border border-limeLight scrollBarDash overflow-y-auto `}>
-                                <ul className='flex flex-col  gap-[2.1875rem] h-full pt-[1.3125rem]'>
-                                    {Role.map(role => (
-                                    <li key={role} className={`cursor-pointer w-full text-center ${selectedRole === role ? 'text-lemongreen font-bold' : ''}`}
-                                    onClick={() => {
-                                        setSelectedRole(role)
-                                        setDropdownOpenR(false)
-                                    }}>
-                                    {role}
-                                    </li>
-                                ))}
-                                </ul>
-                            </div>
-                        </div>
+                        <div>
+                            <Dropdown
+                            label="Role"
+                            options={['Employee','Admin','HR','CTO']}
+                            selected={selectedRole}
+                            onSelect={setSelectedRole}
+                            placeholder="Employee"
+                            />
+                        </div> 
                         <div className='flex flex-col gap-[1rem]'>
                             <label htmlFor="password" className='text-formColor'>Default password</label>
                             <input id='password' type="password" placeholder='admin1234' className='inputMod'/>

@@ -45,11 +45,11 @@ body {
     @apply w-[28rem] h-[14.8125rem] border border-none  rounded-[1.875rem] p-[2.1875rem]
   }
   .carDash1{
-    @apply w-[29.375rem] h-[14.8125rem] border border-none  rounded-[1.875rem] p-[2.1875rem]
+    @apply w-[29.375rem] h-[14.8125rem] border border-none  rounded-[1.875rem] p-[2.1875rem] 
   }
   .carDash2{
     @apply w-[29.9375rem] h-[14.8125rem] border border-none  rounded-[1.875rem] p-[2.1875rem] bg-[rgba(190,229,50,0.05)]
-  }
+  } 
   .center-center{
     @apply flex justify-center items-center
   }
