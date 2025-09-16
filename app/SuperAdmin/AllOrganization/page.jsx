@@ -172,7 +172,7 @@ return (
                         <img src="/image/Icon/Action/Pen.png" alt="" />
                       </button>
                       <button type="button" className='cursor-pointer'>
-                        <img src="/image/Icon/Action/Trash.png" alt="" />
+                        <img src="/image/Icon/Action/banOff.png" alt="" />
                       </button>
                     </td>
                   </tr>
