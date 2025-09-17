@@ -8,18 +8,16 @@ import HeaderPortal from './Components/HeaderPortal';
 import EmployeePortal from './Components/EmployeePortal';
 
 
-
-export default function ClientWrapper({ children }) {
+export default function ClientWrapper({ children , session  }) {
 const pathname = usePathname() || '/'; // fallback for SSR
-const readPath =
-  pathname === '/' ? 'SuperAdmin/AllOrganization' : pathname.replace('/', '');
+const readPath = pathname === '/' ? 'SuperAdmin/AllOrganization' : pathname.replace('/', '');
 
   return (
     <div className='flex gap-[4.4375rem]'>
-      <SuperAdminBody  readPath={readPath} />
+      <SuperAdminBody  readPath={readPath} session={session}  />
       <div className='flex flex-col flex-1 gap-[4.25rem]'>
         <div className='flex pt-[3.5rem]'>
-          <Header readPath={readPath} /> 
+          <Header readPath={readPath} session={session} /> 
         </div>
         <div className='w-[calc(100%-2.75rem)]'>
           {children}
@@ -28,3 +26,4 @@ const readPath =
     </div>
   );
 }
+

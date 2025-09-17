@@ -1,6 +1,7 @@
 import React from 'react'
+import { SignOutButton } from './SignOutButton'
 
-const Header = ({ readPath }) => {
+const Header = ({ readPath , session }) => {
   // Object with code-friendly keys
   const parag = {
     Dashboard: "Welcome back! Here's what's happening at your organization today.",
@@ -69,14 +70,7 @@ const Header = ({ readPath }) => {
           <h4 className='text-limegray text-[15px] font-medium'>{description}</h4>
         </div>
         <div className='h-full w-[13.375rem] text-nowrap'>
-          <div className='flex items-center justify-between'>
-            <div className='w-[138px]'>
-              <span className='text-accountColor font-medium'>Welcome, Benjamin</span>
-            </div>
-            <div className='border rounded-full flex p-[15px] items-center justify-center bg-black'>
-              <img src="/svg/HeaderSvg/ProfileIcon.svg" alt="ProfileIcon" />
-            </div>
-          </div>
+              <SignOutButton session={session} />
         </div>
       </header>
     </div>
