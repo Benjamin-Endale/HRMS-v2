@@ -28,7 +28,7 @@ body {
     @apply text-[20px] font-semibold text-white  leading-none
   }
   .maindivider{
-    @apply flex gap-[20px]
+    @apply flex  gap-[20px]
   }
   .halfdivider{
     @apply flex flex-col gap-[16px]
