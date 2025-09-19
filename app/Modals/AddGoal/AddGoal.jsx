@@ -22,7 +22,7 @@ const goalSchema = z.object({
       { message: 'Due Date must be today or later' }
     ),
   title: z.string().min(3, 'Goal title must be at least 3 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
+  description: z.string().min(10, 'Description is required'),
 });
 
 export default function AddGoal({ onClose }) {

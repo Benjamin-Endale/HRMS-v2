@@ -27,7 +27,7 @@ export default function AddProgramMaterial({ onClose }) {
       documentLink: '',
       contractFile: null,
     },
-  })
+  });
 
   const onSubmit = (data) => {
     console.log('Form Data:', data)
