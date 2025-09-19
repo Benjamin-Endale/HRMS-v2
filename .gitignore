@@ -71,3 +71,21 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 >>>>>>> fcdcf2540ca8a789f31cd47e989930a7443e0cee
+
+# .NET
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+*.cache
+*.log
+TestResults/
+
+# (If this repo also has your Next.js front-end)
+node_modules/
+.next/
+out/
+dist/
+.env*
+
