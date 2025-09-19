@@ -69,7 +69,7 @@ const Header = ({ readPath , session }) => {
           <h1 className='text-white text-[2rem] font-semibold'>{keyMap[readPath].replace(/_/g, ' ')} </h1>
           <h4 className='text-limegray text-[15px] font-medium'>{description}</h4>
         </div>
-        <div className='h-full w-[13.375rem] text-nowrap'>
+        <div className='h-full w-[19.375rem] text-nowrap'>
               <SignOutButton session={session} />
         </div>
       </header>

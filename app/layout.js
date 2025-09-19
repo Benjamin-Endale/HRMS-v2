@@ -21,7 +21,7 @@ export default async function RootLayout({ children }) {
   console.log("Layout Session:", session);
   return (
     <html lang="en" className={urbanist.variable}>
-      <body className="antialiased overflow-y-auto scrollBarDash bg-no-repeat bg-center bg-cover bg-[url(/image/backdash.png)]">
+      <body className="antialiased overflow-y-auto scrollBarDash">
         {/* If user is NOT logged in, show the LoginPage */}
         {!session ? (
           <LoginPage />
