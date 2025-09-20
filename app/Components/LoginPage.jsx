@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/app/auth';
 import { SignInButton } from './SignInButton';
@@ -9,16 +9,26 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 const loginSchema = z.object({
-  username: z.string()
-    .min(3, "Username must be at least 3 characters long")
-    .max(20, "Username must not exceed 20 characters")
-    .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"),
-  password: z.string()
-    .min(8, "Password must be at least 8 characters long")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(/[@$!%*?&]/, "Password must contain at least one special character (@, $, !, %, *, ?, &)"),
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+}).superRefine((data, ctx) => {
+  // username validation
+  if (!/^[a-zA-Z0-9_]{3,20}$/.test(data.username)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["form"], // 🔑 single error path
+      message: "Invalid username or password", 
+    });
+  }
+
+  // password validation
+  if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(data.password)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["form"], // 🔑 same error path
+      message: "Invalid username or password",
+    });
+  }
 });
 
 export default function LoginPage() {
@@ -128,11 +138,7 @@ const onSubmit = async (data) => {
             {...register("username")}
           />
         </div>
-        {errors.username && (
-          <span className='text-Error text-[1rem] mt-1'>
-            {errors.username.message}
-          </span>
-        )}
+        
       </div>
 
                 {/* Password */}
@@ -150,11 +156,11 @@ const onSubmit = async (data) => {
               {...register("password")}
             />
           </div>
-          {errors.password && (
-            <span className='text-Error text-[1rem] mt-1'>
-              {errors.password.message}
-            </span>
-          )}
+        {errors.form && (
+    <span className="text-Error text-[1rem] mt-1">
+      {errors.form.message}
+    </span>
+  )} 
         </div>
 
                 {/* Checkbox & Forget Password */}

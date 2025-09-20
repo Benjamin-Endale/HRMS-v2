@@ -92,7 +92,7 @@ return (
             <h4 className='textLimegray'>A list of all organizations in your platform</h4>
           </div>
           <div>
-            <button type="button" className='cursor-pointer ' onClick={()=>router.push('/AddNewemployee')}>
+            <button type="button" className='cursor-pointer ' onClick={()=>router.push('/SuperAdmin/CreateOrganization')}>
               <div className='center-center w-[13.125rem] h-[3.125rem] rounded-[0.625rem] gap-[0.625rem] bg-lemongreen'>
                 <img src="/svg/SvgImage/PlusSign.svg" alt="" />
                 <span className='text-black'>Add Organizations</span>
