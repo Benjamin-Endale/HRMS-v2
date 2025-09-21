@@ -7,11 +7,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const schema = z.object({
-  JobTitle: z.string().nonempty("Job Title is required"),
+  JobTitle: z.string().nonempty("Job Title is required").min(3,"JobTitle must be at least 3 characters"),
   EmploymentType: z.string().nonempty("Employment Type is required"),
-  DepartmentHead: z.string().nonempty("Department Head is required"),
+  DepartmentHead: z.string().nonempty("Department Head is required").min(3,"DepartmentHead must be at least 3 characters"),
   Department: z.string().nonempty("Department is required"),
-  SubDepartmentHead: z.string().nonempty("Sub Department Head is required"),
+  SubDepartmentHead: z.string().nonempty("Sub Department Head is required").min(3,"SubDepartment must be at least 3 characters"),
   JoiningDate: z.string().nonempty("Joining Date is required"),
 });
 

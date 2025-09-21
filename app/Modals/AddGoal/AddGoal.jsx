@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Dropdown } from '@/app/Components/DropDown';
 
-
 const goalSchema = z.object({
   employee: z.string().min(1, 'Employee is required'),
   priority: z.string().min(1, 'Priority is required'),
@@ -21,7 +20,7 @@ const goalSchema = z.object({
       },
       { message: 'Due Date must be today or later' }
     ),
-  title: z.string().min(3, 'Goal title must be at least 3 characters'),
+  title: z.string().min(3, 'Goal title is required'),
   description: z.string().min(10, 'Description is required'),
 });
 
@@ -45,7 +44,6 @@ export default function AddGoal({ onClose }) {
 
   const onSubmit = (data) => {
     console.log(' Goal Data:', data);
-    // do something, like API call
   };
 
   return (

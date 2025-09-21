@@ -11,7 +11,7 @@ const Header = ({ readPath , session }) => {
     Leave_Management: "Manage employee leave requests, balances, and policies.",
     Recruitment_and_ATS: "Manage job postings, candidates, and hiring process",
     Performance_Management:"Track goals, conduct reviews, and manage employee performance.",
-    Announcements_and_Notifications:"Manage company-wide communications and employee notifications.",
+    cements_and_Notifications:"Manage company-wide communications and employee notifications.",
     Assets:"",
     Add_New_Employee:"Enter employee details to create a new profile",
     All_Organizations: 'Manage all organizations in your HRMS platform',
@@ -31,6 +31,7 @@ const Header = ({ readPath , session }) => {
     "LeaveManagment": "Leave_Management",
     "Performance":"Performance_Management",
     "Training":"Training_and_Development",
+    "Setting":"Setting",
     "Announcement":"Announcements_and_Notifications",
     "EmployeeRegistration/AddNewemployee": 'Add_New_Employee',
     "EmployeeRegistration/AddNewemployeesecond": 'Add_New_Employee',
@@ -54,11 +55,12 @@ const Header = ({ readPath , session }) => {
     'TrainingPages/Enrolment':'Training_and_Development',
     'TrainingPages/OverviewTraining':'Training_and_Development',
     'TrainingPages/Program':'Training_and_Development',
-    'TrainingPages/FeedBack':'Training_and_Development',
-
-
+    'TrainingPages/Feedback':'Training_and_Development',
+    // 'Setting':'Admin_Setting',
+    // 'Setting/General':'Admin_Setting',
+    // 'Setting/Core':'Admin_Setting',
+    // 'Setting/Talent':'Admin_Setting',
   }
-
   // Safely access the right key
   const description = parag[keyMap[readPath]] || ""
 
@@ -76,5 +78,4 @@ const Header = ({ readPath , session }) => {
     </div>
   )
 }
-
 export default Header

@@ -8,8 +8,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const schema = z.object({
-    FirstName: z.string().min(3, "First name is required"),  
-    LastName: z.string().min(2, "Last name is required"),
+    FirstName: z.string().min(1, "First name is required").min(3,"First Name must be at least 3 characters"),
+    LastName: z.string().min(2, "Last name is required").min(3,"Last Name must be at least 3 characters"),
     DateofBirth: z.
     string()
     .min(1, { message: "Date of Birth is required" }) 
@@ -28,17 +28,16 @@ const schema = z.object({
     message: "You must be at least 18 years old",
   }),
     Nationality: z.string().nonempty("Nationality is required"),
-    Email: z.string().email("Enter a valid email"),
-    Address: z.string().min(3, "Address is required"),
+    Email: z.string().email("Enter a valid email").min(3,"Email must be at least 3 characters"),
+    Address: z.string().min(3, "Address is required").min(3,"Address must be at least 3 characters"),
     Gender: z.string().nonempty("Gender is required"),
     Marital: z.string().nonempty("Marital status is required"),
-    Phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
-    EmergencyContact: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
+    Phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number").min(3,"Phone must be at least 3 characters"),
+    EmergencyContact: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number").min(3,"Emergency Contact must be at least 3 characters"),
 });
 
 const Page = () => {
     const router = useRouter();
-
     const {
         register,
         control,

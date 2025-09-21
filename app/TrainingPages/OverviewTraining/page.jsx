@@ -18,7 +18,7 @@ const page = () => {
 
 
 
-  return (
+    return (
     <>
       <SubNavigation readPath ='/TrainingPages/OverviewTraining'/>
         <div className='font-semibold mt-[3.1875rem]'>

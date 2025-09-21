@@ -2,5 +2,6 @@
 import { redirect } from 'next/navigation';
 
 export default function Home() {
-  redirect('/SuperAdmin/AllOrganization');
+  // redirect('/Dashborad');
+  redirect('/Dashboard');
 }

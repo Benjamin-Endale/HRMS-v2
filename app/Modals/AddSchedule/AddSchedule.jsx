@@ -43,7 +43,8 @@ const scheduleSchema = z.object({
         (val) => allowedDomains.some(domain => val.includes(domain)),
         { message: "Meeting link must be Zoom, Google Meet, or Teams" }
       )
-  ])
+  ]),
+  note:z.string().min(10,"Interview note is required")
 });
 
 export default function AddSchedule({ onClose }) {
@@ -235,8 +236,6 @@ export default function AddSchedule({ onClose }) {
                 </p>
               )}
             </div>
-
-            {/* Interview Note */}
             {/* Interview Note */}
 <div className="flex flex-col gap-[1rem]">
   <label className="text-formColor">Interview Note</label>

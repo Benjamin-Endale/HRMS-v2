@@ -12,6 +12,7 @@ const AddadminSchema=z.object({
     DefaultPass:z.string().min(2,"Default Password is required"),
 })
 export default function AddAdmin({onClose}) {
+    const router = useRouter();
     const [selectedRole, setSelectedRole] = useState()
     const{register,handleSubmit,control,formState:{errors},}=useForm({
         resolver:zodResolver(AddadminSchema),
@@ -25,7 +26,7 @@ export default function AddAdmin({onClose}) {
     });
     const onSubmit=(data) => {
         console.log("Add admin form:" , data);
-        router.push ('/SuperAdmin/SuperAdmin');
+        // router.push ('/SuperAdmin/SuperAdmin');
     }
   return (
     <div className='px-[3rem] pt-[2.875rem] space-y-[3.125rem] font-semibold w-full '>
@@ -112,8 +113,8 @@ export default function AddAdmin({onClose}) {
                     </div>
                 </div>
                 <div className='w-full h-[3.4375rem]'>
-                    <button type="submit" onClick={()=>navigate('/')} className='w-full h-full bg-lemongreen rounded-[10px] cursor-pointer'>Add Administrator</button>
-                </div>
+                    <button type="submit" onClick={()=>router.push('/SuperAdmin/SuperAdmin')} className='w-full h-full bg-lemongreen rounded-[10px] cursor-pointer'>Add Administrator</button>
+                </div>  
             </form>
         </div>
     </div>

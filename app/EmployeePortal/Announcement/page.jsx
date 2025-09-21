@@ -26,7 +26,7 @@ const page = () => {
                     <td className='pt-[2.3125rem]'>23-01-2025</td>
                     <td className='pt-[2.3125rem]'>
                         <button className='cursor-pointer'>
-                            <img src="/image/Icon/Action/eye.pn clag" alt="" />
+                            <img src="/image/Icon/Action/eye.png" alt="" />
                         </button>
                     </td>
                 </tr>
