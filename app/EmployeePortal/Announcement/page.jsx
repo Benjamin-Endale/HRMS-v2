@@ -1,8 +1,21 @@
+'use client'
+
+
 import React from 'react'
+import { useRouter } from 'next/navigation'
 
 const page = () => {
+  const Announcement = [
+    {Title:'Open Enrollment 2025 is Live (Nov 1-15)' , Announcement: 'It,s time to select your 2025 be...' ,catagory: 'Ops & Systems' , date:'Mar 31, 2024' },
+    {Title:'Open Enrollment 2025 is Live (Nov 1-15)' , Announcement: 'It,s time to select your 2025 be 1...' ,catagory: 'Ops & Systems' , date:'Mar 31, 2024' },
+    {Title:'Open Enrollment 2025 is Live (Nov 1-15)' , Announcement: 'It,s time to select your 2025 be 2...' ,catagory: 'Ops & Systems' , date:'Mar 31, 2024' },
+
+
+  ]
+  const router = useRouter()
   return (
     <>
+
     <div className='font-semibold'>
         <table>
             <thead className='tableBordercolor'>
@@ -15,21 +28,23 @@ const page = () => {
                 </tr>
             </thead>
             <tbody>
-                <tr className='text-limegray'>
-                    <td className='pt-[2.3125rem]'>Open Enrollment 2025 is Live (Nov 1–15)</td>
-                    <td className='pt-[2.3125rem]'>It’s time to select your 2025 be...</td>
-                    <td className='pt-[2.3125rem]'>
-                        <div className='flex items-center'>
-                            <h4 className='px-[18px]  py-[8px] rounded-full bg-[rgba(190,229,50,0.05)] text-formColor'>Urgent</h4>
-                        </div>
-                    </td>
-                    <td className='pt-[2.3125rem]'>23-01-2025</td>
-                    <td className='pt-[2.3125rem]'>
-                        <button className='cursor-pointer'>
-                            <img src="/image/Icon/Action/eye.pn clag" alt="" />
-                        </button>
-                    </td>
-                </tr>
+                {Announcement.map((announce)=>(
+                    <tr key={announce.Announcement} className='text-limegray'>
+                        <td className='pt-[2.3125rem]'>{announce.Title}</td>
+                        <td className='pt-[2.3125rem]'>{announce.Announcement}</td>
+                        <td className='pt-[2.3125rem]'>
+                            <div className='flex items-center'>
+                                <h4 className='px-[18px]  py-[8px] rounded-full bg-[rgba(190,229,50,0.05)] text-formColor'>{announce.catagory}</h4>
+                            </div>
+                        </td>
+                        <td className='pt-[2.3125rem]'>{announce.date}</td>
+                        <td className='pt-[2.3125rem]'>
+                            <button onClick={()=>router.push('/EmployeePortal/Announcement/AnnouncementDetail')} className='cursor-pointer'>
+                                <img src="/image/Icon/Action/eye.png " alt="" />
+                            </button>
+                        </td>
+                    </tr>
+                ))}
             </tbody>
         </table>
     </div>

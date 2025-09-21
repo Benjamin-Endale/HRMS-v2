@@ -20,6 +20,12 @@ const EmployeePortalSubNav = ({ readPath }) => {
     { label: "360 Feedback ", path: "/EmployeePortal/Performance/Feedback" },
 
   ]
+
+    const Training = [
+    { label: "Programs", path: "/EmployeePortal/Training/Programs" },
+    { label: "Enrolment", path: "/EmployeePortal/Training/Enrolment" },
+
+  ]
     const router = useRouter()
     const pathname = usePathname()
     const [isOpen,setisOpen] = useState(false)
@@ -88,6 +94,22 @@ const EmployeePortalSubNav = ({ readPath }) => {
             <div>
                 <div className="flex font-medium gap-[1.75rem]">
                     {Performance.map(item => (
+                    <div
+                        key={item.path}
+                        onClick={() => router.push(item.path)}
+                        className={`w-[8.875rem] center-center py-[0.875rem] relative px-[1.875rem]  text-nowrap  ${pathname === item.path ? 'text-lemongreen' : 'textLimegray1'}`}>
+                        {item.label}
+                        <div className={`${pathname === item.path ? 'absolute left-0 h-[3px] w-full bottom-0 rounded-[0.375rem] bg-lemongreen' : ''}`}></div>
+                    </div>
+                    ))}
+                    
+                </div>
+            </div>
+        </div>
+        <div className={`${readPath === '/EmployeePortal/Training/Programs' || readPath === "/EmployeePortal/Training/Enrolment"   ? 'block' : 'hidden'} cursor-pointer flex flex-col gap-[3.3125rem]`}>
+            <div>
+                <div className="flex font-medium gap-[1.75rem]">
+                    {Training.map(item => (
                     <div
                         key={item.path}
                         onClick={() => router.push(item.path)}

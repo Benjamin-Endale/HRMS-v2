@@ -10,26 +10,26 @@ const SubNavigation = ({ readPath }) => {
   const pathname = usePathname()
 
     const NavRecruitment = [
-    { label: "Job Posting", path: "/RecruitmentPages/Jobposting" },
-    { label: "Candidates", path: "/RecruitmentPages/Candidates" },
-    { label: "Shortlist", path: "/RecruitmentPages/Shortlist" },
-    { label: "Interviews", path: "/RecruitmentPages/Interviews" }
+    { label: "Job Posting", path: "/Admin/RecruitmentPages/Jobposting" },
+    { label: "Candidates", path: "/Admin/RecruitmentPages/Candidates" },
+    { label: "Shortlist", path: "/Admin/RecruitmentPages/Shortlist" },
+    { label: "Interviews", path: "/Admin/RecruitmentPages/Interviews" }
   ]
 
 
   
     const NavPerformance = [
-    { label: "Overview", path: "/PerformancePages/Overview" },
-    { label: "Goals & KPIs", path: "/PerformancePages/Goals" },
-    { label: "Reviews", path: "/PerformancePages/Reviews" },
-    { label: "360 Feedback ", path: "/PerformancePages/FeedBack" }
+    { label: "Overview", path: "/Admin/PerformancePages/Overview" },
+    { label: "Goals & KPIs", path: "/Admin/PerformancePages/Goals" },
+    { label: "Reviews", path: "/Admin/PerformancePages/Reviews" },
+    { label: "360 Feedback ", path: "/Admin/PerformancePages/FeedBack" }
   ]
 
       const NavTraning = [
-    { label: "Overview", path: "/TrainingPages/OverviewTraining" },
-    { label: "Programs", path: "/TrainingPages/Program" },
-    { label: "Enrolment ", path: "/TrainingPages/Enrolment" },
-    { label: "Feedback", path: "/TrainingPages/Feedback" }
+    { label: "Overview", path: "/Admin/TrainingPages/OverviewTraining" },
+    { label: "Programs", path: "/Admin/TrainingPages/Program" },
+    { label: "Enrolment ", path: "/Admin/TrainingPages/Enrolment" },
+    { label: "Feedback", path: "/Admin/TrainingPages/Feedback" }
   ]
 
 

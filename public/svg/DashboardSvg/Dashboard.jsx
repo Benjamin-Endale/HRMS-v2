@@ -9,17 +9,17 @@ const DashboardIcon = ({ readPath }) => {
     >
       <path 
         d="M2.1875 5.6875C2.1875 4.03758 2.1875 3.21262 2.70007 2.70007C3.21262 2.1875 4.03758 2.1875 5.6875 2.1875C7.33742 2.1875 8.16238 2.1875 8.67493 2.70007C9.1875 3.21262 9.1875 4.03758 9.1875 5.6875V15.3125C9.1875 16.9624 9.1875 17.7873 8.67493 18.2999C8.16238 18.8125 7.33742 18.8125 5.6875 18.8125C4.03758 18.8125 3.21262 18.8125 2.70007 18.2999C2.1875 17.7873 2.1875 16.9624 2.1875 15.3125V5.6875Z" 
-        stroke={readPath === 'Dashboard' || readPath === 'EmployeePortal/Dashboard' || readPath === 'SuperAdmin/AllOrganization' ? 'white' : '#5D6150'} 
+        stroke={readPath === 'Admin/Dashboard' || readPath === 'EmployeePortal/Dashboard' || readPath === 'SuperAdmin/AllOrganization' ? 'white' : '#5D6150'} 
         strokeWidth="1.3125"
       />
       <path 
         d="M11.8125 13.5625C11.8125 11.9126 11.8125 11.0877 12.3251 10.5751C12.8377 10.0625 13.6626 10.0625 15.3125 10.0625C16.9624 10.0625 17.7873 10.0625 18.2999 10.5751C18.8125 11.0877 18.8125 11.9126 18.8125 13.5625V15.3125C18.8125 16.9624 18.8125 17.7873 18.2999 18.2999C17.7873 18.8125 16.9624 18.8125 15.3125 18.8125C13.6626 18.8125 12.8377 18.8125 12.3251 18.2999C11.8125 17.7873 11.8125 16.9624 11.8125 15.3125V13.5625Z" 
-        stroke={readPath === 'Dashboard' || readPath === 'EmployeePortal/Dashboard' || readPath === 'SuperAdmin/AllOrganization' ? 'white' : '#5D6150'} 
+        stroke={readPath === 'Admin/Dashboard' || readPath === 'EmployeePortal/Dashboard' || readPath === 'SuperAdmin/AllOrganization' ? 'white' : '#5D6150'} 
         strokeWidth="1.3125"
       />
       <path 
         d="M11.8125 4.8125C11.8125 3.99711 11.8125 3.58941 11.9457 3.2678C12.1233 2.83901 12.464 2.49833 12.8928 2.32071C13.2144 2.1875 13.6221 2.1875 14.4375 2.1875H16.1875C17.0029 2.1875 17.4106 2.1875 17.7322 2.32071C18.161 2.49833 18.5017 2.83901 18.6793 3.2678C18.8125 3.58941 18.8125 3.99711 18.8125 4.8125C18.8125 5.62789 18.8125 6.03559 18.6793 6.3572C18.5017 6.78599 18.161 7.12667 17.7322 7.30429C17.4106 7.4375 17.0029 7.4375 16.1875 7.4375H14.4375C13.6221 7.4375 13.2144 7.4375 12.8928 7.30429C12.464 7.12667 12.1233 6.78599 11.9457 6.3572C11.8125 6.03559 11.8125 5.62789 11.8125 4.8125Z" 
-        stroke={readPath === 'Dashboard' || readPath === 'EmployeePortal/Dashboard' || readPath === 'SuperAdmin/AllOrganization' ? 'white' : '#5D6150'} 
+        stroke={readPath === 'Admin/Dashboard' || readPath === 'EmployeePortal/Dashboard' || readPath === 'SuperAdmin/AllOrganization' ? 'white' : '#5D6150'} 
         strokeWidth="1.3125"
       />
     </svg>

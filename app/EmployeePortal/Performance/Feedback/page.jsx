@@ -35,8 +35,8 @@ const page = () => {
               <h4 className='text-limeLight font-medium'>Due: {rev.date}</h4>
             </div>
           </div>
-          <div className='center-center bg-lemongreen h-[3.125rem] w-[12.125rem] rounded-[10px] gap-[0.75rem]'>
-            <button onClick={()=> setisOpen(true)} className='center-center gap-[0.75rem]' type="button">
+          <div className='center-center cursor-pointer bg-lemongreen h-[3.125rem] w-[12.125rem] rounded-[10px] gap-[0.75rem]'>
+            <button onClick={()=> setisOpen(true)} className='center-center cursor-pointer gap-[0.75rem]' type="button">
               <img src="/svg/SvgImage/PlusSign.svg" alt="" />
               <h4>Give Feedback</h4>
             </button>

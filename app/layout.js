@@ -1,9 +1,9 @@
-// app/layout.jsx
+// app/layout.js
 import { Urbanist } from "next/font/google";
 import "./globals.css";
-import { auth } from '@/app/auth'; // Import your auth config
-import LoginPage from "./Components/LoginPage"; // Import LoginPage
-import ClientWrapper from './ClientWrapper'; // Import ClientWrapper
+import ClientWrapper from './ClientWrapper';
+import LoginPage from './Components/LoginPage';
+import { auth } from '@/app/auth';
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -12,21 +12,18 @@ const urbanist = Urbanist({
 
 export const metadata = {
   title: "HRMS",
-  description: "Human resource managment system",
+  description: "Human resource management system",
 };
 
-// Make the layout async to get the session
 export default async function RootLayout({ children }) {
-  const session = await auth(); // Get session on the server
-  console.log("Layout Session:", session);
+  const session = await auth();
+  
   return (
     <html lang="en" className={urbanist.variable}>
       <body className="antialiased overflow-y-auto scrollBarDash">
-        {/* If user is NOT logged in, show the LoginPage */}
         {!session ? (
           <LoginPage />
         ) : (
-          // If user IS logged in, show the main app wrapper
           <ClientWrapper session={session}>
             {children}
             <div id="addModal"></div>
@@ -36,3 +33,4 @@ export default async function RootLayout({ children }) {
     </html>
   );
 }
+

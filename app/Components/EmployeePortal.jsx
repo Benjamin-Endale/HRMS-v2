@@ -68,7 +68,7 @@ const EmployeePortal = ({ readPath }) => {
                     </div>                
                     {/* Performance */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'EmployeePortal/Performance'   ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'EmployeePortal/Performance/MyPerformance' || readPath === 'EmployeePortal/Performance/Goals' || readPath === 'EmployeePortal/Performance/Reviews'  || readPath === 'EmployeePortal/Performance/Feedback'    ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Performance readPath={readPath}/>
                             <div>
@@ -78,11 +78,11 @@ const EmployeePortal = ({ readPath }) => {
                     </div>    
                     {/* Training */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'EmployeePortal/Training' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'EmployeePortal/Training/Enrolment' || readPath === 'EmployeePortal/Training/Programs' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Training readPath={readPath}/>
                             <div>
-                                <Link href="/EmployeePortal/Training"><h4 className={`${readPath === 'EmployeePortal/Training' ? 'text-white' : 'text-limegray'} ` }>Training</h4></Link>
+                                <Link href="/EmployeePortal/Training/Enrolment"><h4 className={`${readPath === 'EmployeePortal/Training/Enrolment' || readPath === 'EmployeePortal/Training/Programs' ? 'text-white' : 'text-limegray'} ` }>Training</h4></Link>
                             </div>
                         </div>
                     </div> 

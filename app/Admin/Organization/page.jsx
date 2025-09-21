@@ -1,9 +1,9 @@
 'use client'
 import React , {useState} from 'react'
-import AddOrg from '../Modals/AddOrg/AddOrg'
-import ModalContainerOrg from '../Modals/AddOrg/ModalContainerOrg'
-import ModalContainerDep from '../Modals/AddDep/ModalContainerDep'
-import AddDep from '../Modals/AddDep/AddDep'
+import AddOrg from '@/app/Modals/AddOrg/AddOrg'
+import ModalContainerOrg from '@/app/Modals/AddOrg/ModalContainerOrg'
+import ModalContainerDep from '@/app/Modals/AddDep/ModalContainerDep'
+import AddDep from '@/app/Modals/AddDep/AddDep'
 
 
 const page = () => {

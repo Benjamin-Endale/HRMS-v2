@@ -1,7 +1,8 @@
 import Announcement from '@/public/svg/DashboardSvg/Announcement'
 import React from 'react'
+import { SignOutButton } from './SignOutButton'
 
-const HeaderPortal = ({ readPath }) => {
+const HeaderPortal = ({ readPath,session }) => {
   // Object with code-friendly keys
   const parag = {
     Dashboard: "Welcome back! Heres whats happening at your portal today.",
@@ -21,7 +22,8 @@ const HeaderPortal = ({ readPath }) => {
     'EmployeePortal/Attendance':'Attendance',
     'EmployeePortal/LeaveRequest':'Leave_Request',
     'EmployeePortal/Performance':'Performance',
-    'EmployeePortal/Training':'Training',
+    'EmployeePortal/Training/Enrolment':'Training',
+    'EmployeePortal/Training/Programs':'Training',
     'EmployeePortal/Announcement':'Announcement',
     'EmployeePortal/Setting':'Setting',
     'EmployeePortal/LeaveRequest/Approved':'Leave_request',
@@ -31,6 +33,8 @@ const HeaderPortal = ({ readPath }) => {
     'EmployeePortal/Performance/Goals': 'Performance',
     'EmployeePortal/Performance/MyPerformance': 'Performance',
     'EmployeePortal/Performance/Reviews': 'Performance',
+    "SuperAdmin/AllOrganization":"Performance",
+    "EmployeePortal/Announcement/AnnouncementDetail":"Announcement"
 
 
   }
@@ -45,17 +49,10 @@ const HeaderPortal = ({ readPath }) => {
           <h1 className='text-white text-[2rem] font-semibold'>{keyMap[readPath].replace(/_/g, ' ')} </h1>
           <h4 className='text-limegray text-[15px] font-medium'>{description}</h4>
         </div>
-        <div className='h-full w-[13.375rem] text-nowrap'>
-          <div className='flex items-center justify-between'>
-            <div className='w-[138px]'>
-              <span className='text-accountColor font-medium'>Welcome, Benjamin</span>
-            </div>
-            <div className='border rounded-full flex p-[15px] items-center justify-center bg-black'>
-              <img src="/svg/HeaderSvg/ProfileIcon.svg" alt="ProfileIcon" />
-            </div>
-          </div>
+        <div className='h-full w-[19.375rem] text-nowrap'>
+            <SignOutButton session={session} />
         </div>
-      </header>
+      </header> 
     </div>
   )
 }

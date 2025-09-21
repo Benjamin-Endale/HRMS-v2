@@ -28,54 +28,54 @@ const MainBody = ({ readPath }) => {
                 {/* Core */}
                 <section className='space-y-[1.5625rem] w-full  pl-[2.75rem] relative'> 
                     <div>
-                        <h4 className={`${['Dashboard' , 'Organization' , 'Employees', 'Attendance' , 'LeaveManagment' ,"EmployeeRegistration/AddNewemployee" ,'EmployeeRegistration/AddNewemployeesecond',"EmployeeRegistration/Compensation","EmployeeRegistration/System"].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>CORE</h4>
+                        <h4 className={`${['Admin/Dashboard' , 'Organization' , 'Employees', 'Attendance' , 'LeaveManagment' ,"Admin/EmployeeRegistration/AddNewemployee" ,'Admin/EmployeeRegistration/AddNewemployeesecond',"Admin/EmployeeRegistration/Compensation","Admin/EmployeeRegistration/System"].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>CORE</h4>
                     </div>
                     <div className='flex items-center' >
-                        <div className={`${readPath === 'Dashboard' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'Admin/Dashboard' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <DashboardIcon readPath={readPath}/>
                             <div>
-                                <Link href="/Dashboard"><h4 className={`${readPath === 'Dashboard' ? 'text-white' : 'text-limegray'} ` }>Dashboard</h4></Link>
+                                <Link href="/Admin/Dashboard"><h4 className={`${readPath === 'Admin/Dashboard' ? 'text-white' : 'text-limegray'} ` }>Dashboard</h4></Link>
                             </div>
                         </div>
                     </div>
                      {/* Organization */}
                      <div className='flex items-center' >
-                        <div className={`${readPath === 'Organization' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'Admin/Organization' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Organization readPath={readPath}/>
                             <div>
-                                <Link href="/Organization"><h4 className={`${readPath === 'Organization' ? 'text-white' : 'text-limegray'} ` }>Organization</h4></Link>
+                                <Link href="/Admin/Organization"><h4 className={`${readPath === 'Admin/Organization' ? 'text-white' : 'text-limegray'} ` }>Organization</h4></Link>
                             </div>
                         </div>
                     </div>
                     {/* Employee */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'Employees' || readPath === 'EmployeeRegistration/AddNewemployee' || readPath === 'EmployeeRegistration/AddNewemployeesecond' || readPath === 'EmployeeRegistration/Compensation' || readPath === 'EmployeeRegistration/System' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'Admin/Employees' || readPath === 'Admin/EmployeeRegistration/AddNewemployee' || readPath === 'Admin/EmployeeRegistration/AddNewemployeesecond' || readPath === 'Admin/EmployeeRegistration/Compensation' || readPath === 'Admin/EmployeeRegistration/System' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Employee readPath={readPath}/>
                             <div>
-                                <Link href="/Employees"><h4 className={`${readPath === 'Employees' || readPath === 'EmployeeRegistration/AddNewemployee' || readPath === 'EmployeeRegistration/AddNewemployeesecond' || readPath === 'EmployeeRegistration/Compensation' || readPath === 'EmployeeRegistration/System' ? 'text-white' : 'text-limegray'} ` }>Employees</h4></Link>
+                                <Link href="/Admin/Employees"><h4 className={`${readPath === 'Admin/Employees' || readPath === 'Admin/EmployeeRegistration/AddNewemployee' || readPath === 'Admin/EmployeeRegistration/AddNewemployeesecond' || readPath === 'Admin/EmployeeRegistration/Compensation' || readPath === 'Admin/EmployeeRegistration/System' ? 'text-white' : 'text-limegray'} ` }>Employees</h4></Link>
                             </div>
                         </div>
                     </div>
                     {/* Attendance */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'Attendance' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'Admin/Attendance' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Attendance readPath={readPath}/>
                             <div>
-                                <Link href="/Attendance"><h4 className={`${readPath === 'Attendance' ? 'text-white' : 'text-limegray'} ` }>Attendance</h4></Link>
+                                <Link href="/Admin/Attendance"><h4 className={`${readPath === 'Admin/Attendance' ? 'text-white' : 'text-limegray'} ` }>Attendance</h4></Link>
                             </div>
                         </div>
                     </div>
                     {/* Leave Management */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'LeaveManagment' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'Admin/LeaveManagment' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <LeaveManegment readPath={readPath}/>
                             <div>
-                                <Link href="/LeaveManagment"><h4 className={`${readPath === 'LeaveManagment' ? 'text-white' : 'text-limegray'} ` }>Leave Managment</h4></Link>
+                                <Link href="/Admin/LeaveManagment"><h4 className={`${readPath === 'Admin/LeaveManagment' ? 'text-white' : 'text-limegray'} ` }>Leave Managment</h4></Link>
                             </div>
                         </div>
                     </div>
@@ -83,35 +83,35 @@ const MainBody = ({ readPath }) => {
                 {/* Talent */}
                 <section className='space-y-[1.5625rem] w-full  pl-[2.75rem] relative'> 
                     <div>
-                        <h4 className= {`${['Recruitment', 'PerformancePages/Overview' , 'Training' , 'RecruitmentPages/Jobposting', 'RecruitmentPages/Candidates', 'RecruitmentPages/Interviews' , 'PerformancePages/Reviews' ,  "PerformancePages/Goals", "/RecruitmentPages/Shortlist" , "PerformancePages/FeedBack" ,"TrainingPages/Program", "TrainingPages/Enrolment", "TrainingPages/Feedback", 'TrainingPages/OverviewTraining'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>TALENT</h4>
+                        <h4 className= {`${['Admin/Recruitment', 'Admin/PerformancePages/Overview' , 'Training' , 'Admin/RecruitmentPages/Jobposting', 'Admin/RecruitmentPages/Candidates', 'Admin/RecruitmentPages/Interviews' , 'Admin/PerformancePages/Reviews' ,  "Admin/PerformancePages/Goals", "/RecruitmentPages/Shortlist" , "Admin/PerformancePages/FeedBack" ,"Admin/TrainingPages/Program", "Admin/TrainingPages/Enrolment", "Admin/TrainingPages/Feedback", 'Admin/TrainingPages/OverviewTraining'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>TALENT</h4>
                     </div>
                     {/* Recruitment */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === "RecruitmentPages/Jobposting" || readPath === "RecruitmentPages/Candidates" || readPath === "RecruitmentPages/Interviews"  || readPath === "RecruitmentPages/Shortlist" ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === "Admin/RecruitmentPages/Jobposting" || readPath === "Admin/RecruitmentPages/Candidates" || readPath === "Admin/RecruitmentPages/Interviews"  || readPath === "Admin/RecruitmentPages/Shortlist" ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Recruitment readPath={readPath}/>
                             <div>
-                                <Link href="/RecruitmentPages/Jobposting"><h4 className={`${readPath === 'Recruitment' || readPath === "RecruitmentPages/Jobposting" || readPath === "RecruitmentPages/Candidates" || readPath === "RecruitmentPages/Interviews" ? 'text-white' : 'text-limegray'} ` }>Recruitment</h4></Link>
+                                <Link href="/Admin/RecruitmentPages/Jobposting"><h4 className={`${readPath === 'Admin/Recruitment' || readPath === "Admin/RecruitmentPages/Jobposting" || readPath === "Admin/RecruitmentPages/Candidates" || readPath === "Admin/RecruitmentPages/Interviews" ? 'text-white' : 'text-limegray'} ` }>Recruitment</h4></Link>
                             </div>
                         </div>
                     </div>                    
                     {/* Performance */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'PerformancePages/Overview' || readPath === "PerformancePages/Goals" || readPath === "PerformancePages/FeedBack" || readPath === "PerformancePages/Reviews"  ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'Admin/PerformancePages/Overview' || readPath === "Admin/PerformancePages/Goals" || readPath === "Admin/PerformancePages/FeedBack" || readPath === "Admin/PerformancePages/Reviews"  ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Performance readPath={readPath}/>
                             <div>
-                                <Link href="/PerformancePages/Overview"><h4 className={`${readPath === 'PerformancePages/Overview' || readPath === "PerformancePages/Goals" || readPath === "PerformancePages/Reviews" || readPath === "PerformancePages/FeedBack" ? 'text-white' : 'text-limegray'} ` }>Performance</h4></Link>
+                                <Link href="/Admin/PerformancePages/Overview"><h4 className={`${readPath === 'Admin/PerformancePages/Overview' || readPath === "Admin/PerformancePages/Goals" || readPath === "Admin/PerformancePages/Reviews" || readPath === "Admin/PerformancePages/FeedBack" ? 'text-white' : 'text-limegray'} ` }>Performance</h4></Link>
                             </div>
                         </div>
                     </div>    
                     {/* Training */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'Training' || readPath === 'TrainingPages/OverviewTraining'  || readPath === 'TrainingPages/Feedback' || readPath === 'TrainingPages/Enrolment' || readPath === 'TrainingPages/Program'? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'Admin/Training' || readPath === 'Admin/TrainingPages/OverviewTraining'  || readPath === 'Admin/TrainingPages/Feedback' || readPath === 'Admin/TrainingPages/Enrolment' || readPath === 'Admin/TrainingPages/Program'? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Training readPath={readPath}/>
                             <div>
-                                <Link href="/TrainingPages/OverviewTraining"><h4 className={`${readPath === 'Training' || readPath === 'TrainingPages/OverviewTraining'  || readPath === 'TrainingPages/Feedback' || readPath === 'TrainingPages/Enrolment' || readPath === 'TrainingPages/Program'? 'text-white' : 'text-limegray'} ` }>Training</h4></Link>
+                                <Link href="/Admin/TrainingPages/OverviewTraining"><h4 className={`${readPath === 'Training' || readPath === 'Admin/TrainingPages/OverviewTraining'  || readPath === 'Admin/TrainingPages/Feedback' || readPath === 'Admin/TrainingPages/Enrolment' || readPath === 'Admin/TrainingPages/Program'? 'text-white' : 'text-limegray'} ` }>Training</h4></Link>
                             </div>
                         </div>
                     </div> 
@@ -122,7 +122,7 @@ const MainBody = ({ readPath }) => {
                 <section className='space-y-[1.5625rem] w-full  pl-[2.75rem] relative'> 
 
                     <div>
-                        <h4 className= {`${['assets', 'Announcement'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>OPERATION</h4>
+                        <h4 className= {`${['assets', 'Admin/Announcement'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>OPERATION</h4>
                     </div>
 
                     {/* Assets                    
@@ -141,11 +141,11 @@ const MainBody = ({ readPath }) => {
                     </div> */}
                     {/* Announcement */}
                     <div className='flex items-center' >
-                        <div className={`${readPath === 'Announcement' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${readPath === 'Admin/Announcement' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <Announcement readPath={readPath}/>
                             <div>
-                                <Link href="/Announcement"><h4 className={`${readPath === 'Announcement' ? 'text-white' : 'text-limegray'} ` }>Announcement</h4></Link>
+                                <Link href="/Admin/Announcement"><h4 className={`${readPath === 'Admin/Announcement' ? 'text-white' : 'text-limegray'} ` }>Announcement</h4></Link>
                             </div>
                         </div>
                     </div> 

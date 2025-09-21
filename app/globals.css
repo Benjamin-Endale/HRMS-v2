@@ -96,6 +96,10 @@ body {
     @apply bg-inputBack w-full h-[3.125rem] placeholder-input text-formColor rounded-[10px] pl-[1.1875rem]
   }
 
+  .OtpConfig{
+    @apply  border border-[rgba(29,32,21,1)] w-[4.125rem] h-[3.4375rem] rounded-[8px] bg-[rgba(29,32,21,1)]  focus:outline-none focus:border-lemongreen focus:ring-lemongreen
+  }
+  
   
   .inputModfile{
     @apply flex justify-center items-center border h-[3.125rem] w-full gap-[0.6875rem] bg-inputBack rounded-[10px] 

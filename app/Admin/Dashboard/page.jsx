@@ -1,5 +1,5 @@
 import React from 'react'
-import { ProgressDash } from '../Components/ProgressDash';
+import { ProgressDash } from '@/app/Components/ProgressDash';
 
 const page = () => {
 const departments = [
