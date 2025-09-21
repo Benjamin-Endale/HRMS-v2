@@ -94,32 +94,120 @@ namespace HRMS.Backend.Controllers
         {
             try
             {
-                var leave = await _context.Leaves.FindAsync(id);
+                var leave = await _context.Leaves
+                    .Include(l => l.Employee) // Include employee for credit update
+                    .FirstOrDefaultAsync(l => l.Id == id);
+
                 if (leave == null)
                     return NotFound(new { Message = "Leave request not found" });
 
                 if (dto.Status != "Approved" && dto.Status != "Rejected")
                     return BadRequest(new { Message = "Invalid status. Only 'Approved' or 'Rejected' allowed." });
 
+                //  Prevent re-approval/rejection
+                if (leave.Status == "Approved" || leave.Status == "Rejected")
+                    return BadRequest(new { Message = $"Leave request is already {leave.Status} and cannot be updated again." });
+
                 leave.Status = dto.Status;
                 leave.ManagerComment = dto.ManagerComment;
+                // Update the timestamp whenever the status changes
+                leave.UpdatedAt = DateTime.UtcNow;
+
+                // ------------------------
+                // Subtract leave days from credit if approved
+                // ------------------------
+                if (dto.Status == "Approved")
+                {
+                    if (leave.Employee.LeaveCredit < 0)
+                        leave.Employee.LeaveCredit = 0;
+
+                    var leaveDays = (leave.EndDate - leave.StartDate).Days + 1;
+
+                    if (leave.Employee.LeaveCredit < leaveDays)
+                        return BadRequest(new { Message = "Insufficient leave credit." });
+
+                    leave.Employee.LeaveCredit -= leaveDays;
+
+                }
 
                 _context.Leaves.Update(leave);
                 await _context.SaveChangesAsync();
 
+                // Calculate "before X hr"
+                string approvedAgo = string.Empty;
+                if (leave.UpdatedAt.HasValue)
+                {
+                    var hoursAgo = (DateTime.UtcNow - leave.UpdatedAt.Value).TotalHours;
+                    approvedAgo = $" (before {Math.Floor(hoursAgo)} hr)";
+                }
+
+                // Duration = EndDate - StartDate + 1 day
+                var duration = (leave.EndDate - leave.StartDate).Days + 1;
+
                 // Return updated counts
                 var totalRequests = await _context.Leaves.CountAsync();
+
+                // Count requests only for this employee
+                var totalEmployeeRequests = await _context.Leaves
+                    .CountAsync(l => l.EmployeeId == leave.EmployeeId);
+
+
+
                 var approvedRequests = await _context.Leaves.CountAsync(l => l.Status == "Approved");
-                //var rejectedRequests = await _context.Leaves.CountAsync(l => l.Status == "Rejected");
                 var pendingRequests = await _context.Leaves.CountAsync(l => l.Status == "Pending");
+
+
+                var leaveEmployeeportal = new {
+
+                    LeaveId = leave.Id,
+                    LeaveType = leave.LeaveType?.Name,
+                    Duration = duration,
+                    Date = leave.StartDate,
+                    Reason = leave.Reason,
+                    Status = leave.Status
+
+                };
+
+                // Prepare response
+                var leaveResponse = new
+                {
+                    LeaveId = leave.Id,
+                    EmployeeName = leave.Employee != null ? leave.Employee.FirstName + " " + leave.Employee.LastName : "Unknown",
+                    LeaveType = leave.LeaveType != null ? leave.LeaveType.Name : "N/A",
+                    Duration = leave.StartDate.ToString("yyyy-MM-dd") + " → " + leave.EndDate.ToString("yyyy-MM-dd"),
+                    Reason = leave.Reason ?? "N/A",
+                    Status = leave.Status
+
+                };
+                // Response
+                var leaveDashboard = new
+                {
+                    EmployeeName = leave.Employee != null
+                        ? leave.Employee.FirstName + " " + leave.Employee.LastName
+                        : "Unknown",
+                    Status = leave.Status,
+                    ApprovedAgoHr = leave.UpdatedAt.HasValue
+                        ? Math.Floor((DateTime.UtcNow - leave.UpdatedAt.Value).TotalHours) + " hr ago"
+                        : "N/A"
+                };
+
 
                 return Ok(new
                 {
                     Message = $"Leave request has been {dto.Status}",
                     TotalRequests = totalRequests,
                     PendingRequests = pendingRequests,
-                    ApprovedRequests = approvedRequests
-                    //RejectedRequests = rejectedRequests
+                    ApprovedRequests = approvedRequests,
+                    RemainingCredit = leave.Employee.LeaveCredit, // optional: show updated credit
+
+
+                    leaveEmployeeportal = leaveEmployeeportal,
+
+                    leaveResponse = leaveResponse,
+
+                    totalEmployeeRequests = totalEmployeeRequests,
+
+                    leaveDashboard = leaveDashboard
                 });
             }
             catch (Exception ex)
@@ -129,10 +217,48 @@ namespace HRMS.Backend.Controllers
         }
 
 
+
         //  SUBMIT LEAVE REQUEST
         [HttpPost]
         public async Task<IActionResult> SubmitLeaveRequest([FromBody] EmployeeLeaveRequestDto dto)
         {
+
+            
+
+
+            // Find employee with leave credit
+            var employee = await _context.Employees.FindAsync(dto.EmployeeId);
+            if (employee == null)
+                return NotFound(new { Message = "Employee not found." });
+
+            // Refresh leave credits if 1 year passed
+            if ((DateTime.UtcNow - employee.LastCreditUpdate).TotalDays >= 365)
+            {
+                employee.LeaveCredit += 20;
+                employee.LastCreditUpdate = DateTime.UtcNow;
+
+                // Optional: cap credit
+                if (employee.LeaveCredit > 40)
+                    employee.LeaveCredit = 40;
+
+                _context.Employees.Update(employee);
+                await _context.SaveChangesAsync();
+            }
+
+            // Calculate number of leave days
+            var leaveDays = (dto.EndDate - dto.StartDate).Days + 1;
+
+            // Check leave credit before proceeding
+            if (employee.LeaveCredit < leaveDays)
+            {
+                return BadRequest(new
+                {
+                    Message = "Insufficient leave credit.",
+                    AvailableCredit = employee.LeaveCredit,
+                    RequestedDays = leaveDays
+                });
+            }
+
             // Create new Leave object
             var leave = new Leave
             {
@@ -153,9 +279,17 @@ namespace HRMS.Backend.Controllers
             await _context.Entry(leave).Reference(l => l.Employee).LoadAsync();
             await _context.Entry(leave).Reference(l => l.LeaveType).LoadAsync();
 
+
+            // Calculate duration (end - start + 1)
+            var duration = (leave.EndDate - leave.StartDate).Days + 1;
+
             // Calculate updated counts
             var totalRequests = await _context.Leaves.CountAsync();
             var pendingRequests = await _context.Leaves.CountAsync(l => l.Status == "Pending");
+
+            // Count requests only for this employee
+            var totalEmployeeRequests = await _context.Leaves
+                .CountAsync(l => l.EmployeeId == leave.EmployeeId);
 
             // Prepare response
             var leaveResponse = new
@@ -169,14 +303,71 @@ namespace HRMS.Backend.Controllers
                 
             };
 
+
+            var leaveEmployeeportal = new
+            {
+
+                LeaveId = leave.Id,
+                LeaveType = leave.LeaveType?.Name,
+                Duration = duration,
+                Date = leave.StartDate,
+                Reason = leave.Reason,
+                Status = leave.Status
+
+            };
+
             return Ok(new
             {
                 Message = "Leave request submitted successfully",
                 Leave = leaveResponse,
                 TotalRequests = totalRequests,
-                PendingRequests = pendingRequests
+                PendingRequests = pendingRequests,
+
+                leaveEmployeeportal = leaveEmployeeportal,
+
+                totalEmployeeRequests = totalEmployeeRequests
+
+
             });
         }
+
+        [HttpGet("requests/employee")] // For leave requests of a single employee
+        public async Task<ActionResult<IEnumerable<LeaveRequestDto>>> GetEmployeeLeaveRequests(int employeeId)
+        { 
+            var leaves = await _context.Leaves
+                .Include(l => l.Employee)
+                .Select(l => new
+                {
+                    EmployeeName = l.Employee != null
+                        ? l.Employee.FirstName + " " + l.Employee.LastName
+                        : "Unknown",
+                    Status = l.Status ?? "Pending",
+                    UpdatedAt = l.UpdatedAt,
+                    ApprovedAgoHr = l.UpdatedAt.HasValue
+                        ? $"{Math.Floor((DateTime.UtcNow - l.UpdatedAt.Value).TotalHours)}"
+                        : "N/A"
+                })
+                .ToListAsync();
+
+            return Ok(leaves);
+        }
+
+
+        // DELETE: api/leave/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLeaveRequest(Guid id)
+        {
+            var leave = await _context.Leaves.FindAsync(id);
+            if (leave == null)
+                return NotFound(new { Message = "Leave request not found." });
+
+            _context.Leaves.Remove(leave);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Leave request deleted successfully." });
+        }
+
+
 
     }
 }

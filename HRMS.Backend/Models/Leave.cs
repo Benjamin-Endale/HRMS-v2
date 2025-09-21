@@ -43,5 +43,9 @@ namespace HRMS.Backend.Models
 
         [Column("manager_comment")]
         public string? ManagerComment { get; set; }
+
+
+        public DateTime? UpdatedAt { get; set; }
+
     }
 }

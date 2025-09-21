@@ -67,6 +67,14 @@ namespace HRMS.Backend.Controllers
                     announcement.Destination,
                     announcement.Announcementcontent
                 },
+                Announcementemployee = new
+                {
+                    announcement.Id,
+                    announcement.Title,
+                    announcement.Categories,
+                    announcement.CreatedAt,
+                    announcement.Announcementcontent
+                },
                 TotalAnnouncements = totalAnnouncements,
                 CurrentAnnouncements = currentAnnouncements,
                 ReachPercentage = reachPercent
@@ -129,7 +137,43 @@ namespace HRMS.Backend.Controllers
             _context.Announcements.Update(announcement);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Announcement updated successfully" });
+
+            // ============ Extra Information ============
+            var totalAnnouncements = await _context.Announcements.CountAsync();
+
+            var now = DateTime.UtcNow;
+            var currentAnnouncements = await _context.Announcements
+                .Where(a => a.IsActive && (a.ExpiryDate == null || a.ExpiryDate >= now))
+                .CountAsync();
+
+            // Calculate reach percentage safely
+            double reachPercent = totalAnnouncements > 0
+                ? Math.Round(((double)currentAnnouncements / totalAnnouncements) * 100, 2)
+                : 0;
+
+            return Ok(new
+            {
+                Message = "Announcement Updated successfully!",
+                Announcement = new
+                {
+                    announcement.Id,
+                    announcement.Title,
+                    announcement.Categories,
+                    announcement.Destination,
+                    announcement.Announcementcontent
+                },
+                Announcementemployee = new
+                {
+                    announcement.Id,
+                    announcement.Title,
+                    announcement.Categories,
+                    announcement.CreatedAt,
+                    announcement.Announcementcontent
+                },
+                TotalAnnouncements = totalAnnouncements,
+                CurrentAnnouncements = currentAnnouncements,
+                ReachPercentage = reachPercent
+            });
         }
 
         // =====================================================
@@ -172,35 +216,35 @@ namespace HRMS.Backend.Controllers
             return Ok(categories);
         }
 
-        // ===========================================
-        // GET: api/Announcement/search?category=HR
-        // ===========================================
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<object>>> SearchAnnouncementsByCategory([FromQuery] string category)
-        {
-            // Validate the input
-            if (string.IsNullOrWhiteSpace(category))
-                return BadRequest(new { message = "Category is required." });
+        //// ===========================================
+        //// GET: api/Announcement/search?category=HR
+        //// ===========================================
+        //[HttpGet("search")]
+        //public async Task<ActionResult<IEnumerable<object>>> SearchAnnouncementsByCategory([FromQuery] string category)
+        //{
+        //    // Validate the input
+        //    if (string.IsNullOrWhiteSpace(category))
+        //        return BadRequest(new { message = "Category is required." });
 
-            // Search announcements by category (case-insensitive)
-            var announcements = await _context.Announcements
-                .Where(a => a.Categories.ToLower().Contains(category.ToLower()))
-                .OrderByDescending(a => a.CreatedAt)
-                .Select(a => new
-                {
-                    id = a.Id,
-                    title = a.Title,
-                    categories = a.Categories,
-                    destination = a.Destination,
-                    announcementcontent = a.Announcementcontent
-                })
-                .ToListAsync();
+        //    // Search announcements by category (case-insensitive)
+        //    var announcements = await _context.Announcements
+        //        .Where(a => a.Categories.ToLower().Contains(category.ToLower()))
+        //        .OrderByDescending(a => a.CreatedAt)
+        //        .Select(a => new
+        //        {
+        //            id = a.Id,
+        //            title = a.Title,
+        //            categories = a.Categories,
+        //            destination = a.Destination,
+        //            announcementcontent = a.Announcementcontent
+        //        })
+        //        .ToListAsync();
 
-            if (!announcements.Any())
-                return NotFound(new { message = $"No announcements found for category '{category}'." });
+        //    if (!announcements.Any())
+        //        return NotFound(new { message = $"No announcements found for category '{category}'." });
 
-            return Ok(announcements);
-        }
+        //    return Ok(announcements);
+        //}
 
 
 
@@ -219,5 +263,38 @@ namespace HRMS.Backend.Controllers
 
             return Ok(new { message = "Announcement deleted successfully" });
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchAnnouncements([FromQuery] string? title, [FromQuery] string? Categories)
+        {
+            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(Categories))
+                return BadRequest(new { message = "Provide at least a title or category to search." });
+
+            var query = _context.Announcements.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(title))
+                query = query.Where(a => a.Title.Contains(title));
+
+            if (!string.IsNullOrWhiteSpace(Categories))
+                query = query.Where(a => a.Categories.Contains(Categories));
+
+            var results = await query
+                .Select(a => new
+                {
+                    a.Id,
+                    a.Title,
+                    a.Categories,
+                    a.Announcementcontent,
+                    a.DepartmentID,
+                    a.CreatedAt
+                })
+                .ToListAsync();
+
+            if (!results.Any())
+                return NotFound(new { message = "No announcements found for the given criteria." });
+
+            return Ok(results);
+        }
+
     }
 }

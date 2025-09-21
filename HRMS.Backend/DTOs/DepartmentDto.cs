@@ -41,7 +41,7 @@ namespace HRMS.Backend.DTOs
 
         [Required] public Guid DepartmentHeadId { get; set; }
 
-        public int InitialEmployeeCount { get; set; }
+        public int? InitialEmployeeCount { get; set; }
         public Guid? ParentDepartmentId { get; set; }
         public string? Description { get; set; }
     }

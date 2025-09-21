@@ -1,0 +1,31 @@
+# Ignore build outputs
+bin/
+obj/
+out/
+
+# Ignore user-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore logs
+*.log
+
+# Ignore Visual Studio generated files
+.vs/
+
+# Ignore NuGet packages
+*.nupkg
+*.snupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+# Ignore generated EF migrations backup
+Migrations/obj/
+
+# Ignore system files
+[Dd]esktop.ini
+[Tt]humbs.db

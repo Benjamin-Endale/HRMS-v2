@@ -134,6 +134,11 @@ namespace HRMS.Backend.Models
         [Column("terminated_date")]
         public DateTime? TerminatedDate { get; set; }
 
+        [Column("leave_credit")]
+        public decimal LeaveCredit { get; set; } = 20; // default 20 days
+        public DateTime LastCreditUpdate { get; set; } = DateTime.UtcNow;
+
+
         // Navs
         public Tenant Tenant { get; set; } = null!;
         public Organization Organization { get; set; } = null!;

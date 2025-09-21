@@ -4,6 +4,7 @@ using HRMS.Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRMS.Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250918133620_AddGoalProcessColumn")]
+    partial class AddGoalProcessColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -620,34 +623,6 @@ namespace HRMS.Backend.Migrations
                     b.ToTable("employee_roles", (string)null);
                 });
 
-            modelBuilder.Entity("HRMS.Backend.Models.FeedbackResponse", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Feedback")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("feedback");
-
-                    b.Property<Guid>("RequestFeedbackId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ReviewerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("SubmittedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RequestFeedbackId");
-
-                    b.HasIndex("ReviewerId");
-
-                    b.ToTable("FeedbackResponses");
-                });
-
             modelBuilder.Entity("HRMS.Backend.Models.Goal", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1180,9 +1155,6 @@ namespace HRMS.Backend.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.Property<Guid?>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1200,8 +1172,6 @@ namespace HRMS.Backend.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("EmployeeId");
 
@@ -1801,12 +1771,6 @@ namespace HRMS.Backend.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("organization_id");
 
-                    b.Property<string>("OtpCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("OtpExpiryUtc")
-                        .HasColumnType("datetime2");
-
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("varbinary(max)")
@@ -2088,25 +2052,6 @@ namespace HRMS.Backend.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("HRMS.Backend.Models.FeedbackResponse", b =>
-                {
-                    b.HasOne("HRMS.Backend.Models.RequestFeedback", "RequestFeedback")
-                        .WithMany("FeedbackResponses")
-                        .HasForeignKey("RequestFeedbackId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HRMS.Backend.Models.Employee", "Reviewer")
-                        .WithMany()
-                        .HasForeignKey("ReviewerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("RequestFeedback");
-
-                    b.Navigation("Reviewer");
-                });
-
             modelBuilder.Entity("HRMS.Backend.Models.Goal", b =>
                 {
                     b.HasOne("HRMS.Backend.Models.Employee", "Employee")
@@ -2279,17 +2224,11 @@ namespace HRMS.Backend.Migrations
 
             modelBuilder.Entity("HRMS.Backend.Models.RequestFeedback", b =>
                 {
-                    b.HasOne("HRMS.Backend.Models.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
                     b.HasOne("HRMS.Backend.Models.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Department");
 
                     b.Navigation("Employee");
                 });
@@ -2459,11 +2398,6 @@ namespace HRMS.Backend.Migrations
                     b.Navigation("Employees");
 
                     b.Navigation("LeaveTypes");
-                });
-
-            modelBuilder.Entity("HRMS.Backend.Models.RequestFeedback", b =>
-                {
-                    b.Navigation("FeedbackResponses");
                 });
 
             modelBuilder.Entity("HRMS.Backend.Models.Role", b =>

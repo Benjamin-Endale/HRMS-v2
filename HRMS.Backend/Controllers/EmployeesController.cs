@@ -8,9 +8,14 @@ using HRMS.Backend.DTOs;
 using HRMS.Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
+
 
 namespace HRMS.Backend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/employees")]
     [Produces("application/json")]
@@ -19,10 +24,37 @@ namespace HRMS.Backend.Controllers
         private readonly AppDbContext _context;
         public EmployeesController(AppDbContext context) => _context = context;
 
+        [HttpGet("claims-test")]
+        [Authorize]
+        public IActionResult ClaimsTest()
+        {
+            return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
+        }
+
         // POST: api/employees
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] EmployeeCreateDto dto)
         {
+
+
+
+            // Check if the tenant exists in the database
+            var tenant = await _context.Tenants
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == dto.TenantId);
+
+            if (tenant == null)
+                return BadRequest("The specified tenant does not exist.");
+
+            // Optional: check if tenant allows employee management
+            if (!tenant.EmployeeManagement)
+                return StatusCode(403, new { message = "This tenant is not allowed to manage employees." });
+
+            // Check if the tenantId matches the Employee's tenant (sanity check)
+            if (dto.TenantId != tenant.Id)
+                return BadRequest("Tenant ID mismatch.");
+
+
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
             // Basic FK existence checks
@@ -101,6 +133,7 @@ namespace HRMS.Backend.Controllers
                 CustomFields = string.IsNullOrWhiteSpace(dto.CustomFields) ? "{}" : dto.CustomFields,
                 BenefitsEnrollment = dto.BenefitsEnrollment,
                 ShiftDetails = dto.ShiftDetails,
+                LeaveCredit = dto.LeaveCredit,
 
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -387,5 +420,6 @@ namespace HRMS.Backend.Controllers
 
             return candidate;
         }
+
     }
 }

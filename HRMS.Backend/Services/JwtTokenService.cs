@@ -44,6 +44,7 @@ namespace HRMS.Backend.Services
                 new Claim("org_id", user.OrganizationId?.ToString() ?? string.Empty),
                 new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
                 new Claim(ClaimTypes.Role, user.Role ?? "User")
+
             };
 
             var credentials = new SigningCredentials(

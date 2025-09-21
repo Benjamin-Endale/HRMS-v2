@@ -39,13 +39,34 @@ namespace HRMS.Backend.Data
         public DbSet<OrgSetting> OrgSettings => Set<OrgSetting>();
 
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+        public DbSet<FeedbackResponse> FeedbackResponses => Set<FeedbackResponse>();
 
 
         protected override void OnModelCreating(ModelBuilder model)
         {
             base.OnModelCreating(model);
 
-       
+
+            // RequestFeedback → Employee (keep cascade)
+            model.Entity<RequestFeedback>()
+                .HasOne(r => r.Employee)
+                .WithMany()
+                .HasForeignKey(r => r.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // FeedbackResponse → Reviewer (disable cascade to avoid conflict)
+            model.Entity<FeedbackResponse>()
+                .HasOne(f => f.Reviewer)
+                .WithMany()
+                .HasForeignKey(f => f.ReviewerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // FeedbackResponse → RequestFeedback (cascade is fine here)
+            model.Entity<FeedbackResponse>()
+                .HasOne(f => f.RequestFeedback)
+                .WithMany(r => r.FeedbackResponses)
+                .HasForeignKey(f => f.RequestFeedbackId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             /* ===== TENANTS ===== */
             model.Entity<Tenant>(e =>

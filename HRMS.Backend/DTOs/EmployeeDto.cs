@@ -45,6 +45,7 @@ namespace HRMS.Backend.DTOs
         [Required] public string CustomFields { get; set; } = "{}";
         public string? BenefitsEnrollment { get; set; }
         public string? ShiftDetails { get; set; }
+        public decimal LeaveCredit { get; set; } = 20;
     }
     public sealed class EmployeeUpdateDto
     {
@@ -84,6 +85,7 @@ namespace HRMS.Backend.DTOs
         [Required] public string CustomFields { get; set; } = "{}";
         public string? BenefitsEnrollment { get; set; }
         public string? ShiftDetails { get; set; }
+        
     }
 
     public class EmployeeListDto
@@ -92,11 +94,11 @@ namespace HRMS.Backend.DTOs
         public Guid TenantId { get; set; }
         public Guid OrganizationId { get; set; }
         public Guid? DepartmentId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string EmployeeCode { get; set; }
-        public string JobTitle { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Email { get; set; }
+        public string? EmployeeCode { get; set; }
+        public string? JobTitle { get; set; }
     }
 
     public class EmployeeDetailDto
@@ -105,10 +107,10 @@ namespace HRMS.Backend.DTOs
         public Guid TenantId { get; set; }
         public Guid OrganizationId { get; set; }
         public Guid? DepartmentId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string EmployeeCode { get; set; }
-        public string JobTitle { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Email { get; set; }
+        public string? EmployeeCode { get; set; }
+        public string? JobTitle { get; set; }
     }
 }

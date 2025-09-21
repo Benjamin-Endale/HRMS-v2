@@ -24,8 +24,8 @@ namespace HRMS.Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (dto.ApplicantId == Guid.Empty)
-                return BadRequest(new { message = "ApplicantId is required." });
+            if (dto.ShortlistId == Guid.Empty)
+                return BadRequest(new { message = "ShortlistId is required." });
 
             if (string.IsNullOrWhiteSpace(dto.Type))
                 return BadRequest(new { message = "Interview Type is required." });
@@ -36,8 +36,9 @@ namespace HRMS.Backend.Controllers
             var interview = new Interview
             {
                 Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
-                ApplicantId = dto.ApplicantId,
+                ShortlistId = dto.ShortlistId,
                 InterviewerId = dto.InterviewerId,
+
                 Mode = dto.Type,
                 ScheduledDate = dto.ScheduledDate,
                 LocationUrl = dto.LocationUrl,
@@ -58,13 +59,13 @@ namespace HRMS.Backend.Controllers
 
             // Return latest scheduled interview with selected details
             var latestInterview = await _context.Interviews
-                .Include(i => i.Applicant)
+                .Include(i => i.Shortlist)
                 .Include(i => i.Interviewer)
                 .Where(i => i.Id == interview.Id)
                 .Select(i => new
                 {
-                    i.Applicant.Name,
-                    i.Applicant.Appliedfor,
+                    ShortlistName = i.Shortlist != null ? i.Shortlist.Name : "Unknown",
+                    ShortlistPosition = i.Shortlist != null ? i.Shortlist.position : "N/A",
                     InterviewerName = i.Interviewer != null
                         ? i.Interviewer.FirstName + " " + i.Interviewer.LastName
                         : "Not Assigned",
@@ -87,11 +88,13 @@ namespace HRMS.Backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> EditInterview(Guid id, [FromBody] InterviewDTO dto)
         {
-            var interview = await _context.Interviews.FindAsync(id);
-            if (interview == null)
-                return NotFound(new { message = "Interview not found" });
+            var exists = await _context.Interviews.AnyAsync(i => i.Id == id);
+            if (!exists)
+                return NotFound(new { message = $"Interview with Id {id} not found" });
 
-            interview.InterviewerId = dto.InterviewerId;
+            var interview = await _context.Interviews.FindAsync(id);
+
+            interview!.InterviewerId = dto.InterviewerId;
             interview.Mode = dto.Type;
             interview.ScheduledDate = dto.ScheduledDate;
             interview.LocationUrl = dto.LocationUrl;
@@ -104,6 +107,7 @@ namespace HRMS.Backend.Controllers
 
             return Ok(new { message = "Interview updated successfully." });
         }
+
 
         //  3. Delete Interview
         [HttpDelete("{id}")]
@@ -119,48 +123,48 @@ namespace HRMS.Backend.Controllers
             return Ok(new { message = "Interview deleted successfully." });
         }
 
-        //  4. Get All Interviews
-        [HttpGet]
-        public async Task<IActionResult> GetAllInterviews()
-        {
-            var interviews = await _context.Interviews
-                .Include(i => i.Applicant)
-                .Include(i => i.Interviewer)
-                .Select(i => new InterviewDTO
-                {
-                    Id = i.Id,
-                    ApplicantId = i.ApplicantId,
-                    ApplicantName = i.Applicant.Name,
-                    Position = i.Applicant.Appliedfor,
-                    InterviewerId = i.InterviewerId,
-                    InterviewerName = i.Interviewer != null
-                        ? i.Interviewer.FirstName + " " + i.Interviewer.LastName
-                        : "Not Assigned",
-                    Type = i.Mode,
-                    Status = i.Status,
-                    ScheduledDate = i.ScheduledDate,
-                    LocationUrl = i.LocationUrl,
-                    MeetingUrl = i.MeetingUrl,
-                    InterviewNote = i.InterviewNote
-                }).ToListAsync();
+        ////  4. Get All Interviews
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllInterviews()
+        //{
+        //    var interviews = await _context.Interviews
+        //        .Include(i => i.Applicant)
+        //        .Include(i => i.Interviewer)
+        //        .Select(i => new InterviewDTO
+        //        {
+        //            Id = i.Id,
+        //            ApplicantId = i.ApplicantId,
+        //            ApplicantName = i.Applicant.Name,
+        //            Position = i.Applicant.Appliedfor,
+        //            InterviewerId = i.InterviewerId,
+        //            InterviewerName = i.Interviewer != null
+        //                ? i.Interviewer.FirstName + " " + i.Interviewer.LastName
+        //                : "Not Assigned",
+        //            Type = i.Mode,
+        //            Status = i.Status,
+        //            ScheduledDate = i.ScheduledDate,
+        //            LocationUrl = i.LocationUrl,
+        //            MeetingUrl = i.MeetingUrl,
+        //            InterviewNote = i.InterviewNote
+        //        }).ToListAsync();
 
-            return Ok(interviews);
-        }
+        //    return Ok(interviews);
+        //}
 
-        // 5. Get Today's Interviews Count
-        [HttpGet("today/count")]
-        public async Task<IActionResult> GetTodayInterviewsCount()
-        {
-            var today = DateTime.UtcNow.Date;
+        //// 5. Get Today's Interviews Count
+        //[HttpGet("today/count")]
+        //public async Task<IActionResult> GetTodayInterviewsCount()
+        //{
+        //    var today = DateTime.UtcNow.Date;
 
-            var count = await _context.Interviews
-                .Where(i => i.ScheduledDate.HasValue && i.ScheduledDate.Value.Date == today)
-                .CountAsync();
+        //    var count = await _context.Interviews
+        //        .Where(i => i.ScheduledDate.HasValue && i.ScheduledDate.Value.Date == today)
+        //        .CountAsync();
 
-            return Ok(new
-            {
-                Message = $"Today's Interviews Count = {count}"
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        Message = $"Today's Interviews Count = {count}"
+        //    });
+        //}
     }
 }

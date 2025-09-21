@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using System.Text;
 using HRMS.Backend.Data;
 using HRMS.Backend.Services;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,11 @@ builder.Services.AddCors(options =>
 // Controllers & OpenAPI
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Register EmailService
+builder.Services.AddSingleton<EmailService>();
 
 // DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -53,6 +59,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+
 
 builder.Services.AddAuthorization();
 
@@ -91,6 +98,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.UseHttpsRedirection();
 
 // CORS must run before auth/authorization and before MapControllers
@@ -99,7 +109,10 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
+
 app.MapControllers();
+
+
 
 // (Optional sample endpoint)
 var summaries = new[]

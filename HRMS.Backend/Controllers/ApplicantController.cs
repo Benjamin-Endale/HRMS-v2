@@ -55,17 +55,27 @@ namespace HRMS.Backend.Controllers
             _context.Applicants.Add(applicant);
             await _context.SaveChangesAsync();
 
+            var totalApplicant = await _context.Applicants.CountAsync();
+
             // Return display-like JSON
             var displayJson = new
             {
-                applicant.Name,
+                applicant.Id,
                 applicant.Fordepartment,
                 applicant.ContactInformation,
                 applicant.Appliedfor,
                 ApplicationsSubmittedDate = applicant.CreatedAt
             };
 
-            return Ok(displayJson);
+            var ApplicantJson = new
+            {
+                displayJson = displayJson,
+                totalApplicant = totalApplicant
+
+
+            };
+
+            return Ok(ApplicantJson);
         }
 
 
@@ -199,5 +209,49 @@ namespace HRMS.Backend.Controllers
             var total = await _context.Applicants.CountAsync();
             return Ok(new { TotalApplicants = total });
         }
+
+        // GET: api/applicants/search
+        [HttpGet("search")]
+        public async Task<IActionResult> GetApplicantsByNameAndPosition(
+            [FromQuery] string? name,
+            [FromQuery] string? position)
+        {
+            if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(position))
+                return BadRequest("Provide either a name or a position.");
+
+            var query = _context.Applicants.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                var nameLower = name.Trim().ToLower();
+                query = query.Where(a =>
+                    (a.Name ?? "").ToLower().Contains(nameLower));
+            }
+
+            if (!string.IsNullOrWhiteSpace(position))
+            {
+                var posLower = position.Trim().ToLower();
+                query = query.Where(a =>
+                    !string.IsNullOrEmpty(a.Appliedfor) && a.Appliedfor.ToLower().Contains(posLower));
+            }
+
+            var applicants = await query
+                .Select(a => new
+                {
+                    a.Id,
+                    a.Fordepartment,
+                    a.ContactInformation,
+                    a.Appliedfor,
+                    ApplicationsSubmittedDate = a.CreatedAt
+                })
+                .ToListAsync();
+
+            if (!applicants.Any())
+                return NotFound("No applicants found for the given criteria.");
+
+            return Ok(applicants);
+        }
+
+
     }
 }

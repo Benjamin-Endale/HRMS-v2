@@ -31,5 +31,7 @@ namespace HRMS.Backend.DTOs
 
         [Required]
         public string Description { get; set; } = string.Empty;
+
+        public int GoalProcess { get; set; } = 0;
     }
 }

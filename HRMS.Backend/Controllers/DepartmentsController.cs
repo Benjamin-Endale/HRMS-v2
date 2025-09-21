@@ -156,7 +156,9 @@ namespace HRMS.Backend.Controllers
                 DepartmentName = dto.DepartmentName.Trim(),
                 DepartmentCode = deptCode,
                 DepartmentHeadId = dto.DepartmentHeadId, // may be null
-                InitialEmployeeCount = dto.InitialEmployeeCount,
+                InitialEmployeeCount = dto.ParentDepartmentId == null || dto.ParentDepartmentId == Guid.Empty
+                    ? dto.InitialEmployeeCount   // only for main departments
+                    : null,
                 ParentDepartmentId = dto.ParentDepartmentId
             };
 
@@ -177,11 +179,75 @@ namespace HRMS.Backend.Controllers
                         .FirstOrDefaultAsync()) ?? string.Empty
                     : string.Empty,
                 DepartmentCode = department.DepartmentCode,
-                InitialEmployeeCount = department.InitialEmployeeCount,
+                InitialEmployeeCount = dto.ParentDepartmentId == null || dto.ParentDepartmentId == Guid.Empty
+                    ? dto.InitialEmployeeCount   // only for main departments
+                    : null,
                 ParentDepartmentId = department.ParentDepartmentId
             };
 
-            return CreatedAtAction(nameof(GetDepartmentById), new { id = department.Id }, created);
+            //return CreatedAtAction(nameof(GetDepartmentById), new { id = department.Id }, created);
+            // ============================
+            // NEW: EXTRA RESPONSE DATA
+            // ============================
+            if (dto.ParentDepartmentId == null || dto.ParentDepartmentId == Guid.Empty)
+            {
+                // MAIN DEPARTMENT CREATED
+
+                // Get all sub-department IDs recursively
+                var allDeptIds = await GetAllSubDepartmentIds(department.Id);
+                allDeptIds.Add(department.Id);
+
+                // Total employees under department & sub-departments
+                var totalEmployees = await _context.Employees
+                    .CountAsync(e => e.DepartmentId.HasValue && allDeptIds.Contains(e.DepartmentId.Value));
+
+                // New hires in the last 30 days
+                var newHires = await _context.Employees
+                    .Where(e => e.DepartmentId.HasValue &&
+                                allDeptIds.Contains(e.DepartmentId.Value) &&
+                                e.HireDate >= DateTime.UtcNow.AddDays(-30))
+                    .Select(e => new
+                    {
+                        EmployeeName = (e.FirstName + " " + e.LastName).Trim(),
+                        e.JobTitle,
+                        e.PhoneNumber,
+                        e.HireDate
+                    })
+                    .ToListAsync();
+
+
+                return Ok(new
+                {
+                    message = "Main department created successfully",
+                    Id = department.Id,
+                    departmentName = department.DepartmentName,
+                    departmentHeadName = created.DepartmentHeadName ?? "No Head Assigned",
+                    totalEmployees = totalEmployees,
+                    newHires = newHires
+                });
+
+            }
+            else
+            {
+                // SUB-DEPARTMENT CREATED
+                var employees = await _context.Employees
+                    .Where(e => e.DepartmentId == department.Id)
+                    .Select(e => new
+                    {
+                        EmployeeName = (e.FirstName + " " + e.LastName).Trim(),
+                        Position = e.JobTitle,                     // alias JobTitle as Position
+                        DepartmentName = e.Department!.DepartmentName, // navigation property
+                        e.PhoneNumber
+                    })
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    message = "Sub-department created successfully",
+                    subDepartment = created.DepartmentName,
+                    employees = employees
+                });
+            }
         }
 
         // PUT: api/departments/{id}
@@ -259,11 +325,54 @@ namespace HRMS.Backend.Controllers
             existing.DepartmentName = dto.DepartmentName.Trim();
             existing.DepartmentHeadId = dto.DepartmentHeadId; // may be null now
             existing.DepartmentCode = deptCode;
-            existing.InitialEmployeeCount = dto.InitialEmployeeCount;
+
+
+            // Only allow InitialEmployeeCount for main departments
+            if (existing.ParentDepartmentId != null && existing.ParentDepartmentId != Guid.Empty && dto.InitialEmployeeCount.HasValue)
+            {
+                return BadRequest(new
+                {
+                    message = "Sub-departments cannot have an initial employee count. It will always be null."
+                });
+            }
+
+            // Only allow InitialEmployeeCount for main departments
+            existing.InitialEmployeeCount = existing.ParentDepartmentId == null || existing.ParentDepartmentId == Guid.Empty
+                ? dto.InitialEmployeeCount   // main department can be updated
+                : null;                      // sub-department must always be null
             existing.ParentDepartmentId = dto.ParentDepartmentId;
 
             await _context.SaveChangesAsync();
-            return NoContent();
+            // ============================
+            // EXTRA RESPONSE DATA
+            // ============================
+            var allDeptIds = await GetAllSubDepartmentIds(existing.Id);
+            allDeptIds.Add(existing.Id);
+
+            var totalEmployees = await _context.Employees
+                .CountAsync(e => e.DepartmentId.HasValue && allDeptIds.Contains(e.DepartmentId.Value));
+
+            var newHires = await _context.Employees
+                .Where(e => e.DepartmentId.HasValue &&
+                            allDeptIds.Contains(e.DepartmentId.Value) &&
+                            e.HireDate >= DateTime.UtcNow.AddDays(-30))
+                .Select(e => new
+                {
+                    EmployeeName = (e.FirstName + " " + e.LastName).Trim(),
+                    Position = e.JobTitle,
+                    e.PhoneNumber,
+                    e.HireDate
+                })
+                .ToListAsync();
+
+            return Ok(new
+            {
+                message = "Department updated successfully",
+                departmentId = existing.Id,
+                departmentName = existing.DepartmentName,
+                totalEmployees = totalEmployees,
+                newHires = newHires
+            });
         }
 
         // DELETE: api/departments/{id}
@@ -301,6 +410,196 @@ namespace HRMS.Backend.Controllers
 
             return candidate;
         }
+
+        // ===================================
+        // Recursive Get All Sub-Department IDs
+        // ===================================
+        private async Task<List<Guid>> GetAllSubDepartmentIds(Guid parentId)
+        {
+            var subDepartments = await _context.Departments
+                .Where(d => d.ParentDepartmentId == parentId)
+                .Select(d => d.Id)
+                .ToListAsync();
+
+            var allIds = new List<Guid>(subDepartments);
+
+            foreach (var subId in subDepartments)
+            {
+                var childIds = await GetAllSubDepartmentIds(subId);
+                allIds.AddRange(childIds);
+            }
+
+            return allIds;
+        }
+
+
+        //List of department names
+        [HttpGet("all-department-names")]
+        public async Task<IActionResult> GetAllDepartmentNames()
+        {
+            var departmentNames = await _context.Departments
+                .Select(d => d.DepartmentName)
+                .ToListAsync();
+
+            return Ok(departmentNames);
+        }
+
+        //List of subdepartment 
+        [HttpGet("subdepartment-names")]
+        public async Task<IActionResult> GetAllSubDepartmentNames()
+        {
+            var subDepartmentNames = await _context.Departments
+                .Where(d => d.ParentDepartmentId != null)
+                .Select(d => d.DepartmentName)
+                .ToListAsync();
+
+            return Ok(subDepartmentNames);
+        }
+
+
+        //// GET: api/departments/employees-by-department?name=DepartmentName
+        //[HttpGet("employees-by-department")]
+        //public async Task<IActionResult> GetEmployeesByDepartmentName(string name)
+        //{
+        //    // Find the department by name
+        //    var department = await _context.Departments
+        //        .FirstOrDefaultAsync(d => d.DepartmentName == name /*&& d.ParentDepartmentId == null*/);
+
+        //    if (department == null)
+        //        return NotFound($"Department '{name}' not found.");
+
+        //    // Get employees in this main department
+        //    var employees = await _context.Employees
+        //        .Where(e => e.DepartmentId == department.Id)
+        //        .Select(e => new
+        //        {
+        //            e.EmployeeID,
+        //            EmployeeName = (e.FirstName + " " + e.LastName).Trim(),
+        //            e.JobTitle,
+        //            DepartmentName = department.DepartmentName,
+        //            e.PhoneNumber
+        //        })
+        //        .ToListAsync();
+
+        //    return Ok(employees);
+        //}
+
+        //// GET: api/departments/employees-by-subdepartment?name=SubDepartmentName
+        //[HttpGet("employees-by-subdepartment")]
+        //public async Task<IActionResult> GetEmployeesBySubDepartmentName(string name)
+        //{
+        //    // Find the subdepartment by name
+        //    var subDepartment = await _context.Departments
+        //        .FirstOrDefaultAsync(d => d.DepartmentName == name && d.ParentDepartmentId != null);
+
+        //    if (subDepartment == null)
+        //        return NotFound($"Subdepartment '{name}' not found.");
+
+        //    // Get employees in this subdepartment
+        //    var employees = await _context.Employees
+        //        .Where(e => e.DepartmentId == subDepartment.Id)
+        //        .Select(e => new
+        //        {
+        //            e.EmployeeID,
+        //            EmployeeName = (e.FirstName + " " + e.LastName).Trim(),
+        //            e.JobTitle,
+        //            DepartmentName = subDepartment.DepartmentName,
+        //            e.PhoneNumber
+        //        })
+        //        .ToListAsync();
+
+        //    return Ok(employees);
+        //}
+
+        // GET: api/departments/employees/search
+        [HttpGet("employees/search")]
+        public async Task<IActionResult> GetEmployeesByNameAndDepartment([FromQuery] string? employeeName, [FromQuery] string? departmentName)
+        {
+            if (string.IsNullOrWhiteSpace(employeeName) && string.IsNullOrWhiteSpace(departmentName))
+                return BadRequest("Provide either an employee name or a department name.");
+
+            var query = _context.Employees.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(employeeName))
+            {
+                var nameLower = employeeName.Trim().ToLower();
+                query = query.Where(e =>
+                    (e.FirstName + " " + e.LastName).ToLower().Contains(nameLower));
+            }
+
+            if (!string.IsNullOrWhiteSpace(departmentName))
+            {
+                var deptLower = departmentName.Trim().ToLower();
+                query = query.Where(e =>
+                    e.Department != null &&
+                    e.Department.DepartmentName.ToLower().Contains(deptLower));
+            }
+
+            var employees = await query
+                .Select(e => new
+                {
+                    e.EmployeeID,
+                    EmployeeName = (e.FirstName + " " + e.LastName).Trim(),
+                    e.JobTitle,
+                    DepartmentName = e.Department != null ? e.Department.DepartmentName : "N/A",
+                    e.PhoneNumber
+                })
+                .ToListAsync();
+
+            if (!employees.Any())
+                return NotFound("No employees found for the given criteria.");
+
+            return Ok(employees);
+        }
+
+        // GET: api/departments/employees/sub/search
+        [HttpGet("employees/sub/search")]
+        public async Task<IActionResult> GetEmployeesByNameAndSubDepartment([FromQuery] string? employeeName, [FromQuery] string? subDepartmentName)
+        {
+            if (string.IsNullOrWhiteSpace(employeeName) && string.IsNullOrWhiteSpace(subDepartmentName))
+                return BadRequest("Provide either an employee name or a sub-department name.");
+
+            var query = _context.Employees
+                .Include(e => e.Department)  // ensure navigation property is loaded
+                .Where(e => e.Department != null && e.Department.ParentDepartmentId != null); // only sub-departments
+
+            if (!string.IsNullOrWhiteSpace(employeeName))
+            {
+                var nameLower = employeeName.Trim().ToLower();
+                query = query.Where(e => (e.FirstName + " " + e.LastName).ToLower().Contains(nameLower));
+            }
+
+            if (!string.IsNullOrWhiteSpace(subDepartmentName))
+            {
+                var deptLower = subDepartmentName.Trim().ToLower();
+                query = query.Where(e => e.Department.DepartmentName.ToLower().Contains(deptLower));
+            }
+
+            var employees = await query
+                .Select(e => new
+                {
+                    e.EmployeeID,
+                    EmployeeName = (e.FirstName + " " + e.LastName).Trim(),
+                    e.JobTitle,
+                    DepartmentName = e.Department != null ? e.Department.DepartmentName : "N/A",
+                    e.PhoneNumber
+                })
+                .ToListAsync();
+
+            if (!employees.Any())
+                return NotFound("No employees found for the given criteria.");
+
+            return Ok(employees);
+        }
+
+
+
+
+
+
+
+
+
     }
 
     // ===== DTOs (GUID-based) =====
@@ -313,7 +612,7 @@ namespace HRMS.Backend.Controllers
         public Guid? DepartmentHeadId { get; set; } // now optional
         public string DepartmentHeadName { get; set; } = string.Empty;
         public string? DepartmentCode { get; set; }
-        public int InitialEmployeeCount { get; set; }
+        public int? InitialEmployeeCount { get; set; }
         public Guid? ParentDepartmentId { get; set; }
     }
 
@@ -323,7 +622,7 @@ namespace HRMS.Backend.Controllers
         public string DepartmentName { get; set; } = null!;
         public Guid? DepartmentHeadId { get; set; } // optional
         public string? DepartmentCode { get; set; }
-        public int InitialEmployeeCount { get; set; }
+        public int? InitialEmployeeCount { get; set; }
         public Guid? ParentDepartmentId { get; set; }
     }
 }

@@ -1,0 +1,28 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace HRMS.Backend.Migrations
+{
+    /// <inheritdoc />
+    public partial class RemoveFeedbackColumnFromRequestFeedback : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "feedback",
+                table: "RequestFeedbacks");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AddColumn<string>(
+                name: "feedback",
+                table: "RequestFeedbacks",
+                type: "nvarchar(max)",
+                nullable: true);
+        }
+    }
+}

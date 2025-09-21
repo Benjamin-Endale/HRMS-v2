@@ -39,8 +39,10 @@ namespace HRMS.Backend.DTOs
         [Required] public Guid LeaveTypeId { get; set; }
         [Required] public DateTime StartDate { get; set; }
         [Required] public DateTime EndDate { get; set; }
+        
         public string? Reason { get; set; }
         public string? Status { get; set; } // optional; validate/normalize in controller if you use fixed values
+        public DateTime? UpdatedAt { get; set; }
     }
 
     // Decision request (approve/reject by a manager)
@@ -49,5 +51,6 @@ namespace HRMS.Backend.DTOs
         [Required] public Guid ApprovedBy { get; set; } // manager's EmployeeID (Guid)
         [Required] public string Status { get; set; } = "Approved"; // e.g., Approved/Rejected
         public string? ManagerComment { get; set; }
+        public Guid EmployeeId { get; set; }
     }
 }

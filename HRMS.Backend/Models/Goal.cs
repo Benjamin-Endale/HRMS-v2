@@ -39,5 +39,7 @@ namespace HRMS.Backend.Models
 
         [Required]
         public string Description { get; set; } = string.Empty;
+
+        public int GoalProcess { get; set; } = 0;
     }
 }

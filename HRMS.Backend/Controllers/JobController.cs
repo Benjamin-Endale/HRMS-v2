@@ -39,8 +39,15 @@ namespace HRMS.Backend.Controllers
                 ClosingDate = dto.ClosingDate
             };
 
+
             _context.Jobs.Add(job);
             await _context.SaveChangesAsync();
+
+            //  Get updated active jobs count after posting
+            var today = DateTime.UtcNow.Date;
+            var activeJobsCount = await _context.Jobs
+                .Where(j => j.ClosingDate.HasValue && j.ClosingDate >= today)
+                .CountAsync();
 
             // Return the same JSON as GetActiveJobs
             var jobJson = new
@@ -49,9 +56,20 @@ namespace HRMS.Backend.Controllers
                 Department = job.DepartmentID,
                 Location = job.Location,
                 ApplicationDeadline = job.ApplicationDeadline
+
+                
             };
 
-            return Ok(jobJson);
+            var jobsjoson = new
+            {
+                jobJson = jobJson,
+                Jobs = job,
+
+                ActiveJobsCount = activeJobsCount
+
+            };
+
+            return Ok(jobsjoson);
         }
 
         // READ All Jobs
@@ -92,8 +110,36 @@ namespace HRMS.Backend.Controllers
             job.Requirement = dto.Requirement;
             job.ClosingDate = dto.ClosingDate;
 
+
+
             await _context.SaveChangesAsync();
-            return Ok(job);
+
+            //  Get updated active jobs count after posting
+            var today = DateTime.UtcNow.Date;
+            var activeJobsCount = await _context.Jobs
+                .Where(j => j.ClosingDate.HasValue && j.ClosingDate >= today)
+                .CountAsync();
+
+            var jobJsonadmin = new
+            {
+                JobTitle = job.JobTitle,
+                Department = job.DepartmentID,
+                Location = job.Location,
+                ApplicationDeadline = job.ApplicationDeadline
+
+
+            };
+
+            var jobsjoson = new
+            {
+                jobJsonadmin = jobJsonadmin,
+                Jobs = job,
+
+                ActiveJobsCount = activeJobsCount
+
+            };
+
+            return Ok(jobsjoson);
         }
 
         // DELETE Job
@@ -143,5 +189,9 @@ namespace HRMS.Backend.Controllers
 
             return Ok(new { activeJobs = activeJobsCount });
         }
+
+
+
+
     }
 }

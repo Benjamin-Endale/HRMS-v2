@@ -3,7 +3,7 @@ namespace HRMS.Backend.Models
     public class Interview
     {
         public Guid Id { get; set; }
-        public Guid ApplicantId { get; set; }
+        public Guid ShortlistId { get; set; }
         public DateTime? ScheduledOn { get; set; }
         public int? Duration { get; set; }
         public DateTime? ScheduledDate { get; set; }
@@ -16,7 +16,9 @@ namespace HRMS.Backend.Models
         public string Status { get; set; } = "Scheduled";
         public string Mode { get; set; } = string.Empty;
 
-        public Applicant Applicant { get; set; } = null!;
+        
+        public Shortlist? Shortlist { get; set; }
+
         public Employee? Interviewer { get; set; }
     }
 }

@@ -2,8 +2,8 @@ namespace HRMS.Backend.DTOs
 {
     public class InterviewDTO
     {
-        public Guid Id { get; set; }      // Changed from int
-        public Guid ApplicantId { get; set; }      // Changed from int
+        public Guid Id { get; set; }      
+        public Guid ShortlistId { get; set; }
         public string ApplicantName { get; set; } = string.Empty;
         public string Position { get; set; } = string.Empty;
 

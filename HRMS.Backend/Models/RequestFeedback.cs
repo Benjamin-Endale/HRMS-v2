@@ -11,7 +11,7 @@ namespace HRMS.Backend.Models
 
         [Required(ErrorMessage = "EmployeeID is required.")]
         public Guid EmployeeId { get; set; }
-        public Employee Employee { get; set; }
+        public Employee Employee { get; set; } = new Employee();
 
         [Required(ErrorMessage = "FeedbackDeadline is required.")]
         [DataType(DataType.Date)]
@@ -19,10 +19,17 @@ namespace HRMS.Backend.Models
 
         [Required(ErrorMessage = "FeedbackSources is required.")]
         [MaxLength(255, ErrorMessage = "FeedbackSources cannot exceed 255 characters.")]
-        public string FeedbackSources { get; set; }
+        public string FeedbackSources { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "InstructionReviewers is required.")]
         [MaxLength(500, ErrorMessage = "InstructionReviewers cannot exceed 500 characters.")]
-        public string InstructionReviewers { get; set; }
+        public string InstructionReviewers { get; set; } = string.Empty;
+
+
+        public Guid? DepartmentId { get; set; }
+        public Department? Department { get; set; }
+
+        // Navigation property: one RequestFeedback -> many FeedbackResponses
+        public ICollection<FeedbackResponse> FeedbackResponses { get; set; } = new List<FeedbackResponse>();
     }
 }

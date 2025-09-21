@@ -80,6 +80,7 @@ namespace HRMS.Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<AttendanceDto>> Create([FromBody] AttendanceCreateUpdateDto input)
         {
+
             if (input == null) return BadRequest("Body required.");
             if (input.EmployeeId == Guid.Empty) return BadRequest("EmployeeId is required.");
 

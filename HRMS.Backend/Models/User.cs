@@ -100,5 +100,11 @@ namespace HRMS.Backend.Models
         [Timestamp]
         [Column("row_version")]
         public byte[]? RowVersion { get; set; }
+
+        // 2FA fields
+        public string? OtpCode { get; set; }
+        public DateTime? OtpExpiryUtc { get; set; }
+
+
     }
 }
