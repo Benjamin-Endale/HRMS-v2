@@ -10,11 +10,11 @@ import EmployeePortal from './Components/EmployeePortal';
 
 export default function ClientWrapper({ children , session  }) {
 const pathname = usePathname() || '/'; // fallback for SSR
-const readPath = pathname === '/' ? 'Dashboard' : pathname.replace('/', '');
+const readPath = pathname === '/' ? 'SuperAdmin/AllOrganization' : pathname.replace('/', '');
 
   return (
     <div className='flex gap-[4.4375rem] bg-[url(/image/backdash.png)] bg-no-repeat bg-center bg-cover'>
-      <MainBody  readPath={readPath} session={session}  />
+      <SuperAdminBody  readPath={readPath} session={session}  />
       <div className='flex flex-col flex-1 gap-[4.25rem]'>
         <div className='flex pt-[3.5rem]'>
           <Header readPath={readPath} session={session} /> 
@@ -26,6 +26,3 @@ const readPath = pathname === '/' ? 'Dashboard' : pathname.replace('/', '');
     </div>
   );
 }
-
-
-

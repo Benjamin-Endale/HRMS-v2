@@ -17,7 +17,7 @@ const SubNavigation = ({ readPath }) => {
   ]
 
 
-  
+
     const NavPerformance = [
     { label: "Overview", path: "/PerformancePages/Overview" },
     { label: "Goals & KPIs", path: "/PerformancePages/Goals" },
