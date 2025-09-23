@@ -2,21 +2,20 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useRef, useState, useEffect } from "react";
-import { signIn, signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { authAPI } from '@/app/lib/api/client'; // Import your authAPI
-
+import { logout } from "@/app/lib/actions/auth";
 const VerifyOtpPage = () => {
   const inputsRef = useRef([]);
-  const router = useRouter();
   const searchParams = useSearchParams();
   const username = searchParams.get("username");
-
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [countdown, setCountdown] = useState(0);
+   const [email, setEmail] = useState("");
 
   useEffect(() => {
     inputsRef.current[0]?.focus();
@@ -51,52 +50,57 @@ const VerifyOtpPage = () => {
     }
   };
 
-  const handleVerify = async () => {
-    const otpCode = otp.join("");
-    if (otpCode.length !== 6) {
-      setError("Please enter the complete 6-digit OTP.");
-      return;
+const handleVerify = async () => {
+  const otpCode = otp.join("");
+  if (otpCode.length !== 6) {
+    setError("Please enter the complete 6-digit OTP.");
+    return;
+  }
+
+  setLoading(true);
+  setError("");
+  setSuccess("");
+  try {
+    const result = await signIn("credentials", {
+      redirect: false,
+      username,
+      otp: otpCode,
+
+    });
+    const storedEmail = sessionStorage.getItem('otpEmail');
+    if (storedEmail) {
+      setEmail(storedEmail);
     }
-
-    setLoading(true);
-    setError("");
-    setSuccess("");
-    
-    try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        username,
-        otp: otpCode,
-      });
-
-  
-
-      if (result?.error) {
-        setError("Invalid OTP. Try again.");
-      } else {
-        setSuccess("OTP verified successfully! Redirecting...");
-        // OTP verified successfully - middleware will handle redirection
-        router.push('/')
-      }
-    } catch (error) {
-      setError("An error occurred during verification. Please try again.");
-      console.error("OTP verification error:", error);
-    } finally {
-      setLoading(false);
+    if (result?.error) {
+      setError("Invalid OTP. Try again.");
+    } else {
+      setSuccess("OTP verified successfully! Redirecting...");
+      
+      // ✅ Let middleware handle the redirection
+      // Session is now updated with otpVerified: true
+      // Middleware will detect this and redirect to appropriate dashboard
+      setTimeout(() => {
+        window.location.reload(); // Trigger middleware check
+      }, 100);
     }
-  };
-
-  const handleCancel = async () => {
-    try {
-      // Clear the session first
-      await signOut({ redirect: false });
-      // Then redirect to login
-      router.push("/Login");
-    } catch (error) {
-      console.error("Logout error:", error);
-      router.push("/Login");
-    }
-  };
+  } catch (error) {
+    setError("An error occurred during verification. Please try again.");
+    console.error("OTP verification error:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+  // const handleCancel = async () => {
+  //   try {
+  //     // Clear the session first
+  //     await logou({ redirect: false });
+  //     // Then redirect to login
+  //     router.push("/Login");
+  //   } catch (error) {
+  //     console.error("Logout error:", error);
+  //     router.push("/Login");
+  //   }
+  // };
 
   const handleResend = async () => {
     try {
@@ -127,7 +131,7 @@ const VerifyOtpPage = () => {
         <div>
           <h1 className="textFormColor">Enter Verification Code</h1>
           <h4 className="text-limegray">
-            We sent a code to <span className="font-bold">{username}</span>
+            We sent a code to <span className="font-bold">To your Email</span>
           </h4>
         </div>
 
@@ -170,7 +174,7 @@ const VerifyOtpPage = () => {
             <button
               className="cursor-pointer w-full h-full text-formColor disabled:opacity-50"
               type="button"
-              onClick={handleCancel}
+              onClick={()=>logout()}
               disabled={loading}
             >
               Cancel

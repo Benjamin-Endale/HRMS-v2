@@ -16,7 +16,7 @@ export async function apiClient(endpoint, options = {}) {
   if (options.body && typeof options.body !== 'string') {
     config.body = JSON.stringify(options.body);
   }
-
+ 
   const response = await fetch(url, config);
   
   if (!response.ok) {
@@ -47,6 +47,7 @@ export const authAPI = {
    * Verify OTP code
    * @param {string} username - Username or email
    * @param {string} otp - OTP code
+   * 
    * @returns {Promise} - Verification response with tokens
    */
   verifyOtp: (username, otp) =>
@@ -77,6 +78,23 @@ export const authAPI = {
         Authorization: `Bearer ${token}` 
       } 
     }),
+
+
+      // 🏢 Tenant / Organization management
+  createTenant: (tenantData) =>
+    apiClient('/tenants', {
+      method: 'POST',
+      body: tenantData,
+    }),
+
+      createOrganizations: (orgData, options = {}) =>
+        apiClient("/organizations", {
+          method: "POST",
+          body: orgData,
+          ...options,
+        }),
+
+        
 
   /**
    * Validate JWT token

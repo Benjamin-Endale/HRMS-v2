@@ -4,44 +4,94 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dropdown } from "@/app/Components/DropDown";
+import { useRouter } from "next/navigation";
+import { authAPI } from "@/app/lib/api/client";
 
 const orgSchema = z.object({
-  name: z.string().min(2, "Organization Name is required"),
-  code: z.string().min(2, "Organization Code is required"),
-  domain: z.string().url("Enter a valid domain (e.g. https://example.com)"),
-  industry: z.string().min(1, "Please select an industry"),
-  location: z.string().min(2, "Location is required"),
-  logo: z
+  Name: z.string().min(2, "Organization Name is required"),
+  OrgCode: z.string().min(2, "Organization Code is required"),
+  Domain: z.string().url("Enter a valid domain (e.g. https://example.com)"),
+  Industry: z.string().min(1, "Please select an industry"),
+  Location: z.string().min(2, "Location is required"),
+  LogoUrl: z
     .any()
-    .refine((file) => file?.length === 1, 'Company Logo is required'),
+    .refine((files) => files && files.length === 1, {
+      message: "Company Logo is required",
+    }),
 });
 
 const AddOrg = ({ onClose }) => {
   const [selectedIndustry, setSelectedIndustry] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(orgSchema),
+    defaultValues: {
+      Name: "",
+      OrgCode: "",
+      Domain: "",
+      Industry: "",
+      Location: "",
+      LogoUrl: null,
+    },
   });
 
-  //  Submit Handler
-  const onSubmit = (data) => {
-    console.log("Form Submitted:", data);
-  };
+  const watchLogo = watch("LogoUrl");
 
-  // Dropdown integration with Hook Form
+  // Dropdown integration
   const handleIndustrySelect = (value) => {
     setSelectedIndustry(value);
-    setValue("industry", value, { shouldValidate: true });
+    setValue("Industry", value, { shouldValidate: true });
+  };
+
+  // Convert file to base64 string
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    try {
+      if (!data.LogoUrl || data.LogoUrl.length === 0) {
+        console.error("❌ Please upload a company logo");
+        return;
+      }
+
+      // Convert the file to base64 string
+      const base64String = await fileToBase64(data.LogoUrl[0]);
+
+      const formData = new FormData();
+      formData.append("Name", data.Name.trim());
+      formData.append("OrgCode", data.OrgCode.trim());
+      formData.append("Domain", data.Domain.trim());
+      formData.append("Industry", data.Industry.trim());
+      formData.append("Location", data.Location.trim());
+      formData.append("LogoUrl", base64String); // Send as base64 string instead of file object
+
+      const response = await authAPI.createOrganizations(formData);
+      console.log("✅ Organization saved:", response);
+      router.push("/Admin/Organization");
+    } catch (err) {
+      console.error("❌ Error saving Organization:", err.message || err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="px-[3rem] py-[2.875rem] space-y-[3.125rem] font-semibold w-full">
-      {/* Header */}
       <div className="flex justify-between">
         <div>
           <h1 className="textFormColor">Create New Organization</h1>
@@ -49,120 +99,101 @@ const AddOrg = ({ onClose }) => {
             Create a new organization and add its basic Info.
           </h4>
         </div>
-        <button
-          onClick={onClose}
-          className="rounded-full center-center cursor-pointer"
-        >
+        <button onClick={onClose} className="rounded-full center-center cursor-pointer">
           <img src="/image/Icon/Action/CloseCircle.png" alt="Close" />
         </button>
       </div>
 
-      {/* Form */}
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-[2.375rem]"
-      >
-        <div className="w-full flex gap-[1.125rem]">
-          <div className="flex flex-col gap-[2.375rem] w-full">
-            {/* Organization Name */}
-            <div className="flex flex-col w-full gap-[1rem]">
-              <label className="textFormColor1">Organization Name</label>
-              <input
-                type="text"
-                placeholder="ex. Marketing"
-                {...register("name")}
-                className="inputMod pr-[1.5625rem]"
-              />
-              {errors.name && (
-                <p className="text-Error text-[1rem]">{errors.name.message}</p>
-              )}
-            </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[2.375rem]">
+        {/* Name */}
+        <div className="flex flex-col w-full gap-[1rem]">
+          <label className="textFormColor1">Organization Name</label>
+          <input
+            type="text"
+            placeholder="ex. Marketing"
+            {...register("Name")}
+            className="inputMod pr-[1.5625rem]"
+          />
+          {errors.Name && <p className="text-Error">{errors.Name.message}</p>}
+        </div>
 
-            {/* Organization Code */}
-            <div className="flex flex-col w-full gap-[1rem]">
-              <label className="textFormColor1">Organization Code</label>
-              <input
-                type="text"
-                placeholder="ex. ORG200"
-                {...register("code")}
-                className="inputMod pr-[1.5625rem]"
-              />
-              {errors.code && (
-                <p className="text-Error">{errors.code.message}</p>
-              )}
-            </div>
+        {/* Code */}
+        <div className="flex flex-col w-full gap-[1rem]">
+          <label className="textFormColor1">Organization Code</label>
+          <input
+            type="text"
+            placeholder="ex. ORG200"
+            {...register("OrgCode")}
+            className="inputMod pr-[1.5625rem]"
+          />
+          {errors.OrgCode && <p className="text-Error">{errors.OrgCode.message}</p>}
+        </div>
 
-            {/* Domain */}
-            <div className="flex flex-col w-full gap-[1rem]">
-              <label className="textFormColor1">Domain</label>
-              <input
-                type="text"
-                placeholder="ex. https://domain.com"
-                {...register("domain")}
-                className="inputMod pr-[1.5625rem]"
-              />
-              {errors.domain && (
-                <p className="text-Error text-[1rem]">{errors.domain.message}</p>
-              )}
-            </div>
+        {/* Domain */}
+        <div className="flex flex-col w-full gap-[1rem]">
+          <label className="textFormColor1">Domain</label>
+          <input
+            type="text"
+            placeholder="ex. https://domain.com"
+            {...register("Domain")}
+            className="inputMod pr-[1.5625rem]"
+          />
+          {errors.Domain && <p className="text-Error">{errors.Domain.message}</p>}
+        </div>
 
-            {/* Industry Dropdown */}
-            <div>
-              <Dropdown
-                label="Industry"
-                options={["Engineering", "Marketing", "Finance"]}
-                selected={selectedIndustry}
-                onSelect={handleIndustrySelect}
-                placeholder="Select Industry"
-              />
-              {errors.industry && (
-                <p className="text-Error text-[1rem]">{errors.industry.message}</p>
-              )}
-            </div>
+        {/* Industry Dropdown */}
+        <div>
+          <Dropdown
+            label="Industry"
+            options={["Engineering", "Marketing", "Finance"]}
+            selected={selectedIndustry}
+            onSelect={handleIndustrySelect}
+            placeholder="Select Industry"
+          />
+          {errors.Industry && <p className="text-Error">{errors.Industry.message}</p>}
+        </div>
 
-            {/* Location */}
-            <div className="flex flex-col w-full gap-[1rem]">
-              <label className="textFormColor1">Location</label>
-              <input
-                type="text"
-                placeholder="Enter location"
-                {...register("location")}
-                className="inputMod pr-[1.5625rem]"
-              />
-              {errors.location && (
-                <p className="text-Error text-[1rem]">{errors.location.message}</p>
-              )}
-            </div>
+        {/* Location */}
+        <div className="flex flex-col w-full gap-[1rem]">
+          <label className="textFormColor1">Location</label>
+          <input
+            type="text"
+            placeholder="Enter location"
+            {...register("Location")}
+            className="inputMod pr-[1.5625rem]"
+          />
+          {errors.Location && <p className="text-Error">{errors.Location.message}</p>}
+        </div>
 
-            {/* Logo Upload */}
-            <div className="flex flex-col gap-[1rem]">
-              <label htmlFor="logo" className="text-formColor">
-                Upload Company Logo
-              </label>
-              <label htmlFor="logo" className="inputModfile cursor-pointer">
-                <img src="/image/Icon/File.png" alt="File" />
-                <span className="text-limeLight">Upload Logo</span>
-              </label>
-              <input
-                type="file"
-                id="logo"
-                {...register("logo")}
-                className="hidden w-full h-full"
-              />
-              {errors.logo && (
-                <p className="text-Error text-[1rem]">{errors.logo.message}</p>
-              )}
-            </div>
-          </div>
+        {/* Logo */}
+        <div className="flex flex-col gap-[1rem]">
+          <label htmlFor="logo" className="text-formColor">Upload Company Logo</label>
+          <label htmlFor="logo" className="inputModfile cursor-pointer flex items-center gap-2">
+            <img src="/image/Icon/File.png" alt="File" />
+            <span className="text-limeLight">
+              {watchLogo && watchLogo.length > 0 ? watchLogo[0].name : "Upload Logo"}
+            </span>
+          </label>
+          <input
+            type="file"
+            id="logo"
+            {...register("LogoUrl")}
+            onChange={(e) => {
+              if (e.target.files) setValue("LogoUrl", e.target.files, { shouldValidate: true });
+            }}
+            className="hidden"
+          />
+          {errors.LogoUrl && <p className="text-Error">{errors.LogoUrl.message}</p>}
         </div>
 
         {/* Submit */}
         <div className="w-full h-[3.4375rem] mt-[0.5rem]">
-          <button
-            type="submit"
-            className="w-full h-full bg-lemongreen rounded-[10px] cursor-pointer"
+          <button 
+            type="submit" 
+            className="w-full h-full bg-lemongreen rounded-[10px] cursor-pointer disabled:opacity-50"
+            disabled={isSubmitting}
           >
-            Create Organization
+            {isSubmitting ? "Creating..." : "Create Organization"}
           </button>
         </div>
       </form>

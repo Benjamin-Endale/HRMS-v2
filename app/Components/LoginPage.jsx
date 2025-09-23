@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react'; // ✅ Import from next-auth/react
 import { SignInButton } from './SignInButton';
-import { authAPI } from '@/app/lib/api/client';
 
 // ✅ Validation schema
 const loginSchema = z.object({
@@ -26,7 +25,6 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const [loginError, setLoginError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(loginSchema),
@@ -52,8 +50,7 @@ export default function LoginPage() {
       } else {
         // If no error, redirect to OTP page
         // Use window.location to bypass middleware temporarily
-        window.location.href = `/Login/VerifyOtp?username=${encodeURIComponent(data.username)}`;
-      }
+        window.location.href = `/Login/VerifyOtp?username=${encodeURIComponent(data.username)}`;}
     } catch (err) {
       console.error(err);
       setLoginError("Login failed. Please try again.");
@@ -61,6 +58,8 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+
+  
 
   return (
     <main className='h-screen w-screen flex items-center justify-center font-semibold bg-[url(/image/Login.png)]'>

@@ -8,7 +8,7 @@ export const SignOutButton = ({session}) => {
         <>
         <div  onClick={()=>setisOpen(true)} className='flex items-center cursor-pointer gap-[20px] justify-end-safe'>     
             <div className=''>
-                <span  className='text-accountColor font-semibold'>Welcome, {session?.user?.name}</span>
+                <span  className='text-accountColor font-semibold'>Welcome, {session?.user?.fullName}</span>
             </div>
             <div className='border rounded-full flex p-[15px] items-center justify-center bg-black'>
               <img src="/svg/HeaderSvg/ProfileIcon.svg" alt="ProfileIcon" />

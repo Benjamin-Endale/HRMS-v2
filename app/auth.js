@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { authAPI } from "@/app/lib/api/client";
+import { email } from "zod";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
@@ -22,6 +23,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             const response = await authAPI.verifyOtp(
               credentials.username,
               credentials.otp
+
             );
 
             console.log('OTP verification response:', response);
@@ -34,6 +36,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                 accessToken: response.accessToken,
                 refreshToken: response.refreshToken,
                 role: response.role, // From OTP verification response
+                fullName:response.fullName,
                 tenantId: response.tenantId,
                 requiresOtp: response.requiresOtp || false, // ✅ Get from response
                 otpVerified: response.otpVerified || true   // ✅ Get from response
@@ -55,6 +58,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             name: credentials.username,
             email: response.email || `${credentials.username}@gmail.com`,
             role: response.role || null, // ✅ Role might be null initially
+            fullName:response.fullName,
             requiresOtp: response.requiresOtp || true,  // ✅ Get from response
             otpVerified: response.otpVerified || false  // ✅ Get from response
           };
@@ -77,6 +81,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
         token.role = user.role;
+        token.fullName = user.fullName
         token.tenantId = user.tenantId;
         token.requiresOtp = user.requiresOtp !== undefined ? user.requiresOtp : false;
         token.otpVerified = user.otpVerified !== undefined ? user.otpVerified : false;
@@ -102,6 +107,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.role = token.role;
+        session.user.fullName = token.fullName
         session.user.tenantId = token.tenantId;
         session.accessToken = token.accessToken;
         session.refreshToken = token.refreshToken;
