@@ -1,15 +1,7 @@
-'use client'
 import React  from 'react'
-import { useRouter } from 'next/navigation';
+import { auth } from '@/app/auth';
+import { hrmsAPI } from '@/app/lib/api/client';
 
-
-const page = () => {
-  const OrganizationList = [
-    {TenatName: 'Onyx Technology' , TenatLink: 'onyxtech.hrms.com',  TenatAdmin: 'Benjamin Endale' , TenatAdminEmail:'john@techcrop.com' , TenatEmployees: '1125' , TenatStatus: 'Active',TenatCreationDate: '1/15/2024'},
-    {TenatName: 'Bright Technology' , TenatLink: 'onyxtech.hrms.com',  TenatAdmin: 'Benjamin Endale' , TenatAdminEmail:'john@techcrop.com' , TenatEmployees: '1125' , TenatStatus: 'Trial',TenatCreationDate: '1/15/2024'},
-    {TenatName: 'INSA Technology' , TenatLink: 'onyxtech.hrms.com',  TenatAdmin: 'Benjamin Endale' , TenatAdminEmail:'john@techcrop.com' , TenatEmployees: '1125' , TenatStatus: 'Suspend',TenatCreationDate: '1/15/2024'},
-
-  ]
 
 
 const handleState = (status) => {
@@ -24,8 +16,26 @@ const handleState = (status) => {
 };
 
 
-const router = useRouter(); 
 
+
+
+
+export default async function Page () {
+  const session = await auth();
+
+  // ✅ fetch organizations from your API
+  let organizations = [];
+  try {
+    organizations = await hrmsAPI.getOrganizations({
+      headers: {
+        Authorization: `Bearer ${session?.accessToken}`,
+      },
+    });
+  } catch (err) {
+    console.error("Failed to fetch organizations:", err);
+  }
+
+  
 
 return (
     // mainContainer
@@ -43,7 +53,7 @@ return (
               </div>
             </div>
             <div className='flex flex-col'>
-              <span className='text-5xl'>1230</span>
+              <span className='text-5xl'>{organizations.length}</span>
               <span>Total Organization</span>
             </div>
           </div>
@@ -92,7 +102,7 @@ return (
             <h4 className='textLimegray'>A list of all organizations in your platform</h4>
           </div>
           <div>
-            <button type="button" className='cursor-pointer ' onClick={()=>router.push('/AddNewemployee')}>
+            <button type="button" className='cursor-pointer '>
               <div className='center-center w-[13.125rem] h-[3.125rem] rounded-[0.625rem] gap-[0.625rem] bg-lemongreen'>
                 <img src="/svg/SvgImage/PlusSign.svg" alt="" />
                 <span className='text-black'>Add Organizations</span>
@@ -133,35 +143,35 @@ return (
                 </tr>
               </thead>
               <tbody >
-                {OrganizationList.map((tenat) => (
-                  <tr key={tenat.TenatName}>
+                {organizations.map((org)=> (
+                  <tr key={org.id}>
                     <td className='pt-[2.1875rem]'>
                       <div className='flex items-center gap-[0.9375rem]'>
                         <div className='w-[2.4375rem] h-[2.4375rem] bg-lemongreen rounded-full '></div>
                         <div>
-                          <h1 className='text-limeLight'>{tenat.TenatName}</h1>
-                          <h4 className='textLimegray'>{tenat.TenatLink}</h4>
+                          <h1 className='text-limeLight'>{org.name}</h1>
+                          <h4 className='textLimegray'>{org.domain}</h4>
                         </div>
                       </div>
                     </td>
                     <td className='pt-[2.1875rem]'>
                       <div>
-                        <h1 className='text-limeLight'>{tenat.TenatAdmin}</h1>
-                        <h4 className='textLimegray'>{tenat.TenatAdminEmail}</h4>
+                        <h1 className='text-limeLight'>{org.adminFirstName}</h1>
+                        <h4 className='textLimegray'>{org.adminEmail}</h4>
                       </div>
                     </td>
                     <td className='pt-[2.1875rem] '>
                       <div className='flex gap-[0.4375rem]'>
                         <img src="/image/Icon/Action/users.png" alt="" />
-                        <span className='text-limegray'>{tenat.TenatEmployees}</span>
+                        <span className='text-limegray'>{org.EmployeeManagment}</span>
                       </div>
                     </td>
                     <td className='pt-[2.1875rem]'>
-                      <span className={`bg-[rgba(190,229,50,0.05)] px-[20px] py-[8px] rounded-full ${handleState(tenat.TenatStatus) } `}>{tenat.TenatStatus}</span>
+                      <span className={`bg-[rgba(190,229,50,0.05)] px-[20px] py-[8px] rounded-full ${handleState(org.status)} `}></span>
                     </td>
                     <td className='pt-[2.1875rem]'>
                       <div>
-                        <h4 className='text-limegray'>{tenat.TenatCreationDate}</h4>
+                        <h4 className='text-limegray'>{new Date(org.createdAt).toLocaleDateString()}</h4>
                       </div>
                     </td>
                     <td className='flex items-center gap-[2.5625rem] pt-[2.1875rem]'>
@@ -176,6 +186,7 @@ return (
                       </button>
                     </td>
                   </tr>
+
                 ))}
               </tbody>
             </table>
@@ -186,4 +197,3 @@ return (
   )
 }
 
-export default page

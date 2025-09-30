@@ -2,8 +2,7 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { authAPI } from "@/app/lib/api/client";
-import { email } from "zod";
-
+ 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
     Google,
@@ -16,58 +15,57 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       },
       async authorize(credentials) {
         try {
-          console.log('Received credentials:', credentials);
-          
-          // Step 1: OTP exists → verify it
+          console.log("Received credentials:", credentials);
+
           if (credentials.otp) {
             const response = await authAPI.verifyOtp(
               credentials.username,
-              credentials.otp
-
+              credentials.otp,
             );
 
-            console.log('OTP verification response:', response);
+            console.log("OTP verification response:", response);
 
             if (response.accessToken) {
               return {
-                id: response.id || credentials.username,
-                name: response.fullName || credentials.username,
+                id: response.id, // ✅ always use backend id
+                name: response.fullName || response.username || credentials.username,
                 email: response.email || `${credentials.username}@gmail.com`,
                 accessToken: response.accessToken,
                 refreshToken: response.refreshToken,
-                role: response.role, // From OTP verification response
-                fullName:response.fullName,
+                role: response.role,
+                fullName: response.fullName,
                 tenantId: response.tenantId,
-                requiresOtp: response.requiresOtp || false, // ✅ Get from response
-                otpVerified: response.otpVerified || true   // ✅ Get from response
+                lastLoginUtc: response.lastLoginUtc || null, 
+                requiresOtp: response.requiresOtp || false,
+                otpVerified: response.otpVerified || true,
               };
             }
             return null;
           }
 
-          // Step 2: No OTP → normal login, backend will send OTP
           const response = await authAPI.login({
             UsernameOrEmail: credentials.username,
             Password: credentials.password,
           });
 
-          console.log('Login response:', response);
+          console.log("Login response:", response);
 
           return {
-            id: credentials.username,
-            name: credentials.username,
+            id: response.id, 
+            name: response.fullName || response.username || credentials.username,
             email: response.email || `${credentials.username}@gmail.com`,
-            role: response.role || null, // ✅ Role might be null initially
-            fullName:response.fullName,
-            requiresOtp: response.requiresOtp || true,  // ✅ Get from response
-            otpVerified: response.otpVerified || false  // ✅ Get from response
+            role: response.role || null,
+            fullName: response.fullName,
+            tenantId: response.tenantId,
+            lastLoginUtc: response.lastLoginUtc || null, 
+            requiresOtp: response.requiresOtp ?? true,
+            otpVerified: response.otpVerified ?? false,
           };
-          
         } catch (err) {
           console.error("Auth API error:", err);
           return null;
         }
-      }
+      },
     }),
   ],
 
@@ -81,10 +79,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
         token.role = user.role;
-        token.fullName = user.fullName
+        token.fullName = user.fullName;
         token.tenantId = user.tenantId;
-        token.requiresOtp = user.requiresOtp !== undefined ? user.requiresOtp : false;
-        token.otpVerified = user.otpVerified !== undefined ? user.otpVerified : false;
+        token.lastLoginUtc = user.lastLoginUtc || null;
+        token.requiresOtp =
+          user.requiresOtp !== undefined ? user.requiresOtp : false;
+        token.otpVerified =
+          user.otpVerified !== undefined ? user.otpVerified : false;
       }
 
       // Handle session updates
@@ -107,12 +108,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.role = token.role;
-        session.user.fullName = token.fullName
+        session.user.fullName = token.fullName;
         session.user.tenantId = token.tenantId;
+        session.user.lastLoginUtc = token.lastLoginUtc || null;  
         session.accessToken = token.accessToken;
         session.refreshToken = token.refreshToken;
-        session.requiresOtp = token.requiresOtp !== undefined ? token.requiresOtp : false;
-        session.otpVerified = token.otpVerified !== undefined ? token.otpVerified : false;
+        session.requiresOtp =
+          token.requiresOtp !== undefined ? token.requiresOtp : false;
+        session.otpVerified =
+          token.otpVerified !== undefined ? token.otpVerified : false;
       }
       return session;
     },

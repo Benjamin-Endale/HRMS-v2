@@ -144,11 +144,30 @@ export const hrmsAPI = {
   getEmployeeById: (id) =>
     apiClient(`/employees/${id}`),
   
+  getuser:() =>
+    apiClient(`/users`),
+
+  getuserAdmins:() =>
+    apiClient(`/users/superadmins`),
+
+
   createEmployee: (employeeData) =>
     apiClient('/employees', { 
       method: 'POST', 
       body: employeeData 
     }),
+
+  createSuperadmin: (userData) =>
+    apiClient('/users', { 
+      method: 'POST', 
+      body: userData 
+    }),
+
+  touchLogin: (id) =>
+    apiClient(`/users/${id}/touch-login`, {
+      method: 'POST',
+    }),
+
   
   updateEmployee: (id, employeeData) =>
     apiClient(`/employees/${id}`, { 
@@ -163,7 +182,7 @@ export const hrmsAPI = {
 
   // Organization management
   getOrganizations: () =>
-    apiClient('/organizations'),
+    apiClient('/tenants'),
   
   getOrganizationById: (id) =>
     apiClient(`/organizations/${id}`),

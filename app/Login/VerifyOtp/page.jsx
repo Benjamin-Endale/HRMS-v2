@@ -9,13 +9,16 @@ const VerifyOtpPage = () => {
   const inputsRef = useRef([]);
   const searchParams = useSearchParams();
   const username = searchParams.get("username");
+  const email = searchParams.get("email");
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [countdown, setCountdown] = useState(0);
-   const [email, setEmail] = useState("");
+
+
+
 
   useEffect(() => {
     inputsRef.current[0]?.focus();
@@ -67,10 +70,7 @@ const handleVerify = async () => {
       otp: otpCode,
 
     });
-    const storedEmail = sessionStorage.getItem('otpEmail');
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
+
     if (result?.error) {
       setError("Invalid OTP. Try again.");
     } else {
@@ -131,7 +131,7 @@ const handleVerify = async () => {
         <div>
           <h1 className="textFormColor">Enter Verification Code</h1>
           <h4 className="text-limegray">
-            We sent a code to <span className="font-bold">To your Email</span>
+            We sent a code to <span className="font-bold">your Email</span>
           </h4>
         </div>
 

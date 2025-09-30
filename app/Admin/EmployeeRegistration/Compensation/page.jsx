@@ -65,7 +65,7 @@ const Page = () => {
 
   const onSubmit = (data) => {
     console.log('Form Data:', data)
-    router.push('/EmployeeRegistration/System')
+    router.push('/Admin/EmployeeRegistration/System')
   }
 
   return (
@@ -74,7 +74,7 @@ const Page = () => {
       <div className='flex flex-col gap-[2.5rem]'>
         <div className='flex items-center gap-[0.9375rem]'>
           <img
-            onClick={() => router.push('/EmployeeRegistration/AddNewemployeesecond')}
+            onClick={() => router.push('/Admin/EmployeeRegistration/AddNewemployeesecond')}
             src='/image/Icon/ArrowLeft.png'
             alt='Back'
           />
@@ -92,7 +92,7 @@ const Page = () => {
 
       <div className='between gap-[12.25rem]'>
         {/* Form */}
-        <div className='w-[49.5625rem] h-[36.3125rem] overflow-y-auto scrollBarDash'>
+        <div className='w-[52.5625rem] h-[36.3125rem] overflow-x-hidden overflow-y-auto scrollBarDash'>
           <form className='flex gap-[2.5625rem] px-[10px] flex-wrap' onSubmit={handleSubmit(onSubmit)}>
              {/* two column */}
           <div className='flex gap-[2.5625rem]'> 
@@ -228,7 +228,7 @@ const Page = () => {
             <div className='w-full h-[3.4375rem] my-[4rem] px-[10px] flex gap-[2.5625rem]'>
               <button
                 type='button'
-                onClick={() => router.push('/EmployeeRegistration/AddNewemployeesecond')}
+                onClick={() => router.push('/Admin/EmployeeRegistration/AddNewemployeesecond')}
                 className='w-[23.1875rem] border border-formColor text-formColor rounded-[10px] cursor-pointer'
               >
                 Back

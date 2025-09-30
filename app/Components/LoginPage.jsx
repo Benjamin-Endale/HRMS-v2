@@ -48,9 +48,10 @@ export default function LoginPage() {
         // Handle login errors
         setLoginError("Invalid credentials or login failed");
       } else {
-        // If no error, redirect to OTP page
-        // Use window.location to bypass middleware temporarily
+        // &email=${encodeURIComponent(result.email)}
         window.location.href = `/Login/VerifyOtp?username=${encodeURIComponent(data.username)}`;}
+
+
     } catch (err) {
       console.error(err);
       setLoginError("Login failed. Please try again.");
@@ -177,8 +178,8 @@ export default function LoginPage() {
                 </div>
               </form>
 
-              {/* Google Sign In */}
-              <SignInButton />
+              {/* Google Sign In
+              <SignInButton /> */}
             </section>
           </div>
         </div>

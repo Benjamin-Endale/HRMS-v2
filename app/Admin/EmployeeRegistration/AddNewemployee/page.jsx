@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation';
-import { Dropdown } from '../../Components/DropDown';
+import { Dropdown } from '@/app//Components/DropDown';
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -62,7 +62,7 @@ const Page = () => {
 
     const onSubmit = (data) => {
         console.log("Form Data", data);
-        router.push('/EmployeeRegistration/AddNewemployeesecond');         
+        router.push('/Admin/EmployeeRegistration/AddNewemployeesecond');         
     };
 
     return (

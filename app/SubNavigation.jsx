@@ -34,7 +34,7 @@ const SubNavigation = ({ readPath }) => {
 
 
   return (
-    <div className='w-[calc(100%-2.75rem)]'>
+    <div className='w-full'>
         <div className={`${readPath === 'Recruitment' || readPath === '/RecruitmentPages/Jobposting' || readPath === "/RecruitmentPages/Candidates" || readPath === "/RecruitmentPages/Interviews" || readPath === '/RecruitmentPages/Shortlist' ? 'block' : 'hidden'} cursor-pointer flex flex-col gap-[3.3125rem]`}>
             {/* InformationContainers */}
             <div className='flex gap-[1.25rem]'>

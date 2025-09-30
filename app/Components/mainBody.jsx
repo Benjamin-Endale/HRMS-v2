@@ -28,7 +28,7 @@ const MainBody = ({ readPath }) => {
                 {/* Core */}
                 <section className='space-y-[1.5625rem] w-full  pl-[2.75rem] relative'> 
                     <div>
-                        <h4 className={`${['Admin/Dashboard' , 'Organization' , 'Employees', 'Attendance' , 'LeaveManagment' ,"Admin/EmployeeRegistration/AddNewemployee" ,'Admin/EmployeeRegistration/AddNewemployeesecond',"Admin/EmployeeRegistration/Compensation","Admin/EmployeeRegistration/System"].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>CORE</h4>
+                        <h4 className={`${['Admin/Dashboard' , 'Admin/Organization' , 'Admin/Employees', 'Admin/Attendance' , 'Admin/LeaveManagment' ,"Admin/EmployeeRegistration/AddNewemployee" ,'Admin/EmployeeRegistration/AddNewemployeesecond',"Admin/EmployeeRegistration/Compensation","Admin/EmployeeRegistration/System"].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>CORE</h4>
                     </div>
                     <div className='flex items-center' >
                         <div className={`${readPath === 'Admin/Dashboard' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>

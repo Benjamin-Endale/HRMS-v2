@@ -37,7 +37,7 @@ const Page = () => {
 
   const onSubmit = (data) => {
     console.log("Form Data", data);
-    router.push('/EmployeeRegistration/Compensation');         
+    router.push('/Admin/EmployeeRegistration/Compensation');         
   };
 
   return (
@@ -161,7 +161,7 @@ const Page = () => {
             <div className='w-full h-[3.4375rem] mt-[4rem] flex gap-[2.5625rem]'>
               <button 
                 type="button" 
-                onClick={() => router.push('/EmployeeRegistration/AddNewemployee')} 
+                onClick={() => router.push('/Admin/EmployeeRegistration/AddNewemployee')} 
                 className='w-[23.1875rem] border border-formColor text-formColor rounded-[10px] cursor-pointer'
               >
                 Back

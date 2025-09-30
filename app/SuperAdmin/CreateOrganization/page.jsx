@@ -22,7 +22,8 @@ const AddorgSchema = z.object({
   TimeZone: z.string().nonempty("TimeZone is required"),
 });
 
-const Page = () => {
+const  Page = () => {
+  
   const router = useRouter();
   const { register, control, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(AddorgSchema),
@@ -65,7 +66,7 @@ const onSubmit = async (data) => {
   };
 
   try {
-      const savedTenant = await authAPI.createTenant(payload);
+    const savedTenant = await authAPI.createTenant(payload);
     console.log("✅ Tenant saved:", savedTenant);
     router.push("/SuperAdmin/AllOrganization"); // Redirect after success
   } catch (err) {

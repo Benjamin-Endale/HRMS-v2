@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { ROLE_LAYOUTS } from './config/roles';
 import { useEffect } from 'react';
-
+import { hrmsAPI } from './lib/api/client';
 export default function ClientWrapper({ children, session }) {
     const router = useRouter();
     const pathname = usePathname() || '/';
@@ -25,8 +25,9 @@ export default function ClientWrapper({ children, session }) {
             router.push(`/Login/VerifyOtp?username=${session?.user?.id || session?.user?.email}`);
         }
     }, [requiresOtp, otpVerified, pathname, router, session]);
-
+    
     // Show loading state or redirect if no role (OTP not completed)
+    
     if (requiresOtp) {
         if (pathname.startsWith('/Login/VerifyOtp')) {
             // Allow access to OTP page
@@ -47,6 +48,19 @@ export default function ClientWrapper({ children, session }) {
     if (pathname.startsWith('/Unauthorized')) {
         return <div className='bg-black'>{children}</div>;
     }
+
+    useEffect(() => {
+        if (!session?.user?.id || (session.requiresOtp && !session.otpVerified)) return;
+        const updateLastLogin = async () => {
+            try {
+            await hrmsAPI.touchLogin(session.user.id);
+            } catch (err) {
+            console.error('Failed to update last login:', err);
+            }
+        };
+        updateLastLogin();
+        }, [session?.user?.id, session?.requiresOtp, session?.otpVerified]);
+
 
     const readPath = pathname === '/' ? defaultPaths[role] : pathname.replace('/', '');
     const Layout = ROLE_LAYOUTS[role];

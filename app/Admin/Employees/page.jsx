@@ -30,7 +30,7 @@ const router = useRouter();
           <h1 className='textWhite'>Employees Directory</h1>
           <h4 className='textLimegray'>Manage employee profiles roles, and organization structure</h4>
         </div>
-        <button type="button" className='cursor-pointer ' onClick={()=>router.push("/EmployeeRegistration/AddNewemployee")}>
+        <button type="button" className='cursor-pointer ' onClick={()=>router.push("EmployeeRegistration/AddNewemployee")}>
           <div className='center-center w-[12.75rem] h-[3.125rem] rounded-[0.625rem] gap-[0.625rem] bg-lemongreen'>
             <img src="/svg/SvgImage/PlusSign.svg" alt="" />
             <span className='text-black'>Add Employees</span>

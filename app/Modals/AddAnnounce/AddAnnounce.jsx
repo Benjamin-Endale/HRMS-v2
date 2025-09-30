@@ -103,7 +103,7 @@ export default function AddAnnounce({ onClose }) {
           <label className='textFormColor'>Announcement</label>
           <textarea
             placeholder='Detailed description of the Program and expected outcomes..'
-            className='textFormColor bg-inputBack rounded-[10px] placeholder-input pt-[0.59375rem] pl-[1.1875rem] resize-none h-[5.5rem]'
+            className='textFormColor bg-inputBack rounded-[10px] placeholder-input placeholder:text-[15px] pt-[0.59375rem] pl-[1.1875rem] resize-none h-[5.5rem]'
             {...register("Announcement")}
           />
           {errors.Announcement && <span className='text-Error text-[1rem]'>{errors.Announcement.message}</span>}

@@ -4,7 +4,7 @@
 import { signIn, signOut } from '@/app/auth'; // Or '../auth' depending on your structure
 
 export const login = async () => {
-  await signIn("google", { redirectTo: "/SuperAdmin/AllOrganization" });
+  await signIn("google", { redirectTo: "/" });
 };
 
 export const logout = async () => {
