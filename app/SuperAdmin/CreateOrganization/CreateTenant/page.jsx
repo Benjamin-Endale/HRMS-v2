@@ -14,10 +14,6 @@ const AddorgSchema = z.object({
   Industry: z.string().min(4, "Industry is required"),
   CompanySize: z.string().nonempty("Company is required"),
   Description: z.string().min(10, "Description is required"),
-  AdminFirstName: z.string().min(3, "First Name is required"),
-  AdminLastName: z.string().min(3, "Last Name is required"),
-  AdminEmail: z.string().min(3, "Email is required").email("Invalid Email Address"),
-  AdminPhone: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
   Country: z.string().nonempty("Country is required"),
   TimeZone: z.string().nonempty("TimeZone is required"),
 });
@@ -76,7 +72,6 @@ const Page = () => {
       const onSubmit = (data) => {
         console.log("Form Data", data);
         router.push('/SuperAdmin/CreateOrganization/RegisterAdmin');     
-          console.log("✅ Submitted successfully!");
     
     };
     const onCancle = () => {
