@@ -53,25 +53,35 @@ const Page = () => {
     });
   };
 
-  const onSubmit = async (data) => {
-    const payload = {
-      ...data,
-      employeeManagement: toggleOn[0],
-      attendanceTracking: toggleOn[1],
-      leaveManagement: toggleOn[2],
-      recruitment: toggleOn2[0],
-      performance: toggleOn2[1],
-      training: toggleOn2[2],
-    };
+  // const onSubmit = async (data) => {
+  //   const payload = {
+  //     ...data,
+  //     employeeManagement: toggleOn[0],
+  //     attendanceTracking: toggleOn[1],
+  //     leaveManagement: toggleOn[2],
+  //     recruitment: toggleOn2[0],
+  //     performance: toggleOn2[1],
+  //     training: toggleOn2[2],
+  //   };
 
-    try {
-      const savedTenant = await authAPI.createTenant(payload);
-      console.log("Tenant saved:", savedTenant);
-      router.push("/SuperAdmin/AllOrganization");
-    } catch (err) {
-      console.error("Error saving tenant:", err.message);
+  //   try {
+  //     const savedTenant = await authAPI.createTenant(payload);
+  //     console.log("Tenant saved:", savedTenant);
+  //     router.push("/SuperAdmin/AllOrganization");
+  //   } catch (err) {
+  //     console.error("Error saving tenant:", err.message);
+  //   }
+  // };
+
+      const onSubmit = (data) => {
+        console.log("Form Data", data);
+        router.push('/SuperAdmin/CreateOrganization/RegisterAdmin');     
+          console.log("✅ Submitted successfully!");
+    
+    };
+    const onCancle = () => {
+      router.push('/')
     }
-  };
 
   return (
     <>
@@ -87,7 +97,7 @@ const Page = () => {
           <h4 className='textFormColor'>Create Tenant</h4>
         </div>
     </div>
-    <form onSubmit={handleSubmit(onSubmit)} className="flex gap-[7.0625rem] font-semibold mb-[5rem] ">
+    <form  className="flex gap-[7.0625rem] font-semibold mb-[5rem]  " onSubmit={handleSubmit(onSubmit)}>
       
       {/* Left Section */}
       <div className="w-[42.5625rem]">
@@ -167,7 +177,7 @@ const Page = () => {
                   <div>
                     <Controller
                       control={control}
-                      name="Industry"
+                      name="Country"
                       render={({ field }) => (
                         <Dropdown label="Country" options={['Ethiopia', 'USA']} selected={field.value} onSelect={field.onChange} placeholder="Select Country" />
                       )}
@@ -177,7 +187,7 @@ const Page = () => {
                   <div>
                     <Controller
                       control={control}
-                      name="Time Zone"
+                      name="TimeZone"
                       render={({ field }) => (
                         <Dropdown label="Time Zone" options={['GMC', 'ETh']} selected={field.value} onSelect={field.onChange} placeholder="Select Time Zone" />
                       )}
@@ -254,7 +264,7 @@ const Page = () => {
               {/* Buttons */}
           </div>
           <div className="w-full h-[3.4375rem] flex gap-[2.5625rem] mt-[5.1875rem]">
-            <button type="button" className="w-[19.875rem] border border-formColor text-formColor rounded-[10px] cursor-pointer">Cancel</button>
+            <button type="button" onClick={onCancle} className="w-[19.875rem] border border-formColor text-formColor rounded-[10px] cursor-pointer">Cancel</button>
             <button type="submit" className="w-[19.875rem] bg-lemongreen rounded-[10px] cursor-pointer">Next</button>
           </div>
         </div>
