@@ -39,6 +39,7 @@ const Header = ({ readPath , session }) => {
     "SuperAdmin/AllOrganization": 'All_Organizations',
     "SuperAdmin/CreateOrganization/CreateTenant": "Create_Organization",
     "SuperAdmin/CreateOrganization/RegisterAdmin": "Create_Organization",
+    "SuperAdmin/CreateOrganization/Compensation": "Create_Organization",
 
     "SuperAdmin/OrganizationSettings":'Organization_Settings',
     "Admin/Recruitment": "Recruitment_and_ATS",
