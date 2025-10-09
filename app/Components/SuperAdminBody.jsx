@@ -35,11 +35,11 @@ const SuperAdminBody = ({readPath}) => {
                 </div>
                 {/* Create Organization */}
                 <div className='flex items-center' >
-                    <div className={`${readPath === 'SuperAdmin/CreateOrganization/CreateTenant' || readPath === "SuperAdmin/CreateOrganization/RegisterAdmin" ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                    <div className={`${readPath === 'SuperAdmin/CreateOrganization/CreateTenant' || readPath === "SuperAdmin/CreateOrganization/RegisterAdmin" || readPath === "SuperAdmin/CreateOrganization/Work" || readPath === "SuperAdmin/CreateOrganization/Compensation" ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                     <div className='navLinkconfig'>
                         <Organization readPath={readPath}/>
                         <div>
-                            <Link href='/SuperAdmin/CreateOrganization/CreateTenant'><h4 className={`${readPath === 'SuperAdmin/CreateOrganization/CreateTenant' || readPath === "SuperAdmin/CreateOrganization/RegisterAdmin"  ? 'text-white' : 'text-limegray'} ` }>Create Tenant </h4></Link>
+                            <Link href='/SuperAdmin/CreateOrganization/CreateTenant'><h4 className={`${readPath === 'SuperAdmin/CreateOrganization/CreateTenant' || readPath === "SuperAdmin/CreateOrganization/RegisterAdmin" || readPath === "SuperAdmin/CreateOrganization/Work" || readPath === "SuperAdmin/CreateOrganization/Compensation"  ? 'text-white' : 'text-limegray'} ` }>Create Tenant </h4></Link>
                         </div>
                     </div>
                 </div>

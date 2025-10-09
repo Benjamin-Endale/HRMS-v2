@@ -93,7 +93,7 @@ const Page = () => {
             <div className='  flex flex-col gap-[4.125rem]'>
                 <div className='grid grid-cols-4'>
                     <div className='rounded-[0.53125rem] bg-lemongreen w-[22.625rem] h-[5px]'></div>
-                    <div className='rounded-[0.53125rem] bg-[rgba(223,223,223,0.26)] w-[22.625rem] h-[5px]'></div>
+                    <div className='rounded-[0.53125rem] bg-lemongreen w-[22.625rem] h-[5px]'></div>
                     <div className='rounded-[0.53125rem] bg-[rgba(223,223,223,0.26)] w-[22.625rem] h-[5px]'></div>
                     <div className='rounded-[0.53125rem] bg-[rgba(223,223,223,0.26)] w-[22.625rem] h-[5px]'></div>
                 </div>
