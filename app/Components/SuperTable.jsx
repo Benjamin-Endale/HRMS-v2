@@ -52,7 +52,7 @@ const SuperTableDatafetch = ({admins}) => {
               </div>
             </div>
             <div className='flex flex-col'>
-              <span className='text-5xl text-formColor'>23</span>
+              <span className='text-5xl text-formColor'>{admins.filter(admin => admin.isActive).length}</span>
               <span className='text-formColor'>Active Admins</span>
             </div>
           </div>

@@ -29,17 +29,17 @@ const SuperAdminBody = ({readPath}) => {
                     <div className='navLinkconfig'>
                         <DashboardIcon readPath={readPath}/>
                         <div>
-                            <Link href='/SuperAdmin/AllOrganization'><h4 className={`${readPath === 'SuperAdmin/AllOrganization' ? 'text-white' : 'text-limegray'} ` }>All Organizations</h4></Link>
+                            <Link href='/SuperAdmin/AllOrganization'><h4 className={`${readPath === 'SuperAdmin/AllOrganization' ? 'text-white' : 'text-limegray'} ` }>All Tenant</h4></Link>
                         </div>
                     </div>
                 </div>
                 {/* Create Organization */}
                 <div className='flex items-center' >
-                    <div className={`${readPath === 'SuperAdmin/CreateOrganization' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                    <div className={`${readPath === 'SuperAdmin/CreateOrganization/CreateTenant' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                     <div className='navLinkconfig'>
                         <Organization readPath={readPath}/>
                         <div>
-                            <Link href='/SuperAdmin/CreateOrganization'><h4 className={`${readPath === 'SuperAdmin/CreateOrganization' ? 'text-white' : 'text-limegray'} ` }>Create Organization </h4></Link>
+                            <Link href='/SuperAdmin/CreateOrganization/CreateTenant'><h4 className={`${readPath === 'SuperAdmin/CreateOrganization/CreateTenant' ? 'text-white' : 'text-limegray'} ` }>Create Tenant </h4></Link>
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@ const SuperAdminBody = ({readPath}) => {
                     <div className='navLinkconfig'> 
                         <OrganizationSetting readPath={readPath} />
                         <div>
-                            <Link href='/SuperAdmin/OrganizationSettings'><h4 className={`${readPath === 'SuperAdmin/OrganizationSettings'  ? 'text-white' : 'text-limegray'}`}>Organization Settings</h4></Link>
+                            <Link href='/SuperAdmin/OrganizationSettings'><h4 className={`${readPath === 'SuperAdmin/OrganizationSettings'  ? 'text-white' : 'text-limegray'}`}>Tenant Settings</h4></Link>
                         </div>
                     </div>
                 </div>

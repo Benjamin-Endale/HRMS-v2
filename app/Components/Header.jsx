@@ -37,7 +37,7 @@ const Header = ({ readPath , session }) => {
     "Admin/EmployeeRegistration/Compensation": "Add_New_Employee",
     "Admin/EmployeeRegistration/System": "Add_New_Employee",
     "SuperAdmin/AllOrganization": 'All_Organizations',
-    "SuperAdmin/CreateOrganization": "Create_Organization",
+    "SuperAdmin/CreateOrganization/CreateTenant": "Create_Organization",
     "SuperAdmin/OrganizationSettings":'Organization_Settings',
     "Admin/Recruitment": "Recruitment_and_ATS",
     'SuperAdmin/SuperAdmin':'Super_Administrators',
