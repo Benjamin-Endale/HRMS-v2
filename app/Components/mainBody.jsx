@@ -5,6 +5,7 @@ import Link from 'next/link';
 import DashboardIcon from '@/public/svg/DashboardSvg/Dashboard'
 import Organization from '@/public/svg/DashboardSvg/Organization'
 import Employee from '@/public/svg/DashboardSvg/Employee';
+import UserAuthorization from '@/public/svg/DashboardSvg/UserAuthorization';
 import Attendance from '@/public/svg/DashboardSvg/Attendance';
 import LeaveManegment from '@/public/svg/DashboardSvg/LeaveManegment';
 import Recruitment from '@/public/svg/DashboardSvg/Recruitment';
@@ -28,7 +29,7 @@ const MainBody = ({ readPath }) => {
                 {/* Core */}
                 <section className='space-y-[1.5625rem] w-full  pl-[2.75rem] relative'> 
                     <div>
-                        <h4 className={`${['Dashboard' , 'Organization' , 'Employees', 'Attendance' , 'LeaveManagment' ,"EmployeeRegistration/AddNewemployee" ,'EmployeeRegistration/AddNewemployeesecond',"EmployeeRegistration/Compensation","EmployeeRegistration/System"].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>CORE</h4>
+                        <h4 className={`${['Dashboard' , 'Organization' , 'Employees', 'Attendance' , 'LeaveManagment' ,"EmployeeRegistration/AddNewemployee" ,'EmployeeRegistration/AddNewemployeesecond',"EmployeeRegistration/Compensation","EmployeeRegistration/System", "UserAuthorization/All", "UserAuthorization/Authorized"].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>CORE</h4>
                     </div>
                     <div className='flex items-center' >
                         <div className={`${readPath === 'Dashboard' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
@@ -76,6 +77,25 @@ const MainBody = ({ readPath }) => {
                             <LeaveManegment readPath={readPath}/>
                             <div>
                                 <Link href="/LeaveManagment"><h4 className={`${readPath === 'LeaveManagment' ? 'text-white' : 'text-limegray'} ` }>Leave Managment</h4></Link>
+                            </div>
+                        </div>
+                    </div>
+                    {/* UserAuthorization */}
+                    <div className='flex items-center' >
+                        <div className={`${readPath === 'PerformancePages/Overview' || readPath === "PerformancePages/Goals" || readPath === "PerformancePages/FeedBack" || readPath === "PerformancePages/Reviews"  ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className='navLinkconfig'>
+                            <Performance readPath={readPath}/>
+                            <div>
+                                <Link href="/PerformancePages/Overview"><h4 className={`${readPath === 'PerformancePages/Overview' || readPath === "PerformancePages/Goals" || readPath === "PerformancePages/Reviews" || readPath === "PerformancePages/FeedBack" ? 'text-white' : 'text-limegray'} ` }>Performance</h4></Link>
+                            </div>
+                        </div>
+                    </div> 
+                    <div className='flex items-center'>
+                         <div className={`${readPath === 'UserAuthorization/All' || readPath === "UserAuthorization/Authorized" ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className='navLinkconfig'>
+                            <UserAuthorization readPath={readPath}/>
+                            <div>
+                                <Link href='/UserAuthorization/All'><h4 className={`${readPath === 'UserAuthorization/All' || readPath ==='UserAuthorization/Authorized' ? 'text-white' : 'text-limegray'} ` }>User Authorization</h4></Link>
                             </div>
                         </div>
                     </div>

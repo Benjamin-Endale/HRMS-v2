@@ -2,7 +2,8 @@
 import { redirect } from 'next/navigation';
 
 export default function Home() {
-  redirect('SuperAdmin/AllOrgnization');
-  // redirect('/EmployeePortal/Dashboard');
-  
+  // redirect('/Dashborad');
+  redirect('/Dashboard');
+    // redirect('/SuperAdmin/');
+
 }

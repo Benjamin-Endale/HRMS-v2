@@ -9,7 +9,7 @@ const HeaderPortal = ({ readPath }) => {
     Performance: "Welcome back! Heres whats happening at your portal today.",
     Attendance: "Welcome back! Heres whats happening at your portal today.",
     Leave_Request: "Welcome back! Heres whats happening at your portal today.",
-    Training: "Welcome back! Heres whats happening at your portal today.",
+    HRMS_JOB: "",
     Setting:"Welcome back! Heres whats happening at your portal today.",
     Announcement:"Welcome back! Heres whats happening at your portal today.",
 
@@ -21,7 +21,7 @@ const HeaderPortal = ({ readPath }) => {
     'EmployeePortal/Attendance':'Attendance',
     'EmployeePortal/LeaveRequest':'Leave_Request',
     'EmployeePortal/Performance':'Performance',
-    'EmployeePortal/Training':'Training',
+    'EmployeePortal/Training':'HRMS_JOBs',
     'EmployeePortal/Announcement':'Announcement',
     'EmployeePortal/Setting':'Setting',
     'EmployeePortal/LeaveRequest/Approved':'Leave_request',

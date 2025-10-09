@@ -16,7 +16,10 @@ const SubNavigation = ({ readPath }) => {
     { label: "Interviews", path: "/RecruitmentPages/Interviews" }
   ]
 
-
+    const NavUserAuthorization=[
+        { label: "All", path: "/UserAuthorization/All" },
+        { label: "Authorized", path: "/UserAuthorization/Authorized" },
+    ]
 
     const NavPerformance = [
     { label: "Overview", path: "/PerformancePages/Overview" },
@@ -134,6 +137,7 @@ const SubNavigation = ({ readPath }) => {
                 </div>
             </div>
             </div>
+
             <div className="center-center gap-[1.75rem] font-semibold">
                 {NavPerformance.map(item1 => (
                 <div
@@ -203,8 +207,41 @@ const SubNavigation = ({ readPath }) => {
                 
             </div>
         </div>
+      {/* -------------------- User Authorization Section -------------------- */}
+<div
+  className={`${
+    readPath === 'UserAuthorization' ||
+    readPath === '/UserAuthorization/All' ||
+    readPath === '/UserAuthorization/Authorized'
+      ? 'block'
+      : 'hidden'
+  } cursor-pointer flex flex-col gap-[3.3125rem]`}
+>
+  {/* Tabs Only */}
+  <div className="iconheader gap-[1.75rem] font-semibold">
+    {NavUserAuthorization.map((item3) => (
+      <div
+        key={item3.path}
+        onClick={() => router.push(item3.path)}
+        className={`w-[8.875rem] text-center flex justify-center py-[0.875rem] relative px-[1.875rem] text-nowrap ${
+          pathname === item3.path ? 'text-lemongreen' : 'textLimegray1'
+        }`}
+      >
+        {item3.label}
+        <div
+          className={`${
+            pathname === item3.path
+              ? 'absolute left-0 h-[3px] w-full bottom-0 rounded-[0.375rem] bg-lemongreen'
+              : ''
+          }`}
+        ></div>
+      </div>
+    ))}
+  </div>
+</div>
+
     </div>
   )
 }
 
-export default SubNavigation
+export default SubNavigation;

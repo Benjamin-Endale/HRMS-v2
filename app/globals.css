@@ -144,8 +144,6 @@ body {
   background-color: #333C2D; 
 }
 
-
-
 .scrollbar-hide::-webkit-scrollbar {
   display: hidden; 
 }

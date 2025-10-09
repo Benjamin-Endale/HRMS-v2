@@ -1,5 +1,6 @@
 import React from 'react'
 import { SignOutButton } from './SignOutButton'
+import UserAuthorization from '@/public/svg/DashboardSvg/UserAuthorization'
 
 const Header = ({ readPath , session }) => {
   // Object with code-friendly keys
@@ -9,6 +10,7 @@ const Header = ({ readPath , session }) => {
     Employee: "Manage employee profile, roles, and organizational structure.",
     Attendance: "Monitor employee attendance, working hours, and presence status.",
     Leave_Management: "Manage employee leave requests, balances, and policies.",
+    User_Authorization: "Welcome back! Here's what's happening at your organization today.",
     Recruitment_and_ATS: "Manage job postings, candidates, and hiring process",
     Performance_Management:"Track goals, conduct reviews, and manage employee performance.",
     cements_and_Notifications:"Manage company-wide communications and employee notifications.",
@@ -29,6 +31,7 @@ const Header = ({ readPath , session }) => {
     "Employees": "Employee",
     "Attendance": "Attendance",
     "LeaveManagment": "Leave_Management",
+    "UserAuthorization": "User_Authorization",
     "Performance":"Performance_Management",
     "Training":"Training_and_Development",
     "Setting":"Setting",
@@ -43,6 +46,8 @@ const Header = ({ readPath , session }) => {
     "Recruitment": "Recruitment_and_ATS",
     'SuperAdmin/SuperAdmin':'Super_Administrators',
     'SuperAdmin/UserStatics': 'User_Statics',
+    "UserAuthorization/All": "User_Authorization",
+    "UserAuthorization/Authorized": "User_Authorization",
     'RecruitmentPages/Jobposting' : "Recruitment_and_ATS",
     "RecruitmentPages/Candidates": "Recruitment_and_ATS",
     "RecruitmentPages/Interviews": "Recruitment_and_ATS",

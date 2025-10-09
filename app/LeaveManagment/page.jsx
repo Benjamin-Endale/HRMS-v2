@@ -42,7 +42,7 @@ const page = () => {
                 <div className='h-full between flex-col'>
                     <div className='flex justify-between'>
                         <div>
-                           <img src="/svg/SvgImage/cardIcon.svg" alt="" />
+                          <img src="/svg/SvgImage/cardIcon.svg" alt="" />
                         </div>
                     </div>
                     <div className='flex flex-col'>
