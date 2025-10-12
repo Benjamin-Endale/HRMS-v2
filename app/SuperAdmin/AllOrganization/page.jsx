@@ -22,20 +22,27 @@ const handleState = (status) => {
 
 export default async function Page () {
   const session = await auth();
+  const token = session?.accessToken;
 
-  // ✅ fetch organizations from your API
+  if (!token) {
+    console.error("No access token available. User might not be logged in.");
+    return <div>Please login to see organizations</div>;
+  }
+
   let organizations = [];
   try {
-    organizations = await hrmsAPI.getOrganizations({
-      headers: {
-        Authorization: `Bearer ${session?.accessToken}`,
-      },
-    });
+    organizations = await hrmsAPI.getOrganizations(token);
   } catch (err) {
     console.error("Failed to fetch organizations:", err);
+    organizations = [];
+  }
+
+  if (organizations.length === 0) {
+    console.log("No organizations found yet.");
   }
 
   
+
 
 return (
     // mainContainer

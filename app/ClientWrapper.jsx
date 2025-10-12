@@ -53,7 +53,7 @@ export default function ClientWrapper({ children, session }) {
         if (!session?.user?.id || (session.requiresOtp && !session.otpVerified)) return;
         const updateLastLogin = async () => {
             try {
-            await hrmsAPI.touchLogin(session.user.id);
+            await hrmsAPI.touchLogin(session?.user?.id || '-');
             } catch (err) {
             console.error('Failed to update last login:', err);
             }

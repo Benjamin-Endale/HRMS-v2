@@ -157,11 +157,29 @@ export const hrmsAPI = {
       body: employeeData 
     }),
 
+
+
+    
+
+  createTenant: (tenants) =>
+    apiClient('/tenants', { 
+      method: 'POST', 
+      body: tenants 
+}),
+
+
   createSuperadmin: (userData) =>
     apiClient('/users', { 
       method: 'POST', 
       body: userData 
     }),
+  createUser: (userData) =>
+    apiClient('/users', { 
+      method: 'POST', 
+      body: userData 
+    }),
+
+
 
   touchLogin: (id) =>
     apiClient(`/users/${id}/touch-login`, {
@@ -181,8 +199,13 @@ export const hrmsAPI = {
     }),
 
   // Organization management
-  getOrganizations: () =>
-    apiClient('/tenants'),
+    getOrganizations: (token) =>
+      apiClient('/tenants', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+
   
   getOrganizationById: (id) =>
     apiClient(`/organizations/${id}`),
@@ -249,3 +272,5 @@ const attendance = await hrmsAPI.getAttendanceRecords({
   employeeId: '123'
 });
 */
+
+ 

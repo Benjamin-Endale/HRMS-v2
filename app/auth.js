@@ -9,7 +9,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     Credentials({
       name: "credentials",
       credentials: {
-        username: { label: "Username", type: "text" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
         otp: { label: "OTP", type: "text" },
       },
@@ -19,7 +19,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
           if (credentials.otp) {
             const response = await authAPI.verifyOtp(
-              credentials.username,
+              credentials.email,
               credentials.otp,
             );
 
@@ -29,7 +29,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
               return {
                 id: response.id, // ✅ always use backend id
                 name: response.fullName || response.username || credentials.username,
-                email: response.email || `${credentials.username}@gmail.com`,
                 accessToken: response.accessToken,
                 refreshToken: response.refreshToken,
                 role: response.role,
@@ -44,7 +43,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           }
 
           const response = await authAPI.login({
-            UsernameOrEmail: credentials.username,
+            UsernameOrEmail: credentials.email,
             Password: credentials.password,
           });
 
@@ -52,7 +51,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
           return {
             id: response.id, 
-            name: response.fullName || response.username || credentials.username,
+            name: response.fullName || response.email || credentials.email,
             email: response.email || `${credentials.username}@gmail.com`,
             role: response.role || null,
             fullName: response.fullName,

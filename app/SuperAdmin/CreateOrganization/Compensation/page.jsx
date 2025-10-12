@@ -6,6 +6,7 @@ import { Dropdown } from '@/app/Components/DropDown'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useAdminForm } from '@/app/Store/AdminFormContext';
 
 // Zod schema for validation
 const schema = z.object({
@@ -15,19 +16,19 @@ Salary: z.coerce
   })
   .min(1000, 'Salary must be at least 1000 birr'),
   PaymentMethod: z.string().nonempty('Payment Method is required'),
-TaxID: z
+TaxIdentificationNumber: z
   .string()
   .length(10, 'Tax Identification Number must be exactly 10 digits')
   .regex(/^\d+$/, 'Tax Identification Number must contain only digits'),
-  Passport: z
+  PassportNumber: z
     .string()
     .min(1, 'Passport number is required'),   
-  BankAccount: z
+  BankAccountNumber: z
   .string()
   .length(13, 'Bank Account Number must be exactly 13 digits')
   .regex(/^\d+$/, 'Bank Account Number must contain only digits'),
   Currency: z.string().nonempty('Currency is required'),
-  Benefits: z.string().nonempty('Benefits Enrollment is required'),
+  BenefitsEnrollment: z.string().nonempty('Benefits Enrollment is required'),
   ContractFile: z
     .any()
     .refine(file => file?.length > 0, 'Contract file is required'),
@@ -38,7 +39,8 @@ TaxID: z
 
 const Page = () => {
   const router = useRouter()
- 
+    const { compensationData, setCompensationData } = useAdminForm();
+  
 
   const {
     register,
@@ -47,23 +49,39 @@ const Page = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: {
-      Salary: '',
-      PaymentMethod: '',
-      TaxID: '',
-      Passport: '',
-      BankAccount: '',
-      Currency: '',
-      Benefits: '',
-      ContractFile: null,
-      Resume: null,
-    },
+      defaultValues: {
+        Salary: compensationData.Salary || '',
+        PaymentMethod: compensationData.PaymentMethod || '',
+        TaxIdentificationNumber: compensationData.TaxIdentificationNumber || '',
+        PassportNumber: compensationData.PassportNumber || '',
+        BankAccountNumber: compensationData.BankAccountNumber || '',
+        Currency: compensationData.Currency || '',
+        BenefitsEnrollment: compensationData.BenefitsEnrollment || '',
+        ContractFile: '',
+        Resume: '',
+      }
+
   })
 
-  const onSubmit = (data) => {
-    console.log('Form Data:', data)
-    router.push('/SuperAdmin/CreateOrganization/Work')
-  }
+const onSubmit = (data) => {
+  const payload = {
+    Salary: data.Salary,
+    PaymentMethod: data.PaymentMethod,
+    TaxIdentificationNumber: data.TaxIdentificationNumber,
+    PassportNumber: data.PassportNumber,
+    BankAccountNumber: data.BankAccountNumber,
+    Currency: data.Currency,
+    BenefitsEnrollment: data.BenefitsEnrollment,
+    ContractFile: data.ContractFile?.[0],  // first file
+    Resume: data.Resume?.[0],             // first file
+
+
+  };
+
+  setCompensationData(payload); // store for later steps
+  router.push('/SuperAdmin/CreateOrganization/UserAccess');
+};
+
 
   return (
     <>
@@ -88,7 +106,7 @@ const Page = () => {
             <div className='flex gap-[2.5625rem]'> 
               <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
                 {/* Salary */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Salary</label>
                   <input
                     type='number'
@@ -96,11 +114,11 @@ const Page = () => {
                     className='inputMod'
                     {...register('Salary')}
                   />
-                  {errors.Salary && <span className='text-Error text-[1rem]'>{errors.Salary.message}</span>}
+                  {errors.Salary && <span className='text-Error text-[1rem] absolute bottom-[-2rem] '>{errors.Salary.message}</span>}
                 </div>
 
                 {/* Payment Method */}
-                <div>
+                <div className='relative'>
                   <Controller
                     control={control}
                     name='PaymentMethod'
@@ -114,48 +132,48 @@ const Page = () => {
                       />
                     )}
                   />
-                  {errors.PaymentMethod && <span className='text-Error text-[1rem]'>{errors.PaymentMethod.message}</span>}
+                  {errors.PaymentMethod && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.PaymentMethod.message}</span>}
                 </div>
 
                 {/* Tax ID */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Tax Identification Number</label>
                   <input
                     type='number'
                     placeholder='e.x 78567578'
                     className='inputMod'
-                    {...register('TaxID')}
+                    {...register('TaxIdentificationNumber')}
                   />
-                  {errors.TaxID && <span className='text-Error text-[1rem]'>{errors.TaxID.message}</span>}
+                  {errors.TaxIdentificationNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.TaxIdentificationNumber.message}</span>}
                 </div>
 
                 {/* Passport */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Passport Number</label>
                   <input
                     type='text'
                     placeholder='e.x 1000 234 153 6855'
                     className='inputMod'
-                    {...register('Passport')}
+                    {...register('PassportNumber')}
                   />
-                  {errors.Passport && <span className='text-Error text-[1rem]'>{errors.Passport.message}</span>}
+                  {errors.PassportNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.PassportNumber.message}</span>}
                 </div>
 
                 {/* Contract File */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Contract File</label>
                   <label className='inputModfile cursor-pointer border-none'>
                     <img src='/image/Icon/File.png' alt='' />
                     <span className='text-limeLight'>Upload Contract File</span>
                     <input type='file' className='hidden' {...register('ContractFile')} />
                   </label>
-                  {errors.ContractFile && <span className='text-Error text-[1rem]'>{errors.ContractFile.message}</span>}
+                  {errors.ContractFile && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.ContractFile.message}</span>}
                 </div>
               </div>
 
               <div className='w-[23.1875rem] flex flex-col gap-[35px]'>
                 {/* Currency */}
-                <div>
+                <div className='relative'>
                   <Controller
                     control={control}
                     name='Currency'
@@ -169,26 +187,26 @@ const Page = () => {
                       />
                     )}
                   />
-                  {errors.Currency && <span className='text-Error text-[1rem]'>{errors.Currency.message}</span>}
+                  {errors.Currency && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Currency.message}</span>}
                 </div>
 
                 {/* Bank Account */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Bank Account Number</label>
                   <input
                     type='text'
                     placeholder='e.x 1000 234 153 6855'
                     className='inputMod'
-                    {...register('BankAccount')}
+                    {...register('BankAccountNumber')}
                   />
-                  {errors.BankAccount && <span className='text-Error text-[1rem]'>{errors.BankAccount.message}</span>}
+                  {errors.BankAccountNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.BankAccountNumber.message}</span>}
                 </div>
 
                 {/* Benefits */}
-                <div>
+                <div className='relative'>
                   <Controller
                     control={control}
-                    name='Benefits'
+                    name='BenefitsEnrollment'
                     render={({ field }) => (
                       <Dropdown
                         label='Benefits Enrollment'
@@ -199,18 +217,18 @@ const Page = () => {
                       />
                     )}
                   />
-                  {errors.Benefits && <span className='text-Error text-[1rem]'>{errors.Benefits.message}</span>}
+                  {errors.BenefitsEnrollment && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.BenefitsEnrollment.message}</span>}
                 </div>
 
                 {/* Resume */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Resume</label>
                   <label className='inputModfile cursor-pointer border-none'>
                     <img src='/image/Icon/File.png' alt='' />
                     <span className='text-limeLight'>Upload CV</span>
                     <input type='file' className='hidden' {...register('Resume')} />
                   </label>
-                  {errors.Resume && <span className='text-Error text-[1rem]'>{errors.Resume.message}</span>}
+                  {errors.Resume && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Resume.message}</span>}
                 </div>
               </div>
             </div>

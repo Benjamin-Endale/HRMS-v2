@@ -8,7 +8,6 @@ import { logout } from "@/app/lib/actions/auth";
 const VerifyOtpPage = () => {
   const inputsRef = useRef([]);
   const searchParams = useSearchParams();
-  const username = searchParams.get("username");
   const email = searchParams.get("email");
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [loading, setLoading] = useState(false);
@@ -66,11 +65,10 @@ const handleVerify = async () => {
   try {
     const result = await signIn("credentials", {
       redirect: false,
-      username,
+      email,
       otp: otpCode,
 
     });
-
     if (result?.error) {
       setError("Invalid OTP. Try again.");
     } else {
@@ -109,7 +107,7 @@ const handleVerify = async () => {
       setSuccess("");
       
       // Use your authAPI to resend OTP
-      const response = await authAPI.resendOtp(username);
+      const response = await authAPI.resendOtp(email);
 
       if (response.success) {
         setSuccess("OTP resent successfully! Check your email.");
@@ -131,7 +129,7 @@ const handleVerify = async () => {
         <div>
           <h1 className="textFormColor">Enter Verification Code</h1>
           <h4 className="text-limegray">
-            We sent a code to <span className="font-bold">your Email</span>
+            We sent a code to <span className="font-bold">{email}</span>
           </h4>
         </div>
 

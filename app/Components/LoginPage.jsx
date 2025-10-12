@@ -10,10 +10,11 @@ import { SignInButton } from './SignInButton';
 
 // ✅ Validation schema
 const loginSchema = z.object({
-  username: z.string()
-    .min(3, "Username must be at least 3 characters long")
-    .max(20, "Username must not exceed 20 characters")
-    .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"),
+    email: z.string()
+      .email("Invalid email address")
+      .min(3, "Email must be at least 3 characters long")
+      .max(50, "Email must not exceed 50 characters"),
+
   password: z.string()
     .min(8, "Password must be at least 8 characters long")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
@@ -28,7 +29,7 @@ export default function LoginPage() {
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(loginSchema),
-    defaultValues: { username: '', password: '' }
+    defaultValues: { email: '', password: '' }
   });
 
   // ✅ Fixed login handler
@@ -40,7 +41,7 @@ export default function LoginPage() {
       // Use signIn with credentials
       const result = await signIn('credentials', {
         redirect: false,
-        username: data.username,
+        email: data.email,
         password: data.password,
       });
 
@@ -49,7 +50,7 @@ export default function LoginPage() {
         setLoginError("Invalid credentials or login failed");
       } else {
         // &email=${encodeURIComponent(result.email)}
-        window.location.href = `/Login/VerifyOtp?username=${encodeURIComponent(data.username)}`;}
+        window.location.href = `/Login/VerifyOtp?email=${encodeURIComponent(data.email)}`;}
 
 
     } catch (err) {
@@ -127,21 +128,21 @@ export default function LoginPage() {
 
               {/* Form */}
               <form onSubmit={handleSubmit(handleLogin)} className="flex flex-col gap-[4.75rem]">
-                {/* Username */}
+                {/* Email */}
                 <div className="flex flex-col gap-[0.25rem]">
-                  <label className="text-white">Username</label>
+                  <label className="text-white">Email</label>
                   <div className="relative flex items-center w-[31.0625rem] h-[3.4375rem]">
                     <div className="absolute z-10 pl-[1.1875rem]">
-                      <img src="/image/userGray.png" alt="Username icon" />
+                      <img src="/image/userGray.png" alt="Email icon" />
                     </div>
                     <input
                       className="pl-[66px] h-full w-full rounded-[5px] border-2 border-[#1D2015] text-white focus:outline-none focus:border-lemongreen focus:ring-lemongreen bg-[#1D2015]"
                       type="text"
                       placeholder='ex. John Don'
-                      {...register("username")}
+                      {...register("email")}
                     />
                   </div>
-                  {errors.username && <span className='text-Error'>{errors.username.message}</span>}
+                  {errors.email && <span className='text-Error'>{errors.email.message}</span>}
                 </div>
 
                 {/* Password */}
