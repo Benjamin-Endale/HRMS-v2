@@ -5,6 +5,8 @@ const roleRoutes = {
   SuperAdmin: "/SuperAdmin/AllOrganization",
   HR: "/Admin/Dashboard",
   Employee: "/EmployeePortal/Dashboard",
+  SystemAdmin: "/Admin/Dashboard",
+  
 };
 
 // Routes that should be accessible during OTP flow
@@ -29,6 +31,7 @@ export async function middleware(req) {
     // ✅ CRITICAL: Prevent access to OTP pages after successful verification
     if (token?.otpVerified && isOtpFlowRoute && !pathname.startsWith("/api/auth/")) {
       const role = token.role;
+      console.log(role)
       return NextResponse.redirect(new URL(roleRoutes[role] || "/Unauthorized", req.url));
     }
     return NextResponse.next();
@@ -48,7 +51,7 @@ export async function middleware(req) {
   // ✅ Prevent access to any routes if OTP is required but not verified
   if (requiresOtp && !isOtpVerified) {
     const verifyUrl = new URL("/Login/VerifyOtp", req.url);
-    verifyUrl.searchParams.set("username", token.sub || token.username || "");
+    verifyUrl.searchParams.set("email",  token.email || "");
     return NextResponse.redirect(verifyUrl);
   }
 
@@ -58,9 +61,10 @@ export async function middleware(req) {
   }
 
   // Role-based access control
-  if (pathname.startsWith("/Admin") && role !== "HR") {
-    return NextResponse.redirect(new URL("/Unauthorized", req.url));
-  }
+if (pathname.startsWith("/Admin") && role !== "HR" && role !== "SystemAdmin") {
+  return NextResponse.redirect(new URL("/Unauthorized", req.url));
+}
+
 
   if (pathname.startsWith("/SuperAdmin") && role !== "SuperAdmin") {
     return NextResponse.redirect(new URL("/Unauthorized", req.url));

@@ -8,6 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useAdminForm } from '@/app/Store/AdminFormContext';
 import { hrmsAPI } from '@/app/lib/api/client'
 import { toFormData } from '@/app/lib/utils/toFormData'
+import { toPascal } from '@/app/lib/utils/toPascal';
+
 
 const schema = z
   .object({
@@ -38,115 +40,113 @@ const Page = () => {
 const { register, handleSubmit, setValue, formState: { errors } } = useForm({
   resolver: zodResolver(schema),
   defaultValues: {
-    email: employeeData?.Email || '',
+    email: employeeData?.email || '',
     role:'SystemAdmin',
     password: '',
-    contractFile: undefined
   },
 })
 
 useEffect(() => {
-  if (employeeData?.email) setValue('email', employeeData.Email)
+  if (employeeData?.email) setValue('email', employeeData.email)
 }, [employeeData, setValue])
 
 console.log("employeeData:", employeeData);
 console.log("compensationData:", compensationData);
 
+const employeePayload = {...employeeData , ...compensationData};
+
+      // Convert keys to PascalCase
+const pascalEmployee = toPascal(employeePayload);
+
+console.log(employeePayload)
+console.log(pascalEmployee)
 
 const onSubmit = async (data) => {
   try {
     setLoading(true);
 
-    // 1️⃣ Prepare tenant payload
+    // --- Prepare Tenant Payload ---
     let tenantPayload = { ...tenantData };
-    if (!tenantPayload.Domain || tenantPayload.Domain === employeeData.Email) {
-      const randomSuffix = Math.floor(Math.random() * 10000);
-      tenantPayload.Domain = `tenant${randomSuffix}@example.com`;
+    if (!tenantPayload.Domain || tenantPayload.Domain === employeeData?.Email) {
+      tenantPayload.Domain = `tenant${Math.floor(Math.random() * 10000)}@example.com`;
     }
+    console.log(tenantPayload)
 
-    // 2️⃣ Create tenant
+    // --- Create Tenant ---
     const tenantRes = await hrmsAPI.createTenant(tenantPayload);
-    const tenantId = tenantRes.id;
+    console.log("Tenant response:", tenantRes);
 
-    // 3️⃣ Prepare employee FormData
-    const employeePayload = new FormData();
+    const tenantId = tenantRes?.tenant?.id;
+    if (!tenantId) throw new Error('Tenant creation failed: tenantId missing');
 
-    // Merge employeeData
-    const requiredEmployeeFields = {
-      FirstName: employeeData.FirstName || 'DefaultFirst',
-      LastName: employeeData.LastName || 'DefaultLast',
-      Email: employeeData.Email || data.email,
-      Gender: employeeData.Gender || 'NotSpecified',
-      Address: employeeData.Address || 'NotSpecified',
-      JobTitle: employeeData.JobTitle || 'SystemAdmin',
-      Nationality: employeeData.Nationality || 'NotSpecified',
-      PhoneNumber: employeeData.PhoneNumber || '0000000000',
-      MaritalStatus: employeeData.MaritalStatus || 'NotSpecified',
-      EmploymentType: employeeData.EmploymentType || 'FullTime',
-      EmergencyContactName: employeeData.EmergencyContactName || 'NotSpecified',
-      EmergencyContactNumber: employeeData.EmergencyContactNumber || '0000000000',
-      EmployeeEducationStatus: employeeData.EmployeeEducationStatus || 'NotSpecified',
-      PhotoUrl: employeeData.PhotoUrl || 'https://dummyimage.com/1x1/000/fff', // placeholder
-      ...employeeData, // merge any other optional fields
+
+
+    // --- Prepare Employee Payload ---
+    const plainEmployee = JSON.parse(JSON.stringify(employeeData || {}));
+    const plainCompensation = JSON.parse(JSON.stringify(compensationData || {}));
+
+    const rawEmployee = {
+      ...plainEmployee,
+      ...plainCompensation,
+      TenantId: tenantId,
     };
 
-    Object.entries(requiredEmployeeFields).forEach(([key, value]) => {
-      if (value !== undefined) {
-        if (value instanceof File) {
-          employeePayload.append(key, value);
-        } else {
-          employeePayload.append(key, value);
+    // Convert keys to PascalCase (matches your backend DTO)
+    const pascalEmployee = toPascal(rawEmployee);
+
+    // --- Convert to FormData ---
+    const formData = new FormData();
+
+    for (const key in pascalEmployee) {
+      if (!pascalEmployee.hasOwnProperty(key)) continue;
+
+      const value = pascalEmployee[key];
+
+      if (value instanceof FileList) {
+        for (let i = 0; i < value.length; i++) {
+          formData.append(key, value[i]);
         }
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value.toString());
       }
-    });
-
-    // Merge compensation data
-    Object.entries(compensationData).forEach(([key, value]) => {
-      if (value !== undefined) {
-        if (value instanceof File) employeePayload.append(key, value);
-        else employeePayload.append(key, value);
-      }
-    });
-Object.entries(employeeData).forEach(([key, value]) => {
-  if (value !== undefined) {
-    if (value instanceof FileList && value.length > 0) {
-      employeePayload.append(key, value[0]); // ✅ send the first file
-    } else if (value instanceof File) {
-      employeePayload.append(key, value);
-    } else {
-      employeePayload.append(key, value);
     }
-  }
-});
 
-    // Add tenant ID
-    employeePayload.append('tenantId', tenantId);
+    console.log("📦 Final FormData entries:", Object.fromEntries(formData.entries()));
 
-    // 4️⃣ Send employee creation request
-    const employeeRes = await hrmsAPI.createEmployee(employeePayload);
-    const employeeId = employeeRes.id;
+    // --- Create Employee ---
+    const employeeRes = await hrmsAPI.createEmployee(formData);
+    console.log("✅ Employee created:", employeeRes);
 
-    // 5️⃣ Create user
-    await hrmsAPI.createUser({
+    const employeeId = employeeRes?.employeeID;
+    const employeeName = employeeRes?.employeeName;
+    if (!employeeId) throw new Error('Employee creation failed: employeeId missing');
+
+    // --- Create User ---
+    const user= await hrmsAPI.createUser({
       tenantId,
       employeeId,
       email: data.email || employeeData.Email,
       password: data.password,
+      role: data.role,
+      fullName: employeeName
     });
 
-    // 6️⃣ Update context
-    setEmployeeData(prev => ({ ...prev, ...data, tenantId }));
+    console.log(user)
+
+
+    // --- Update Local State ---
+    setEmployeeData((prev) => ({ ...prev, ...data, tenantId }));
 
     alert('Tenant, employee, and user created successfully!');
     router.push('/');
+
   } catch (err) {
-    console.error(err);
+    console.error('Submission Error:', err);
     alert('Error: ' + (err.message || JSON.stringify(err)));
   } finally {
     setLoading(false);
   }
 };
-
 
 
 

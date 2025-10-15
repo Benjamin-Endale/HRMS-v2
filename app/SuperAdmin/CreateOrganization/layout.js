@@ -3,5 +3,6 @@
 import { AdminFormProvider } from '@/app/Store/AdminFormContext';
 
 export default function CreateOrganizationLayout({ children }) {
-  return <AdminFormProvider>{children}</AdminFormProvider>;
+
+  return <AdminFormProvider>{children}</AdminFormProvider> ;
 }

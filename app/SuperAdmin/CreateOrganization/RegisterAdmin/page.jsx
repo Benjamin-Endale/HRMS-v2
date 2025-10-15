@@ -13,9 +13,9 @@ import Employee from '@/public/svg/DashboardSvg/Employee';
 
 
 const schema = z.object({
-    FirstName: z.string().min(3, "First name is required"),  
-    LastName: z.string().min(2, "Last name is required"),
-    DateOfBirth: z.
+    firstName: z.string().min(3, "First name is required"),  
+    lastName: z.string().min(2, "Last name is required"),
+    dateOfBirth: z.
     string()
     .min(1, { message: "Date of Birth is required" }) 
     .refine((value) => {
@@ -32,24 +32,24 @@ const schema = z.object({
   }, {
     message: "You must be at least 18 years old",
   }),
-    Nationality: z.string().nonempty("Nationality is required"),
-    Email: z.string().email("Enter a valid email"),
-    Address: z.string().min(3, "Address is required"),
-    Gender: z.string().nonempty("Gender is required"),
-    MaritalStatus: z.string().nonempty("Marital status is required"),
-    PhoneNumber: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
-    EmergencyContact: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
-    EmergencyContactName: z.string().min(3, "Contact file  is required"),
-    JobTitle: z.string().nonempty("Job Title is required"),
-    EmployeeEducationStatus:z.string().nonempty("Status Title is required"),
-    EmploymentType: z.string().nonempty("Employment Type is required"),
-    JoiningDate: z.string().nonempty("Joining Date is required"),
-    Shift: z.string().nonempty('Shift is required'),
-    WorkLocation: z.string().nonempty('Work Location is required'),
-    Certification: z
+    nationality: z.string().nonempty("Nationality is required"),
+    email: z.string().email("Enter a valid email"),
+    address: z.string().min(3, "Address is required"),
+    gender: z.string().nonempty("Gender is required"),
+    maritalStatus: z.string().nonempty("Marital status is required"),
+    phoneNumber: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
+    emergencyContactNumber: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
+    emergencyContactName: z.string().min(3, "Contact file  is required"),
+    jobTitle: z.string().nonempty("Job Title is required"),
+    employeeEducationStatus:z.string().nonempty("Status Title is required"),
+    employmentType: z.string().nonempty("Employment Type is required"),
+    hireDate: z.string().nonempty("Joining Date is required"),
+    shiftDetails: z.string().nonempty('Shift is required'),
+    workLocation: z.string().nonempty('Work Location is required'),
+    certificationFile: z
         .any()
         .refine(file => file?.length > 0, 'Certification file is required'),
-    PhotoUrl: z
+    photo: z
         .any()
         .refine(file => file?.length > 0, 'Certification file is required'),
 });
@@ -66,66 +66,34 @@ const Page = () => {
     } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-        FirstName: employeeData.FirstName || "",
-        LastName: employeeData.LastName || "",
-        DateOfBirth: employeeData.DateOfBirth || "",
-        Nationality: employeeData.Nationality || "",
-        Email: employeeData.Email || "",
-        Address: employeeData.Address || "",
-        Gender: employeeData.Gender || "",
-        MaritalStatus: employeeData.MaritalStatus || "",
-        PhoneNumber: employeeData.PhoneNumber || "",
-        EmergencyContactName:employeeData.EmergencyContactName || "",
-        EmergencyContact: employeeData.EmergencyContact || "",
-        JobTitle: employeeData.JobTitle || "",
-        EmploymentType: employeeData.EmploymentType || "",
-        JoiningDate: employeeData.JoiningDate || "",
-        Shift: employeeData.Shift || "",
-        WorkLocation: employeeData.WorkLocation || "",
-        EmployeeEducationStatus: employeeData.EmployeeEducationStatus || "",
-        Certification: null,
-        PhotoUrl: employeeData.PhotoUrl || "",
+        firstName: employeeData.firstName || "",
+        lastName: employeeData.lastName || "",
+        dateOfBirth: employeeData.dateOfBirth || "",
+        nationality: employeeData.nationality || "",
+        email: employeeData.email || "",
+        address: employeeData.address || "",
+        gender: employeeData.gender || "",
+        maritalStatus: employeeData.maritalStatus || "",
+        phoneNumber: employeeData.phoneNumber || "",
+        emergencyContactName:employeeData.emergencyContactName || "",
+        emergencyContactNumber: employeeData.emergencyContactNumber || "",
+        jobTitle: employeeData.jobTitle || "",
+        employmentType: employeeData.employmentType || "",
+        hireDate: employeeData.hireDate || "",
+        shiftDetails: employeeData.shiftDetails || "",
+        workLocation: employeeData.workLocation || "",
+        employeeEducationStatus: employeeData.employeeEducationStatus || "",
+        certificationFile: employeeData.certificationFile || "",
+        photo: employeeData.photo || '',
     },
     });
 
 
         console.log(errors)
-const onSubmit = (data) => {
-  const payload = {
-    // Personal info
-    FirstName: data.FirstName,
-    LastName: data.LastName,
-    DateOfBirth: data.DateOfBirth,
-    Gender: data.Gender,
-    MaritalStatus: data.MaritalStatus,          // already matches DTO
-    Nationality: data.Nationality,
-    Email: data.Email,
-    PhoneNumber: data.PhoneNumber,
-    Address: data.Address,
-    EmergencyContactName: data.EmergencyContactName,
-    EmergencyContactNumber: data.EmergencyContact, // map input to DTO
-
-    // Job info
-    JobTitle: data.JobTitle,
-    EmployeeEducationStatus: data.EmployeeEducationStatus,
-    EmploymentType: data.EmploymentType,
-    HireDate: data.JoiningDate,                  // map JoiningDate -> HireDate
-    ShiftDetails: data.Shift,                    // map Shift -> ShiftDetails
-    WorkLocation: data.WorkLocation,
-    Certification: data.Certification?.[0],     // first file
-
-    // Required backend defaults
-    PhotoUrl: data.PhotoUrl || "",              
-    BankDetails: "{}",                           
-    CustomFields: "{}",
-    TenantId: employeeData.TenantId,            // pass from context or previous step
-    OrganizationId: employeeData.OrganizationId || null,
-    DepartmentId: employeeData.DepartmentId || null,
-  };
-
-  setEmployeeData(payload);
-  router.push('/SuperAdmin/CreateOrganization/Compensation');
-};
+        const onSubmit = (data) => {
+            setEmployeeData(data);
+            router.push('/SuperAdmin/CreateOrganization/Compensation');
+        };
 
 
     return (
@@ -139,7 +107,7 @@ const onSubmit = (data) => {
                     <div className='rounded-[0.53125rem] bg-lemongreen w-[22.625rem] h-[5px]'></div>
                     <div className='rounded-[0.53125rem] bg-[rgba(223,223,223,0.26)] w-[22.625rem] h-[5px]'></div>
                     <div className='rounded-[0.53125rem] bg-[rgba(223,223,223,0.26)] w-[22.625rem] h-[5px]'></div>
-                </div>
+                </div>  
                 <div>
                     <h4 className='textFormColor'>Register System Admin</h4>
                 </div>
@@ -157,25 +125,25 @@ const onSubmit = (data) => {
                             {/* First Name */}
                             <div className='flex flex-col gap-[1rem] relative'>
                                 <label className='text-formColor'>First Name</label>
-                                <input type="text" placeholder='John' className='inputMod' {...register("FirstName")} />
-                                {errors.FirstName && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.FirstName.message}</span>}
+                                <input type="text" placeholder='John' className='inputMod' {...register("firstName")} />
+                                {errors.firstName && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.firstName.message}</span>}
                             </div>
 
                             {/* Date of Birth */}
                             <div className='flex flex-col gap-[1rem] relative'>
                                 <label className='text-formColor'>Date Of Birth</label>
-                                <input type="date" className='inputMod pr-[1.1875rem]' {...register("DateOfBirth")} />
-                                {errors.DateOfBirth && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.DateOfBirth.message}</span>}
+                                <input type="date" className='inputMod pr-[1.1875rem]' {...register("dateOfBirth")} />
+                                {errors.dateOfBirth && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.dateOfBirth.message}</span>}
                             </div>
 
                             {/* Nationality */}
                             <div className='relative'>
                                 <Controller
                                 control={control}
-                                name="Nationality"
+                                name="nationality"
                                 render={({ field }) => (
                                     <Dropdown
-                                    label="Nationality"
+                                    label="nationality"
                                     options={["Ethiopia", "Kenya", "Nigeria", "South Africa"]}
                                     selected={field.value}
                                     onSelect={field.onChange}
@@ -183,22 +151,22 @@ const onSubmit = (data) => {
                                     />
                                 )}
                                 />
-                                {errors.Nationality && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Nationality.message}</span>}
+                                {errors.nationality && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.nationality.message}</span>}
                             </div>
 
                             {/* Email */}
                             <div className='flex flex-col gap-[1rem] relative'>
                                 <label className='text-formColor'>Email</label>
-                                <input type="email" placeholder='example@gmail.com' className='inputMod' {...register("Email")} />
-                                {errors.Email && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Email.message}</span>}
+                                <input type="email" placeholder='example@gmail.com' className='inputMod' {...register("email")} />
+                                {errors.email && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.email.message}</span>}
                             </div>
 
                             {/* Emergency Contact */}
                              {/* Emergency Contanct */}
                                 <div className='flex flex-col gap-[1rem] mb-[4.5rem] relative'>
                                     <label className='text-formColor'>Emergency Contact Name</label>
-                                    <input type="text" placeholder='Benjamin Endale' className='inputMod' {...register("EmergencyContactName")} />
-                                    {errors.EmergencyContactName && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.EmergencyContactName.message}</span>}
+                                    <input type="text" placeholder='Benjamin Endale' className='inputMod' {...register("emergencyContactName")} />
+                                    {errors.emergencyContactName && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.emergencyContactName.message}</span>}
                                 </div>
 
                                 <div>
@@ -211,15 +179,15 @@ const onSubmit = (data) => {
                             {/* Last Name */}
                             <div className='flex flex-col gap-[1rem] relative'>
                                 <label className='text-formColor'>Last Name</label>
-                                <input type="text" placeholder='Doe' className='inputMod' {...register("LastName")} />
-                                {errors.LastName && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.LastName.message}</span>}
+                                <input type="text" placeholder='Doe' className='inputMod' {...register("lastName")} />
+                                {errors.lastName && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.lastName.message}</span>}
                             </div>
 
                             {/* Gender */}
                             <div className='relative'>
                                 <Controller
                                 control={control}
-                                name="Gender"
+                                name="gender"
                                 render={({ field }) => (
                                     <Dropdown
                                     label="Gender"
@@ -230,14 +198,14 @@ const onSubmit = (data) => {
                                     />
                                 )}
                                 />
-                                {errors.Gender && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Gender.message}</span>}
+                                {errors.gender && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.gender.message}</span>}
                             </div>
 
                             {/* Marital Status */}
                             <div className='relative'>
                                 <Controller
                                 control={control}
-                                name="MaritalStatus"
+                                name="maritalStatus"
                                 render={({ field }) => (
                                     <Dropdown
                                     label="Marital Status"
@@ -248,21 +216,21 @@ const onSubmit = (data) => {
                                     />
                                 )}
                                 />
-                                {errors.MaritalStatus && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.MaritalStatus.message}</span>}
+                                {errors.maritalStatus && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.maritalStatus.message}</span>}
                             </div>
 
                             {/* Phone */}
                             <div className='flex flex-col gap-[1rem] relative'>
                                 <label className='text-formColor'>Phone Number</label>
-                                <input type="text" placeholder='+251987654321' className='inputMod' {...register("PhoneNumber")} />
-                                {errors.PhoneNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem] '>{errors.PhoneNumber.message}</span>}
+                                <input type="text" placeholder='+251987654321' className='inputMod' {...register("phoneNumber")} />
+                                {errors.phoneNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem] '>{errors.phoneNumber.message}</span>}
                             </div>
 
 
                             <div className='flex flex-col gap-[1rem] mb-[4.5rem] relative'>
-                                <label className='text-formColor'>Emergency Contact</label>
-                                <input type="text" placeholder='+251987654321' className='inputMod' {...register("EmergencyContact")} />
-                                {errors.EmergencyContact && <span className='text-Error absolute bottom-[-2rem]'>{errors.EmergencyContact.message}</span>}
+                                <label className='text-formColor'>Emergency Contact Number</label>
+                                <input type="text" placeholder='+251987654321' className='inputMod' {...register("emergencyContactNumber")} />
+                                {errors.emergencyContactNumber && <span className='text-Error absolute bottom-[-2rem]'>{errors.emergencyContactNumber.message}</span>}
                             </div>
                             </div>
                         </div>
@@ -271,70 +239,35 @@ const onSubmit = (data) => {
                         <div className='flex gap-[2.5625rem]'>  
                             {/* Left Column */}
                             <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
-                            {/* Job Title */}
-                            <div className='flex flex-col gap-[1rem] relative'>
-                                <label className='text-formColor'>Job Title</label>
-                                <input 
-                                type="text" 
-                                placeholder='e.g. Senior Developer' 
-                                className='inputMod' 
-                                {...register("JobTitle")}
-                                />
-                                {errors.JobTitle && <span className="text-Error absolute bottom-[-2rem]">{errors.JobTitle.message}</span>}
-                            </div>
-
-                            <div className='flex flex-col gap-[1rem] relative'>
-                                <label className='text-formColor'>Employee Education Status</label>
-                                <input 
-                                type="text" 
-                                placeholder='e.g. Senior Developer' 
-                                className='inputMod' 
-                                {...register("EmployeeEducationStatus")}
-                                />
-                                {errors.EmployeeEducationStatus && <span className="text-Error absolute bottom-[-2rem]">{errors.EmployeeEducationStatus.message}</span>}
-                            </div>
-
-                            
-                                {/* Address */}
-                                <div className='flex flex-col gap-[1rem] mb-[4.5rem] relative'>
-                                    <label className='text-formColor'>Address</label>
-                                    <input type="text" placeholder='Bole, Addis Ababa' className='inputMod' {...register("Address")} />
-                                    {errors.Address && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Address.message}</span>}
+                                {/* Job Title */}
+                                <div className='flex flex-col gap-[1rem] relative'>
+                                    <label className='text-formColor'>Job Title</label>
+                                    <input 
+                                    type="text" 
+                                    placeholder='e.g. Senior Developer' 
+                                    className='inputMod' 
+                                    {...register("jobTitle")}
+                                    />
+                                    {errors.jobTitle && <span className="text-Error absolute bottom-[-2rem]">{errors.jobTitle.message}</span>}
                                 </div>
 
-                            {/* Employment Type */}
-                            <div className='relative'>
-                                <Controller
-                                control={control}
-                                name="EmploymentType"
-                                render={({ field }) => (
-                                    <Dropdown
-                                    label="Employment Type"
-                                    options={['Full Time','Half Time','Remote']}
-                                    selected={field.value}
-                                    onSelect={field.onChange}
-                                    placeholder="Select Employment Type"
+                                <div className='flex flex-col gap-[1rem] relative'>
+                                    <label className='text-formColor'>Employee Education Status</label>
+                                    <input 
+                                    type="text" 
+                                    placeholder='e.g. Senior Developer' 
+                                    className='inputMod' 
+                                    {...register("employeeEducationStatus")}
                                     />
-                                )}
-                                />
-                                {errors.EmploymentType && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.EmploymentType.message}</span>}
-                            </div>
-                                {/* Shift */}
-                                <div className='relative'>
-                                    <Controller
-                                        control={control}
-                                        name='Shift'
-                                        render={({ field }) => (
-                                        <Dropdown
-                                            label='Shift Details'
-                                            options={['Morning Shift', 'Night Shift']}
-                                            selected={field.value}
-                                            onSelect={field.onChange}
-                                            placeholder='Morning Shift'
-                                        />
-                                        )}
-                                    />
-                                    {errors.Shift && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Shift.message}</span>}
+                                    {errors.employeeEducationStatus && <span className="text-Error absolute bottom-[-2rem]">{errors.employeeEducationStatus.message}</span>}
+                                </div>
+
+                            
+                                    {/* Address */}
+                                    <div className='flex flex-col gap-[1rem] mb-[4.5rem] relative'>
+                                        <label className='text-formColor'>Address</label>
+                                        <input type="text" placeholder='Bole, Addis Ababa' className='inputMod' {...register("address")} />
+                                        {errors.address && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.address.message}</span>}
                                     </div>
                                     {/* Certification */}
                                     <div className='flex flex-col gap-[1rem] relative'>
@@ -342,9 +275,9 @@ const onSubmit = (data) => {
                                         <label className='inputModfile cursor-pointer border-none'>
                                             <img src='/image/Icon/File.png' alt='' />
                                             <span className='text-limeLight'>Upload Certification</span>
-                                            <input type='file' className='hidden' {...register('Certification')} />
+                                            <input type='file' className='hidden' {...register('certificationFile')} />
                                         </label>
-                                        {errors.Certification && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Certification.message}</span>}
+                                        {errors.certificationFile && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.certificationFile.message}</span>}
                                     </div>
                                                                         {/* Photo */}
                                     <div className='flex flex-col gap-[1rem] relative'>
@@ -352,29 +285,30 @@ const onSubmit = (data) => {
                                         <label className='inputModfile cursor-pointer border-none'>
                                             <img src='/image/Icon/File.png' alt='' />
                                             <span className='text-limeLight'>Upload Photo</span>
-                                            <input type='file' className='hidden' {...register('PhotoUrl')} />
+                                            <input type='file' className='hidden' {...register('photo')} />
                                         </label>
-                                        {errors.PhotoUrl && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.PhotoUrl.message}</span>}
+                                        {errors.photo && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.photo.message}</span>}
                                     </div>
                             </div>
 
                             {/* Right Column */}
                             <div className='w-[23.1875rem] flex flex-col gap-[35px]'>
+
                                 {/* Joining Date */}
                                 <div className='flex flex-col gap-[1rem] relative'>
-                                    <label className='text-formColor'>Joining Date</label>
+                                    <label className='text-formColor'>Hire Date</label>
                                     <input 
                                     type="date" 
                                     className='inputMod pr-[1.5625rem]' 
-                                    {...register("JoiningDate")}
+                                    {...register("hireDate")}
                                     />
-                                    {errors.JoiningDate && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.JoiningDate.message}</span>}
+                                    {errors.hireDate && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.hireDate.message}</span>}
                                 </div>
                             {/* Work Location */}
-                                <div className='relative'>
+                            <div className='relative'>
                                 <Controller
                                     control={control}
-                                    name='WorkLocation'
+                                    name='workLocation'
                                     render={({ field }) => (
                                     <Dropdown
                                         label='Work Location'
@@ -385,9 +319,45 @@ const onSubmit = (data) => {
                                     />
                                     )}
                                 />
-                                {errors.WorkLocation && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.WorkLocation.message}</span>}
+                                {errors.workLocation && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.workLocation.message}</span>}
+                                </div>
+                            {/* Employment Type */}
+                            <div className='relative mb-[4.5rem]'>
+                                <Controller
+                                control={control}
+                                name="employmentType"
+                                render={({ field }) => (
+                                    <Dropdown
+                                    label="Employment Type"
+                                    options={['Full Time','Half Time','Remote']}
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                    placeholder="Select Employment Type"
+                                    />
+                                )}
+                                />
+                                {errors.employmentType && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.employmentType.message}</span>}
+                            </div>
+                                                            {/* Shift */}
+                                <div className='relative'>
+                                    <Controller
+                                        control={control}
+                                        name='shiftDetails'
+                                        render={({ field }) => (
+                                        <Dropdown
+                                            label='Shift Details'
+                                            options={['Morning Shift', 'Night Shift']}
+                                            selected={field.value}
+                                            onSelect={field.onChange}
+                                            placeholder='Morning Shift'
+                                        />
+                                        )}
+                                    />
+                                    {errors.shiftDetails && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.shiftDetails.message}</span>}
                                 </div>
                             </div>
+                                            
+                            
 
                         </div>
                         {/* ✅ Button under form */}

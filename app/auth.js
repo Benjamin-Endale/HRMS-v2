@@ -13,58 +13,55 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
         otp: { label: "OTP", type: "text" },
       },
-      async authorize(credentials) {
-        try {
-          console.log("Received credentials:", credentials);
+async authorize(credentials) {
+  try {
+    console.log("Received credentials:", credentials);
 
-          if (credentials.otp) {
-            const response = await authAPI.verifyOtp(
-              credentials.email,
-              credentials.otp,
-            );
+    // ✅ Step 2: OTP verification
+    if (credentials.otp) {
+      const response = await authAPI.verifyOtp(credentials.email, credentials.otp);
 
-            console.log("OTP verification response:", response);
+      console.log("OTP verification response:", response);
 
-            if (response.accessToken) {
-              return {
-                id: response.id, // ✅ always use backend id
-                name: response.fullName || response.username || credentials.username,
-                accessToken: response.accessToken,
-                refreshToken: response.refreshToken,
-                role: response.role,
-                fullName: response.fullName,
-                tenantId: response.tenantId,
-                lastLoginUtc: response.lastLoginUtc || null, 
-                requiresOtp: response.requiresOtp || false,
-                otpVerified: response.otpVerified || true,
-              };
-            }
-            return null;
-          }
+      if (response.accessToken) {
+        return {
+          id: response.id,
+          name: response.fullName || response.username || credentials.email,
+          email: credentials.email,
+          accessToken: response.accessToken, // ✅ include token now
+          refreshToken: response.refreshToken,
+          role: response.role,
+          fullName: response.fullName,
+          tenantId: response.tenantId,
+          otpVerified: true,
+          requiresOtp: false,
+        };
+      }
+      return null;
+    }
 
-          const response = await authAPI.login({
-            UsernameOrEmail: credentials.email,
-            Password: credentials.password,
-          });
+    // ✅ Step 1: Login (email + password)
+    const response = await authAPI.login({
+      UsernameOrEmail: credentials.email,
+      Password: credentials.password,
+    });
 
-          console.log("Login response:", response);
+    console.log("Login response:", response);
 
-          return {
-            id: response.id, 
-            name: response.fullName || response.email || credentials.email,
-            email: response.email || `${credentials.username}@gmail.com`,
-            role: response.role || null,
-            fullName: response.fullName,
-            tenantId: response.tenantId,
-            lastLoginUtc: response.lastLoginUtc || null, 
-            requiresOtp: response.requiresOtp ?? true,
-            otpVerified: response.otpVerified ?? false,
-          };
-        } catch (err) {
-          console.error("Auth API error:", err);
-          return null;
-        }
-      },
+    return {
+      id: response.id,
+      name: response.fullName || credentials.email,
+      email: credentials.email,
+      role: response.role || null,
+      requiresOtp: response.requiresOtp ?? true, // ✅ triggers OTP step
+      otpVerified: false,
+    };
+  } catch (err) {
+    console.error("Auth API error:", err);
+    return null;
+  }
+},
+
     }),
   ],
 

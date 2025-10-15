@@ -7,5 +7,6 @@ import Header from "../Components/Header";
 export const ROLE_LAYOUTS = {
   SuperAdmin: { body: SuperAdminBody, header: Header },
   HR: { body: MainBody, header: Header },
+  SystemAdmin: { body: MainBody, header: Header },
   Employee: { body: EmployeePortal, header: HeaderPortal },
 };

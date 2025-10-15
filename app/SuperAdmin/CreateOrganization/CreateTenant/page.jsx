@@ -96,12 +96,12 @@ const Page = () => {
               <div className="flex flex-col gap-[2.875rem]">
                 <div className="flex gap-[2.1875rem]">
                   <div className="w-[20.1875rem] flex flex-col gap-[2.875rem]">
-                    <div className="flex flex-col gap-[1rem]">
+                    <div className="flex flex-col gap-[1rem] relative  border border-Error">
                       <label className="text-formColor">Tenant Name*</label>
                       <input type="text" placeholder="Enter Tenant Name" className="inputMod" {...register("name")} />
-                      {errors.name && <span className="text-Error text-[1rem]">{errors.name.message}</span>}
+                      {errors.name && <span className="text-Error absolute bottom-[-2rem] text-[1rem]">{errors.name.message}</span>}
                     </div>
-                    <div>
+                    <div className='border border-Error relative '>
                       <Controller
                         control={control}
                         name="industry"
@@ -109,15 +109,15 @@ const Page = () => {
                           <Dropdown label="Industry" options={['Industry1', 'Industry2']} selected={field.value} onSelect={field.onChange} placeholder="Select Industry" />
                         )}
                       />
-                      {errors.industry && <span className="text-Error text-[1rem]">{errors.industry.message}</span>}
+                      {errors.industry && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.industry.message}</span>}
                     </div>
                   </div>
 
                   <div className="w-[20.1875rem] flex flex-col gap-[2.875rem]">
-                    <div className="flex flex-col gap-[1rem]">
+                    <div className="flex flex-col gap-[1rem] relative">
                       <label className="text-formColor">Domain*</label>
                       <input type="text" placeholder="Enter Organization domain" className="inputMod" {...register("domain")} />
-                      {errors.domain && <span className="text-Error text-[1rem]">{errors.domain.message}</span>}
+                      {errors.domain && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.domain.message}</span>}
                     </div>
                     {/* Address */}
                     <div className='flex flex-col gap-[1rem] mb-[4.5rem] relative'>
@@ -128,14 +128,14 @@ const Page = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-[1rem]">
+                <div className="flex flex-col gap-[1rem] relative">
                   <label className="text-formColor">Description</label>
                   <textarea
                     placeholder="Brief description of the organization"
                     className="text-formColor bg-inputBack rounded-[10px] placeholder-input pt-[1.75rem] pl-[1.1875rem] resize-none h-[8.4375rem]"
                     {...register("description")}
                   ></textarea>
-                  {errors.description && <span className="text-Error text-[1rem]">{errors.description.message}</span>}
+                  {errors.description && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.description.message}</span>}
                 </div>
 
                 <div className='space-y-[2.1875rem]'>

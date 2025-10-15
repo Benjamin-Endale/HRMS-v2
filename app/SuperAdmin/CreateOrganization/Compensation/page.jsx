@@ -10,29 +10,29 @@ import { useAdminForm } from '@/app/Store/AdminFormContext';
 
 // Zod schema for validation
 const schema = z.object({
-Salary: z.coerce
+salary: z.coerce
   .number({
     invalid_type_error: 'Salary is required',
   })
   .min(1000, 'Salary must be at least 1000 birr'),
-  PaymentMethod: z.string().nonempty('Payment Method is required'),
-TaxIdentificationNumber: z
+  paymentMethod: z.string().nonempty('Payment Method is required'),
+taxIdentificationNumber: z
   .string()
   .length(10, 'Tax Identification Number must be exactly 10 digits')
   .regex(/^\d+$/, 'Tax Identification Number must contain only digits'),
-  PassportNumber: z
+  passportNumber: z
     .string()
     .min(1, 'Passport number is required'),   
-  BankAccountNumber: z
+  bankAccountNumber: z
   .string()
   .length(13, 'Bank Account Number must be exactly 13 digits')
   .regex(/^\d+$/, 'Bank Account Number must contain only digits'),
-  Currency: z.string().nonempty('Currency is required'),
-  BenefitsEnrollment: z.string().nonempty('Benefits Enrollment is required'),
-  ContractFile: z
+  currency: z.string().nonempty('Currency is required'),
+  benefitsEnrollment: z.string().nonempty('Benefits Enrollment is required'),
+  contractFile: z
     .any()
     .refine(file => file?.length > 0, 'Contract file is required'),
-  Resume: z
+  resumeFile: z
     .any()
     .refine(file => file?.length > 0, 'Resume file is required'),
 })
@@ -50,39 +50,27 @@ const Page = () => {
   } = useForm({
     resolver: zodResolver(schema),
       defaultValues: {
-        Salary: compensationData.Salary || '',
-        PaymentMethod: compensationData.PaymentMethod || '',
-        TaxIdentificationNumber: compensationData.TaxIdentificationNumber || '',
-        PassportNumber: compensationData.PassportNumber || '',
-        BankAccountNumber: compensationData.BankAccountNumber || '',
-        Currency: compensationData.Currency || '',
-        BenefitsEnrollment: compensationData.BenefitsEnrollment || '',
-        ContractFile: '',
-        Resume: '',
+        salary: compensationData.salary || '',
+        paymentMethod: compensationData.paymentMethod || '',
+        taxIdentificationNumber: compensationData.taxIdentificationNumber || '',
+        passportNumber: compensationData.passportNumber || '',
+        bankAccountNumber: compensationData.bankAccountNumber || '',
+        currency: compensationData.currency || '',
+        benefitsEnrollment: compensationData.benefitsEnrollment || '',
+        contractFile: compensationData.contractFile || '',
+        resumeFile: compensationData.resumeFile || '',
       }
 
   })
 
 const onSubmit = (data) => {
-  const payload = {
-    Salary: data.Salary,
-    PaymentMethod: data.PaymentMethod,
-    TaxIdentificationNumber: data.TaxIdentificationNumber,
-    PassportNumber: data.PassportNumber,
-    BankAccountNumber: data.BankAccountNumber,
-    Currency: data.Currency,
-    BenefitsEnrollment: data.BenefitsEnrollment,
-    ContractFile: data.ContractFile?.[0],  // first file
-    Resume: data.Resume?.[0],             // first file
 
-
-  };
-
-  setCompensationData(payload); // store for later steps
+  setCompensationData(data); // store for later steps
   router.push('/SuperAdmin/CreateOrganization/UserAccess');
 };
 
 
+console.log(errors)
   return (
     <>
     {/* Progress Bar */}
@@ -112,16 +100,16 @@ const onSubmit = (data) => {
                     type='number'
                     placeholder='e.x 1000.00 $'
                     className='inputMod'
-                    {...register('Salary')}
+                    {...register('salary')}
                   />
-                  {errors.Salary && <span className='text-Error text-[1rem] absolute bottom-[-2rem] '>{errors.Salary.message}</span>}
+                  {errors.salary && <span className='text-Error text-[1rem] absolute bottom-[-2rem] '>{errors.salary.message}</span>}
                 </div>
 
                 {/* Payment Method */}
                 <div className='relative'>
                   <Controller
                     control={control}
-                    name='PaymentMethod'
+                    name='paymentMethod'
                     render={({ field }) => (
                       <Dropdown
                         label='Payment Method'
@@ -132,7 +120,7 @@ const onSubmit = (data) => {
                       />
                     )}
                   />
-                  {errors.PaymentMethod && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.PaymentMethod.message}</span>}
+                  {errors.paymentMethod && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.paymentMethod.message}</span>}
                 </div>
 
                 {/* Tax ID */}
@@ -142,9 +130,9 @@ const onSubmit = (data) => {
                     type='number'
                     placeholder='e.x 78567578'
                     className='inputMod'
-                    {...register('TaxIdentificationNumber')}
+                    {...register('taxIdentificationNumber')}
                   />
-                  {errors.TaxIdentificationNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.TaxIdentificationNumber.message}</span>}
+                  {errors.taxIdentificationNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.taxIdentificationNumber.message}</span>}
                 </div>
 
                 {/* Passport */}
@@ -154,9 +142,9 @@ const onSubmit = (data) => {
                     type='text'
                     placeholder='e.x 1000 234 153 6855'
                     className='inputMod'
-                    {...register('PassportNumber')}
+                    {...register('passportNumber')}
                   />
-                  {errors.PassportNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.PassportNumber.message}</span>}
+                  {errors.passportNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.passportNumber.message}</span>}
                 </div>
 
                 {/* Contract File */}
@@ -165,9 +153,9 @@ const onSubmit = (data) => {
                   <label className='inputModfile cursor-pointer border-none'>
                     <img src='/image/Icon/File.png' alt='' />
                     <span className='text-limeLight'>Upload Contract File</span>
-                    <input type='file' className='hidden' {...register('ContractFile')} />
+                    <input type='file' className='hidden' {...register('contractFile')} />
                   </label>
-                  {errors.ContractFile && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.ContractFile.message}</span>}
+                  {errors.contractFile && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.contractFile.message}</span>}
                 </div>
               </div>
 
@@ -176,7 +164,7 @@ const onSubmit = (data) => {
                 <div className='relative'>
                   <Controller
                     control={control}
-                    name='Currency'
+                    name='currency'
                     render={({ field }) => (
                       <Dropdown
                         label='Currency'
@@ -187,7 +175,7 @@ const onSubmit = (data) => {
                       />
                     )}
                   />
-                  {errors.Currency && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Currency.message}</span>}
+                  {errors.currency && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.currency.message}</span>}
                 </div>
 
                 {/* Bank Account */}
@@ -197,16 +185,16 @@ const onSubmit = (data) => {
                     type='text'
                     placeholder='e.x 1000 234 153 6855'
                     className='inputMod'
-                    {...register('BankAccountNumber')}
+                    {...register('bankAccountNumber')}
                   />
-                  {errors.BankAccountNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.BankAccountNumber.message}</span>}
+                  {errors.bankAccountNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.bankAccountNumber.message}</span>}
                 </div>
 
                 {/* Benefits */}
                 <div className='relative'>
                   <Controller
                     control={control}
-                    name='BenefitsEnrollment'
+                    name='benefitsEnrollment'
                     render={({ field }) => (
                       <Dropdown
                         label='Benefits Enrollment'
@@ -217,7 +205,7 @@ const onSubmit = (data) => {
                       />
                     )}
                   />
-                  {errors.BenefitsEnrollment && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.BenefitsEnrollment.message}</span>}
+                  {errors.benefitsEnrollment && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.benefitsEnrollment.message}</span>}
                 </div>
 
                 {/* Resume */}
@@ -226,9 +214,9 @@ const onSubmit = (data) => {
                   <label className='inputModfile cursor-pointer border-none'>
                     <img src='/image/Icon/File.png' alt='' />
                     <span className='text-limeLight'>Upload CV</span>
-                    <input type='file' className='hidden' {...register('Resume')} />
+                    <input type='file' className='hidden' {...register('resumeFile')} />
                   </label>
-                  {errors.Resume && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Resume.message}</span>}
+                  {errors.resumeFile && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.resumeFile.message}</span>}
                 </div>
               </div>
             </div>

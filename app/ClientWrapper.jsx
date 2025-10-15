@@ -16,7 +16,8 @@ export default function ClientWrapper({ children, session }) {
     const defaultPaths = {
       SuperAdmin: 'SuperAdmin/AllOrganization',
       HR: 'Admin/Dashboard',
-      Employee: 'EmployeePortal/Dashboard'
+      Employee: 'EmployeePortal/Dashboard',
+      SystemAdmin: 'Admin/Dashboard'
     };
 
     // Redirect to OTP page if OTP is required but not verified
@@ -49,17 +50,19 @@ export default function ClientWrapper({ children, session }) {
         return <div className='bg-black'>{children}</div>;
     }
 
-    useEffect(() => {
-        if (!session?.user?.id || (session.requiresOtp && !session.otpVerified)) return;
-        const updateLastLogin = async () => {
-            try {
-            await hrmsAPI.touchLogin(session?.user?.id || '-');
-            } catch (err) {
-            console.error('Failed to update last login:', err);
-            }
-        };
-        updateLastLogin();
-        }, [session?.user?.id, session?.requiresOtp, session?.otpVerified]);
+            useEffect(() => {
+            const token = localStorage.getItem('accessToken');
+            if (!token || !session?.user?.id || (session.requiresOtp && !session.otpVerified)) return;
+
+            const updateLastLogin = async () => {
+                try {
+                await hrmsAPI.touchLogin(session.user.id);
+                } catch (err) {
+                console.error('Failed to update last login:', err);
+                }
+            };
+            updateLastLogin();
+            }, [session?.user?.id, session?.requiresOtp, session?.otpVerified]);
 
 
     const readPath = pathname === '/' ? defaultPaths[role] : pathname.replace('/', '');

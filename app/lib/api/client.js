@@ -1,30 +1,63 @@
 // lib/api/client.js
-const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:5270/api';
+import { getSession } from "next-auth/react";
 
-// Base API client function (already exists)
-export async function apiClient(endpoint, options = {}) {
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5270/api";
+
+export async function apiClient(endpoint, options = {}, providedToken = null) {
   const url = `${API_BASE_URL}${endpoint}`;
-  
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
+
+  let token = providedToken;
+
+  // 🧩 Server-side auth
+  if (!token && typeof window === "undefined") {
+    try {
+      const { auth } = await import("@/app/auth");
+      const session = await auth();
+      token = session?.user?.accessToken;
+    } catch (err) {
+      console.warn("Auth not available server-side:", err.message);
+    }
+  }
+
+  // 🧩 Client-side auth fallback
+  if (!token && typeof window !== "undefined") {
+    const session = await getSession();
+    token = session?.accessToken || localStorage.getItem("accessToken");
+  }
+
+  // 🧩 Set up headers
+  const headers = {
+    Authorization: token ? `Bearer ${token}` : undefined,
+    ...options.headers,
   };
 
-  if (options.body && typeof options.body !== 'string') {
-    config.body = JSON.stringify(options.body);
-  }
- 
-  const response = await fetch(url, config);
-  
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error || `API Error: ${response.status}`);
+  // 🧩 Handle FormData vs JSON automatically
+  let body = options.body;
+  if (body instanceof FormData) {
+    // Do NOT set Content-Type manually — browser will handle it
+  } else if (body && typeof body === "object") {
+    headers["Content-Type"] = "application/json";
+    body = JSON.stringify(body);
   }
 
-  return response.json();
+  // 🧩 Execute fetch
+  const response = await fetch(url, {
+    method: options.method || "GET",
+    headers,
+    body,
+  });
+
+  // 🧩 Handle response
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || `API request failed: ${response.status}`);
+  }
+
+  try {
+    return await response.json();
+  } catch {
+    return {}; // Handle empty or non-JSON responses
+  }
 }
 
 // 🔐 ADD THESE NEW AUTHENTICATION METHODS BELOW 🔐
@@ -151,12 +184,11 @@ export const hrmsAPI = {
     apiClient(`/users/superadmins`),
 
 
-  createEmployee: (employeeData) =>
-    apiClient('/employees', { 
-      method: 'POST', 
-      body: employeeData 
-    }),
-
+  createEmployee: (employees, token) =>
+    apiClient('/employees', {
+      method: 'POST',
+      body: employees, // Can be FormData or JSON
+    }, token),
 
 
     
