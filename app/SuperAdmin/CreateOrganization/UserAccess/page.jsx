@@ -9,7 +9,8 @@ import { useAdminForm } from '@/app/Store/AdminFormContext';
 import { hrmsAPI } from '@/app/lib/api/client'
 import { toFormData } from '@/app/lib/utils/toFormData'
 import { toPascal } from '@/app/lib/utils/toPascal';
-
+import Successful from '@/app/Modals/Successfully/Successful'
+import ModalContainerSuccessful from '@/app/Modals/Successfully/ModalContainerSuccessful'
 
 const schema = z
   .object({
@@ -33,7 +34,7 @@ const Page = () => {
   const router = useRouter()
   const [loading, setLoading] = useState(false);
   const { employeeData, setEmployeeData, tenantData, compensationData } = useAdminForm()
-
+  const [isOpen , setisOpen] = useState(false)
 
   
 
@@ -111,15 +112,12 @@ const onSubmit = async (data) => {
       }
     }
 
-    console.log("📦 Final FormData entries:", Object.fromEntries(formData.entries()));
 
     // --- Create Employee ---
     const employeeRes = await hrmsAPI.createEmployee(formData);
-    console.log("✅ Employee created:", employeeRes);
 
     const employeeId = employeeRes?.employeeID;
     const employeeName = employeeRes?.employeeName;
-    if (!employeeId) throw new Error('Employee creation failed: employeeId missing');
 
     // --- Create User ---
     const user= await hrmsAPI.createUser({
@@ -131,15 +129,12 @@ const onSubmit = async (data) => {
       fullName: employeeName
     });
 
-    console.log(user)
 
 
     // --- Update Local State ---
     setEmployeeData((prev) => ({ ...prev, ...data, tenantId }));
 
-    alert('Tenant, employee, and user created successfully!');
-    router.push('/');
-
+    setisOpen(true)
   } catch (err) {
     console.error('Submission Error:', err);
     alert('Error: ' + (err.message || JSON.stringify(err)));
@@ -282,6 +277,15 @@ const onSubmit = async (data) => {
           </div>
         </div>
       </div>
+        {isOpen && (
+          <ModalContainerSuccessful open={isOpen}>
+            <Successful
+              Header="Successfully Created"
+              Parag="Tenant is created Successfully"
+              onClose={() => setisOpen(false)}
+            />
+          </ModalContainerSuccessful>
+        )}
     </>
   )
 }

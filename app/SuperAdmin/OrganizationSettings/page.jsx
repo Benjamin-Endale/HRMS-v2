@@ -1,13 +1,12 @@
 'use client'
 import React , {useState} from 'react'
 import { Dropdown } from '@/app/Components/DropDown'
-
+import { useRouter } from 'next/navigation'
+import { useAdminForm } from '@/app/Store/AdminFormContext';
 const page = () => {
     // Okta, OneLogin, Microsoft Entra ID, Auth0, JumpCloud
     const [selectedSSO, setSelectedSSO] = useState()
-    // ipAddress
-    const [selectedIp, setSelectedIp] = useState()
-
+ 
     // passwordPolicy
     const [selectedPass, setSelectedPass] = useState()
 
@@ -21,15 +20,18 @@ const page = () => {
     const [selectedEf, setSelectedEf] = useState()
 
 
+    const [edit, setEdit] = useState(true)
 
-
+    const router = useRouter()
 
     const [toggleOn, settoggleOn] = useState(false);
     const [toggleOnA, settoggleOnA] = useState(false);
     const [toggleOnD, settoggleOnD] = useState(false);
+    const [toggleOnR, settoggleOnR] = useState(true);
+    const { tenantSettings } = useAdminForm()
 
     // NotificationArea
-    const [toggleOnN, settoggleOnN] = useState([false,false,false]);
+    const [toggleOnN, settoggleOnN] = useState([false,false,false,true]);
     const handleToggleN = (index) => {
       settoggleOnN((prev) => {
         const newToggles = [...prev];
@@ -48,7 +50,7 @@ const page = () => {
                         <div className='flex flex-col gap-[0.5625rem]'>
                             <div className='flex items-center gap-[0.4375rem]'>
                                 <img src="/image/shield.png" alt="" />
-                                <span className='textFormColor1'>Security Settings</span>
+                                <span className='textFormColor'>Security Settings</span>
                             </div>
                             <h4 className='textLimegray leading-none'>Manage authentication, access, and audit logging.</h4>
                         </div>
@@ -73,16 +75,6 @@ const page = () => {
                                 placeholder="Google Workspace"
                                 />
                             </div>
-                            {/* IP Restrictions (CIDR) */}
-                            <div>
-                                <Dropdown
-                                label="IP Restrictions (CIDR)"
-                                options={["192", "168", "244", "344" , "555", "661", "777" , 'none']}
-                                selected={selectedIp}
-                                onSelect={setSelectedIp}
-                                placeholder="e.g., 192.168.1.0/24, 10.0.0.0/8"
-                                />
-                            </div>
                         </form>
                         {/* SSO provider */}
                     </div>
@@ -93,7 +85,7 @@ const page = () => {
                             <div className='flex flex-col gap-[0.5625rem]'>
                                 <div className='flex items-center gap-[0.4375rem]'>
                                     <img src="/image/bell.png" alt="" />
-                                <span className='textFormColor1'>Notification Settings</span>
+                                <span className='textFormColor'>Notification Settings</span>
                                 </div>
                                 <h4 className='textLimegray leading-none'>Configure how your organization receives system notifications.</h4>
                             </div>
@@ -120,9 +112,42 @@ const page = () => {
                                 ))
                                 }
                             </div>
-                            <div className='w-full h-[3.4375rem] flex gap-[2.5625rem] mb-[4.125rem]'>
-                                <button type="button" onClick={()=>navigate('/AddNewemployeesecond')} className='w-[19.875rem] border border-formColor textFormColor1 rounded-[10px] cursor-pointer'>Rest into Defaults</button>
-                                <button type="submit" onClick={()=>navigate('/System')} className='w-[19.875rem] bg-lemongreen rounded-[10px] cursor-pointer'>Save Changes</button>
+                            <div className='mb-[4.125rem] w-full'>
+                            {edit ? (
+                                <div className='w-full h-[3.4375rem] flex gap-[2.5625rem]'>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                    // Reset settings logic if needed
+                                    setEdit(true);
+                                    router.push('/');
+                                    }}
+                                    className='w-[19.875rem] border border-formColor textFormColor1 rounded-[10px] cursor-pointer'
+                                >
+                                    Reset to Defaults
+                                </button>
+                                <button
+                                    type="submit"
+                                    onClick={() => {
+                                    // Save logic here
+                                    setEdit(false); // After saving, switch to Edit mode button
+                                    }}
+                                    className='w-[19.875rem] bg-lemongreen rounded-[10px] cursor-pointer'
+                                >
+                                    Save Changes
+                                </button>
+                                </div>
+                            ) : (
+                                <div className='w-full h-[3.4375rem]'>
+                                <button
+                                    type="button"
+                                    onClick={() => setEdit(true)} // Switch back to editing
+                                    className='w-full h-[3.4375rem] bg-lemongreen rounded-[10px] cursor-pointer'
+                                >
+                                    Edit Settings
+                                </button>
+                                </div>
+                            )}
                             </div>
                         </div>
                         </div>
@@ -135,16 +160,26 @@ const page = () => {
             {/* 2nd firstPart */}
             <div className='space-y-[5.125rem]'>
                 <div className='space-y-[2.375rem]'>
-                    <div>
-                        <h1 className='textFormColor1'>Require Two-Factor Authentication</h1>
-                        <h4 className='textLimegray'>Require 2FA for all admin users.</h4>
+                    <div className='space-y-[2.375rem]'>
+                        <div className='flex between-center'>
+                            <div>
+                                <h1 className="text-formColor flex items-center gap-2">
+                                    Require Two-Factor Authentication
+                                    <span className="text-lemongreen text-sm font-medium bg-limegray/10 px-2 py-1 rounded-md">Default</span>
+                                </h1>
+                                <h4 className='textLimegray'>Require 2FA for all admin users.</h4>
+                            </div>
+                            <div onClick={()=>settoggleOnR(true)} className={`${toggleOnR ? ' bg-lemongreen' : ' bg-limegray'} w-[4.0625rem] h-[2.1875rem] rounded-full border  relative flex items-center py-[3px]`}>
+                                <div className={`${toggleOnR ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full  transition-transform ease-in-out duration-300`}></div>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <form action="" className='space-y-[2.875rem]'>
-                            <div className='flex gap-[2.1875rem]'>
+                            <div className='flex gap-[2.1875rem]' >
                                 {/* Session Timeout (minutes) */}
-                                <div className='w-[20.1875rem]'>
-                                    <div>
+                                <div className='w-full'>
+                                    <div className='w-full'>
                                         <Dropdown
                                         label="Session Timeout (minutes)"
                                         options={["60sec","120sec","20sec","30sec"]}
@@ -154,19 +189,6 @@ const page = () => {
                                         />
                                     </div>
                                 </div>
-
-                                {/* Password Policy */}
-                                <div className='w-[20.1875rem]'>
-                                    <div>
-                                        <Dropdown
-                                        label="Password Policy"
-                                        options={["8+ chars, mixed case, numbers1", "8+ chars, mixed case, numbers2", "8+ chars, mixed case, number3"]}
-                                        selected={selectedPass}
-                                        onSelect={setSelectedPass}
-                                        placeholder="8+ chars, mixed case, numbers"
-                                        />
-                                    </div>   
-                                </div>
                             </div>
                         </form>
                     </div>
@@ -174,7 +196,7 @@ const page = () => {
                 <div className='flex between-center'>
                     <div>
                         <h4 className='textFormColor1'>Enable Audit Logging</h4>
-                        <h4 className='textLimegray'>Allow users to login with SSO providers</h4>
+                        <h4 className='textLimegray'>Track all system activities for compliance and security.</h4>
                     </div>
                     <div onClick={() => settoggleOnA(!toggleOnA)}  className={`${toggleOnA ? ' bg-lemongreen' : ' bg-limegray'} w-[4.0625rem] h-[2.1875rem] rounded-full border  relative flex items-center py-[3px]`}>
                         <div className={`${toggleOnA ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full  transition-transform ease-in-out duration-300`}></div>
