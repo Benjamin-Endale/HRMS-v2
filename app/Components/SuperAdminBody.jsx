@@ -54,7 +54,7 @@ const SuperAdminBody = ({readPath}) => {
                     </div>
                 </div>
             </section>
-            {/* USER MANAGMENT */}
+            {/* USER MANAGMENT
             <section className='space-y-[1.5625rem] w-full  pl-[2.75rem] relative'>
                 <div>
                     <h4 className= {`${['SuperAdmin/SuperAdmin'].includes(readPath) ? 'text-lemongreen' : 'text-limegray'} text-[0.9375rem]`}>USER MANEGMENT</h4>
@@ -68,7 +68,7 @@ const SuperAdminBody = ({readPath}) => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
             {/* REPORT */}
             <section className='space-y-[1.5625rem] w-full  pl-[2.75rem] relative'>
                 <div>

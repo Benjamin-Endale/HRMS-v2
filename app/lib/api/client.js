@@ -171,18 +171,36 @@ export const authAPI = {
 // HRMS business API methods
 export const hrmsAPI = {
   // Employee management
-  getEmployees: (params = {}) =>
-    apiClient(`/employees?${new URLSearchParams(params)}`),
+  // getEmployees: (params = {}) =>
+  //   apiClient(`/employees?${new URLSearchParams(params)}`),
   
   getEmployeeById: (id) =>
     apiClient(`/employees/${id}`),
-  
+
+getEmployees: (token) =>
+  apiClient('/employees', 
+    { 
+      method: 'GET' },
+     token),
+
+getOrganizations: (token) =>
+  apiClient('/organizations', 
+    { 
+      method: 'GET' },
+     token),
+
+
   getuser:() =>
     apiClient(`/users`),
 
   getuserAdmins:() =>
     apiClient(`/users/superadmins`),
 
+getTenantSystemAdmin: (tenantId, token) =>
+  apiClient(`/users/systemadmin/${tenantId}`, {}, token),
+
+getTenantEmployees: (tenantId, token) =>
+  apiClient(`/employees/total-employees/${tenantId}`, {}, token),  
 
   createEmployee: (employees, token) =>
     apiClient('/employees', {
@@ -231,7 +249,7 @@ export const hrmsAPI = {
     }),
 
   // Organization management
-    getOrganizations: (token) =>
+    getTenant: (token) =>
       apiClient('/tenants', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -239,8 +257,8 @@ export const hrmsAPI = {
       }),
 
   
-  getOrganizationById: (id) =>
-    apiClient(`/organizations/${id}`),
+  getTenantById: (id) =>
+    apiClient(`/tenants/${id}`),
 
   // Attendance management
   getAttendanceRecords: (params = {}) =>

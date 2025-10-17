@@ -1,13 +1,12 @@
 'use client'
 
 import React, { useEffect, useState } from 'react' 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter} from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAdminForm } from '@/app/Store/AdminFormContext';
 import { hrmsAPI } from '@/app/lib/api/client'
-import { toFormData } from '@/app/lib/utils/toFormData'
 import { toPascal } from '@/app/lib/utils/toPascal';
 import Successful from '@/app/Modals/Successfully/Successful'
 import ModalContainerSuccessful from '@/app/Modals/Successfully/ModalContainerSuccessful'
@@ -282,7 +281,11 @@ const onSubmit = async (data) => {
             <Successful
               Header="Successfully Created"
               Parag="Tenant is created Successfully"
-              onClose={() => setisOpen(false)}
+              onNavigate={() => {
+                setisOpen(false);
+                router.push('/');
+              }}
+
             />
           </ModalContainerSuccessful>
         )}

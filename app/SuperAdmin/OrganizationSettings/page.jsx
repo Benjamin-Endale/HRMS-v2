@@ -1,8 +1,8 @@
 'use client'
 import React , {useState} from 'react'
 import { Dropdown } from '@/app/Components/DropDown'
-import { useRouter } from 'next/navigation'
-import { useAdminForm } from '@/app/Store/AdminFormContext';
+import { useRouter } from 'next/navigation';
+// import { useAdminForm } from '@/app/Store/AdminFormContext';
 const page = () => {
     // Okta, OneLogin, Microsoft Entra ID, Auth0, JumpCloud
     const [selectedSSO, setSelectedSSO] = useState()
@@ -22,13 +22,12 @@ const page = () => {
 
     const [edit, setEdit] = useState(true)
 
-    const router = useRouter()
 
     const [toggleOn, settoggleOn] = useState(false);
     const [toggleOnA, settoggleOnA] = useState(false);
     const [toggleOnD, settoggleOnD] = useState(false);
     const [toggleOnR, settoggleOnR] = useState(true);
-    const { tenantSettings } = useAdminForm()
+    // const { tenantSettings } = useAdminForm()
 
     // NotificationArea
     const [toggleOnN, settoggleOnN] = useState([false,false,false,true]);
@@ -39,6 +38,9 @@ const page = () => {
         return newToggles;
       });
     };
+
+    const router = useRouter()
+
   return (
     <div className='flex gap-[7.0625rem] font-semibold'>
         <div className='w-[43.5625rem]'>

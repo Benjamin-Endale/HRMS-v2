@@ -6,15 +6,10 @@ import { hrmsAPI } from '@/app/lib/api/client';
 
 const handleState = (status) => {
   switch (status) {
-    case "Active":
-      return "text-lemongreen";  
-    case "Trial":
-      return "text-yellowCust";  
-    case "Suspend":
-      return "text-Error";  
+    case "Active": return "text-lemongreen";  
+    case "Suspend": return "text-Error";  
   }
 };
-
 
 
 
@@ -29,18 +24,51 @@ export default async function Page () {
     return <div>Please login to see organizations</div>;
   }
 
+  let Tenants = [];
+  let employees = [];
   let organizations = [];
   try {
-    organizations = await hrmsAPI.getOrganizations(token);
+    // 1️⃣ Fetch all Tenants
+    Tenants = await hrmsAPI.getTenant(token);
+    employees = await hrmsAPI.getEmployees(token)
+    organizations = await hrmsAPI.getOrganizations(token)
+
+  const orgsWithAdmins = await Promise.all(
+    Tenants.map(async (org) => {
+      try {
+        const systemAdmin = await hrmsAPI.getTenantSystemAdmin(org.id, token);
+        return { ...org, admin: systemAdmin }; // attach as "admin"
+      } catch (error) {
+        console.error(`Failed to fetch admin for ${org.name}:`, error);
+        return { ...org, admin: null };
+      }
+    })
+  );
+const orgsWithAdminsAndEmployees = await Promise.all(
+  orgsWithAdmins.map(async (org) => {
+    try {
+      const data = await hrmsAPI.getTenantEmployees(org.id, token); // now returns {count}
+      return { ...org, employeesCount: data.count }; // attach as employeesCount
+    } catch (error) {
+      console.error(`Failed to fetch employees for ${org.name}:`, error);
+      return { ...org, employeesCount: 0 };
+    }
+  })
+);
+
+
+
+  Tenants = orgsWithAdminsAndEmployees;
+
+
   } catch (err) {
-    console.error("Failed to fetch organizations:", err);
-    organizations = [];
+    console.error("Failed to fetch Tenants:", err);
+    Tenants = [];
   }
 
-  if (organizations.length === 0) {
-    console.log("No organizations found yet.");
+  if (Tenants.length === 0) {
+    console.log("No Tenants found yet.");
   }
-
   
 
 
@@ -60,8 +88,8 @@ return (
               </div>
             </div>
             <div className='flex flex-col'>
-              <span className='text-5xl'>{organizations.length}</span>
-              <span>Total Organization</span>
+              <span className='text-5xl'>{Tenants.length}</span>
+              <span>Total Tenants</span>
             </div>
           </div>
         </div>
@@ -76,8 +104,8 @@ return (
               </div>
             </div>
             <div className='flex flex-col'>
-              <span className='text-5xl text-formColor'>1230</span>
-              <span className='text-formColor'>Total Organization</span>
+              <span className='text-5xl text-formColor'>{employees.length}</span>
+              <span className='text-formColor'>Total Employees</span>
             </div>
           </div>
         </div>
@@ -92,7 +120,7 @@ return (
               </div>
             </div>
             <div className='flex flex-col'>
-              <span className='text-5xl text-formColor'>1230</span>
+              <span className='text-5xl text-formColor'>{organizations.length}</span>
               <span className='text-formColor'>Total Organization</span>
             </div>
           </div>
@@ -102,17 +130,17 @@ return (
 
       {/* SecondSection */}
       <div className='flex flex-col gap-[2.0625rem]'>
-        {/* AddOrganizationSection */}
+        {/* AddTenantsection */}
         <div className='between'>
           <div className='flex flex-col'>
             <h1 className='textWhite'>Organization List</h1>
-            <h4 className='textLimegray'>A list of all organizations in your platform</h4>
+            <h4 className='textLimegray'>A list of all Tenants in your platform</h4>
           </div>
           <div>
             <button type="button" className='cursor-pointer '>
               <div className='center-center w-[13.125rem] h-[3.125rem] rounded-[0.625rem] gap-[0.625rem] bg-lemongreen'>
                 <img src="/svg/SvgImage/PlusSign.svg" alt="" />
-                <span className='text-black'>Add Organizations</span>
+                <span className='text-black'>Add Tenants</span>
               </div>
             </button>
           </div>
@@ -141,7 +169,7 @@ return (
             <table className='w-full  '>
               <thead className=' text-formColor border-b border-limegray'>
                 <tr>
-                  <th className='pr-[14.75rem] pb-[0.8125rem]'>Organization</th>
+                  <th className='pr-[14.75rem] pb-[0.8125rem]'>Tenants</th>
                   <th className='pr-[16.125rem] pb-[0.8125rem]'>Admin</th>
                   <th className='pr-[10.875rem] pb-[0.8125rem]'>Employees</th>
                   <th className='pr-[11.75rem] pb-[0.8125rem]'>Status</th>
@@ -150,7 +178,7 @@ return (
                 </tr>
               </thead>
               <tbody >
-                {organizations.map((org)=> (
+                {Tenants.map((org)=> (
                   <tr key={org.id}>
                     <td className='pt-[2.1875rem]'>
                       <div className='flex items-center gap-[0.9375rem]'>
@@ -163,18 +191,18 @@ return (
                     </td>
                     <td className='pt-[2.1875rem]'>
                       <div>
-                        <h1 className='text-limeLight'>{org.adminFirstName}</h1>
-                        <h4 className='textLimegray'>{org.adminEmail}</h4>
+                        <h1 className='text-limeLight'>{org.admin?.fullName || '-'}</h1>
+                        <h4 className='textLimegray'>{org.admin?.email || '-'}</h4>
                       </div>
                     </td>
                     <td className='pt-[2.1875rem] '>
                       <div className='flex gap-[0.4375rem]'>
                         <img src="/image/Icon/Action/users.png" alt="" />
-                        <span className='text-limegray'>{org.EmployeeManagment}</span>
+                        <span className='text-limegray'>{org.employeesCount || 0}</span>
                       </div>
                     </td>
                     <td className='pt-[2.1875rem]'>
-                      <span className={`bg-[rgba(190,229,50,0.05)] px-[20px] py-[8px] rounded-full ${handleState(org.status)} `}></span>
+                      <span className={`bg-[rgba(190,229,50,0.05)] px-[20px] py-[8px] rounded-full ${handleState(org.status)} `}>{org.status}</span>
                     </td>
                     <td className='pt-[2.1875rem]'>
                       <div>
