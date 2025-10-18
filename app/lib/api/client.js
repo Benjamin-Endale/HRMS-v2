@@ -208,8 +208,14 @@ getTenantEmployees: (tenantId, token) =>
       body: employees, // Can be FormData or JSON
     }, token),
 
+    getTenantModule: (id, token) => 
+        apiClient(`/tenants/${id}/modules`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }),
 
-    
 
   createTenant: (tenants) =>
     apiClient('/tenants', { 

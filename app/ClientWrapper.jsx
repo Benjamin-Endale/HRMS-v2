@@ -2,67 +2,89 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { ROLE_LAYOUTS } from './config/roles';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { hrmsAPI } from './lib/api/client';
+import MainBody from './Components/mainBody';
+import Header from './Components/Header';
+
 export default function ClientWrapper({ children, session }) {
     const router = useRouter();
     const pathname = usePathname() || '/';
     
-    // Safely get role with fallbacks
     const role = session?.user?.role;
     const requiresOtp = session?.requiresOtp;
     const otpVerified = session?.otpVerified;
 
+    const [modules, setModules] = useState(null); // null while fetching
+
     const defaultPaths = {
-      SuperAdmin: 'SuperAdmin/AllOrganization',
-      HR: 'Admin/Dashboard',
-      Employee: 'EmployeePortal/Dashboard',
-      SystemAdmin: 'Admin/Dashboard'
+        SuperAdmin: 'SuperAdmin/AllOrganization',
+        HR: 'Admin/Dashboard',
+        Employee: 'EmployeePortal/Dashboard',
+        SystemAdmin: 'Admin/Dashboard'
     };
 
-    // Redirect to OTP page if OTP is required but not verified
+    
+
+    // OTP redirect
     useEffect(() => {
         if (requiresOtp && !otpVerified && !pathname.startsWith('/Login/VerifyOtp')) {
             router.push(`/Login/VerifyOtp?username=${session?.user?.id || session?.user?.email}`);
         }
     }, [requiresOtp, otpVerified, pathname, router, session]);
-    
-    // Show loading state or redirect if no role (OTP not completed)
-    
-    if (requiresOtp) {
-        if (pathname.startsWith('/Login/VerifyOtp')) {
-            // Allow access to OTP page
-            return <div>{children}</div>;
-        }
-        return <div>Redirecting to OTP verification...</div>;
-    }
-    // Check if role is available and valid
-    if (!role || !ROLE_LAYOUTS[role]) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <div>Loading application...</div>
-            </div>
-        );
-    }
 
-    // Handle unauthorized page separately
+
+
+    // Update last login
+    useEffect(() => {
+        
+        const token = localStorage.getItem('accessToken');
+        if (!token || !session?.user?.id || (requiresOtp && !otpVerified)) return;
+
+        const updateLastLogin = async () => {
+            try {
+                await hrmsAPI.touchLogin(session.user.id);
+            } catch (err) {
+                console.error('Failed to update last login:', err);
+            }
+        };
+        updateLastLogin();
+    }, [session?.user?.id, requiresOtp, otpVerified]);
+        console.log("hi")
+        useEffect(() => {
+            if (!session?.user?.tenantId || !session.accessToken) return;
+            if (!['SystemAdmin', 'HR'].includes(session.user.role)) return;
+
+            const fetchModules = async () => {
+                try {
+                    const res = await hrmsAPI.getTenantModule(session.user.tenantId, session.accessToken);
+                    console.log("Modules fetched from API:", res);
+                        Object.entries(res || {}).forEach(([key, value]) => {
+                            console.log(`➡ ${key}: ${value}`);
+                        });
+
+                    setModules(res || {});
+                } catch (err) {
+                    console.error("Failed to fetch tenant modules:", err);
+                    setModules({});
+                }
+            };
+
+            fetchModules();
+        }, [
+            session?.user?.tenantId,
+            session?.user?.role,
+            session?.accessToken
+        ]);
+ // Unauthorized page
     if (pathname.startsWith('/Unauthorized')) {
         return <div className='bg-black'>{children}</div>;
     }
 
-            useEffect(() => {
-            const token = localStorage.getItem('accessToken');
-            if (!token || !session?.user?.id || (session.requiresOtp && !session.otpVerified)) return;
-
-            const updateLastLogin = async () => {
-                try {
-                await hrmsAPI.touchLogin(session.user.id);
-                } catch (err) {
-                console.error('Failed to update last login:', err);
-                }
-            };
-            updateLastLogin();
-            }, [session?.user?.id, session?.requiresOtp, session?.otpVerified]);
+    if (requiresOtp) {
+        if (pathname.startsWith('/Login/VerifyOtp')) return <div>{children}</div>;
+        return <div>Redirecting to OTP verification...</div>;
+    }
 
 
     const readPath = pathname === '/' ? defaultPaths[role] : pathname.replace('/', '');
@@ -70,12 +92,34 @@ export default function ClientWrapper({ children, session }) {
     const BodyComponent = Layout.body;
     const HeaderComponent = Layout.header;
 
+    // Redirect if module access not allowed
+    useEffect(() => {
+        if (!['SystemAdmin', 'HR'].includes(role)) return;
+
+        const pathModuleMap = {
+            '/Admin/Employees': 'employeeManagement',
+            '/Admin/LeaveManagment': 'leaveManagement',
+            '/Admin/Attendance': 'attendanceTracking',
+            '/Admin/RecruitmentPages/Jobposting': 'recruitment',
+            '/Admin/PerformancePages/Overview': 'performanceManagement',
+            '/Admin/TrainingPages/OverviewTraining': 'trainingDevelopment'
+        };
+
+        const moduleKey = Object.entries(pathModuleMap).find(([path, key]) =>
+            pathname.startsWith(path)
+        )?.[1];
+
+        if (moduleKey && (!modules || !modules[moduleKey])) {
+            router.push('/Unauthorized');
+        }
+    }, [pathname, modules, router, role]);
+
     return (
         <div className='flex gap-[4.4375rem] bg-[url(/image/backdash.png)] bg-no-repeat bg-center bg-cover'>
-            <BodyComponent readPath={readPath} session={session} />
+            <BodyComponent readPath={readPath}  session={session} modules={modules} />
             <div className='flex flex-col flex-1 gap-[4.25rem]'>
                 <div className='flex pt-[3.5rem]'>
-                    <HeaderComponent readPath={readPath} session={session} />
+                    <HeaderComponent readPath={readPath} session={session} modules={modules} />
                 </div>
                 <div className='w-[calc(100%-2.75rem)]'>
                     {children}

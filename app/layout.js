@@ -21,6 +21,10 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={urbanist.variable}>
       <body className="antialiased overflow-y-auto scrollBarDash">
+          {/* <ClientWrapper session={session}>
+              {children}
+              <div id="addModal"></div>
+          </ClientWrapper> */}
         {!session ? (
           <LoginPage />
         ) : (

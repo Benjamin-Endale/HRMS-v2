@@ -20,7 +20,7 @@ const router = useRouter();
               <img src="/svg/SvgImage/Filter.svg" alt="" />
               <span className='text-white'>All Department</span>
             </div>
-            <img src="/imgae/Icon/ArrowDown.png" alt="" />
+            <img src="/image/Icon/ArrowDown.png" alt="" />
           </div>
       </div>
 

@@ -19,7 +19,8 @@ const Header = ({ readPath , session }) => {
     Organization_Settings: 'Set up a new organization in your HRMS platform',
     Super_Administrators: 'Manage system administrators and their permissions',
     User_Statics: '',
-    Training_and_Development: 'Manage training programs, enrollments, and employee development'
+    Training_and_Development: 'Manage training programs, enrollments, and employee development',
+    User_Authentication: ''
   }
 
   // Map human-readable titles to object keys
@@ -59,7 +60,9 @@ const Header = ({ readPath , session }) => {
     'Admin/TrainingPages/OverviewTraining':'Training_and_Development',
     'Admin/TrainingPages/Program':'Training_and_Development',
     'Admin/TrainingPages/Feedback':'Training_and_Development',
-    'TestConnection': 'Training_and_Development'
+    'Admin/UserAuthentication': 'User_Authentication',
+    'Admin/UserAuthentication/All': 'User_Authentication',
+    'Admin/UserAuthentication/Authorized': 'User_Authentication'
 
 
   }

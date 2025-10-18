@@ -31,7 +31,10 @@ const SubNavigation = ({ readPath }) => {
     { label: "Enrolment ", path: "/Admin/TrainingPages/Enrolment" },
     { label: "Feedback", path: "/Admin/TrainingPages/Feedback" }
   ]
-
+    const NavAuth = [
+    { label: "All", path: "/Admin/UserAuthentication/All" },
+    { label: "Authorized", path: "/Admin/UserAuthentication/Authorized" },
+    ]
 
   return (
     <div className='w-full'>
@@ -203,6 +206,23 @@ const SubNavigation = ({ readPath }) => {
                 
             </div>
         </div>
+        {/* UserAuth */}
+            <div className={`${readPath === '/Admin/UserAuthentication/All' || readPath === "/Admin/UserAuthentication/Authorized"   ? 'block' : 'hidden'} cursor-pointer flex flex-col gap-[3.3125rem]`}>
+                <div>
+                    <div className="flex font-medium gap-[1.75rem]">
+                        {NavAuth.map(item => (
+                        <div
+                            key={item.path}
+                            onClick={() => router.push(item.path)}
+                            className={`w-[8.875rem] center-center py-[0.875rem] relative px-[1.875rem]  text-nowrap  ${pathname === item.path ? 'text-lemongreen' : 'textLimegray1'}`}>
+                            {item.label}
+                            <div className={`${pathname === item.path ? 'absolute left-0 h-[3px] w-full bottom-0 rounded-[0.375rem] bg-lemongreen' : ''}`}></div>
+                        </div>
+                        ))}
+                        
+                    </div>
+                </div>
+            </div>
     </div>
   )
 }

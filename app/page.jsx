@@ -1,4 +1,3 @@
-// app/page.jsx
 import { redirect } from 'next/navigation';
 import { auth } from '@/app/auth'; // server-side auth
 
@@ -16,9 +15,12 @@ export default async function Home() {
       redirect('/SuperAdmin/AllOrganization');
     case 'HR':
       redirect('/Admin/Dashboard');
+    case 'HR':
+      redirect('/Admin/Dashboard');
     case 'Employee':
       redirect('/EmployeePortal/Dashboard');
     default:
       redirect('/Login'); // fallback
   }
+
 }

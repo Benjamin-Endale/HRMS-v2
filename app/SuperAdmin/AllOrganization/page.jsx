@@ -24,49 +24,55 @@ export default async function Page () {
     return <div>Please login to see organizations</div>;
   }
 
-  let Tenants = [];
   let employees = [];
   let organizations = [];
+  let tenants = [];
+
   try {
     // 1️⃣ Fetch all Tenants
-    Tenants = await hrmsAPI.getTenant(token);
+    tenants = await hrmsAPI.getTenant(token);
     employees = await hrmsAPI.getEmployees(token)
-    organizations = await hrmsAPI.getOrganizations(token)
+    try {
+      organizations = await hrmsAPI.getOrganizations(token);
+    } catch (error) {
+      console.error("Failed to fetch organizations:", error);
+      organizations = [];
+    }
 
-  const orgsWithAdmins = await Promise.all(
-    Tenants.map(async (org) => {
+  const tenantsWithAdmins = await Promise.all(
+    tenants.map(async (tenant) => {
       try {
-        const systemAdmin = await hrmsAPI.getTenantSystemAdmin(org.id, token);
-        return { ...org, admin: systemAdmin }; // attach as "admin"
+        const systemAdmin = await hrmsAPI.getTenantSystemAdmin(tenant.id, token);
+        return { ...tenant, admin: systemAdmin }; // attach as "admin"
       } catch (error) {
-        console.error(`Failed to fetch admin for ${org.name}:`, error);
-        return { ...org, admin: null };
+        console.error(`Failed to fetch admin for ${tenant.name}:`, error);
+        return { ...tenant, admin: null };
       }
     })
   );
-const orgsWithAdminsAndEmployees = await Promise.all(
-  orgsWithAdmins.map(async (org) => {
+const tenantsWithAdminsAndEmployees = await Promise.all(
+  tenantsWithAdmins.map(async (tenant) => {
     try {
-      const data = await hrmsAPI.getTenantEmployees(org.id, token); // now returns {count}
-      return { ...org, employeesCount: data.count }; // attach as employeesCount
+      const data = await hrmsAPI.getTenantEmployees(tenant.id, token); // now returns {count}
+      return { ...tenant, employeesCount: data.count }; // attach as employeesCount
     } catch (error) {
-      console.error(`Failed to fetch employees for ${org.name}:`, error);
-      return { ...org, employeesCount: 0 };
+      console.error(`Failed to fetch employees for ${tenant.name}:`, error);
+      return { ...tenant, employeesCount: 0 };
     }
   })
 );
 
 
 
-  Tenants = orgsWithAdminsAndEmployees;
+  tenants = tenantsWithAdminsAndEmployees;
 
 
   } catch (err) {
     console.error("Failed to fetch Tenants:", err);
-    Tenants = [];
+    tenants = [];
   }
 
-  if (Tenants.length === 0) {
+  if (tenants.length === 0) {
     console.log("No Tenants found yet.");
   }
   
@@ -88,7 +94,7 @@ return (
               </div>
             </div>
             <div className='flex flex-col'>
-              <span className='text-5xl'>{Tenants.length}</span>
+              <span className='text-5xl'>{tenants.length}</span>
               <span>Total Tenants</span>
             </div>
           </div>
@@ -178,35 +184,35 @@ return (
                 </tr>
               </thead>
               <tbody >
-                {Tenants.map((org)=> (
-                  <tr key={org.id}>
+                {tenants.map((tenant)=> (
+                  <tr key={tenant.id}>
                     <td className='pt-[2.1875rem]'>
                       <div className='flex items-center gap-[0.9375rem]'>
                         <div className='w-[2.4375rem] h-[2.4375rem] bg-lemongreen rounded-full '></div>
                         <div>
-                          <h1 className='text-limeLight'>{org.name}</h1>
-                          <h4 className='textLimegray'>{org.domain}</h4>
+                          <h1 className='text-limeLight'>{tenant.name}</h1>
+                          <h4 className='textLimegray'>{tenant.domain}</h4>
                         </div>
                       </div>
                     </td>
                     <td className='pt-[2.1875rem]'>
                       <div>
-                        <h1 className='text-limeLight'>{org.admin?.fullName || '-'}</h1>
-                        <h4 className='textLimegray'>{org.admin?.email || '-'}</h4>
+                        <h1 className='text-limeLight'>{tenant.admin?.fullName || '-'}</h1>
+                        <h4 className='textLimegray'>{tenant.admin?.email || '-'}</h4>
                       </div>
                     </td>
                     <td className='pt-[2.1875rem] '>
                       <div className='flex gap-[0.4375rem]'>
                         <img src="/image/Icon/Action/users.png" alt="" />
-                        <span className='text-limegray'>{org.employeesCount || 0}</span>
+                        <span className='text-limegray'>{tenant.employeesCount || 0}</span>
                       </div>
                     </td>
                     <td className='pt-[2.1875rem]'>
-                      <span className={`bg-[rgba(190,229,50,0.05)] px-[20px] py-[8px] rounded-full ${handleState(org.status)} `}>{org.status}</span>
+                      <span className={`bg-[rgba(190,229,50,0.05)] px-[20px] py-[8px] rounded-full ${handleState(tenant.status)} `}>{tenant.status}</span>
                     </td>
                     <td className='pt-[2.1875rem]'>
                       <div>
-                        <h4 className='text-limegray'>{new Date(org.createdAt).toLocaleDateString()}</h4>
+                        <h4 className='text-limegray'>{new Date(tenant.createdAt).toLocaleDateString()}</h4>
                       </div>
                     </td>
                     <td className='flex items-center gap-[2.5625rem] pt-[2.1875rem]'>
