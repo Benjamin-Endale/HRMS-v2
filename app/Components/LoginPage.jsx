@@ -26,7 +26,7 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const [loginError, setLoginError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' }
@@ -146,7 +146,7 @@ export default function LoginPage() {
                 </div>
 
                 {/* Password */}
-                <div className="flex flex-col gap-[0.25rem]">
+               <div className="flex flex-col gap-[0.25rem]">
                   <label className="text-white">Password</label>
                   <div className="relative flex items-center w-[31.0625rem] h-[3.4375rem]">
                     <div className="absolute z-10 pl-[1.1875rem]">
@@ -154,12 +154,22 @@ export default function LoginPage() {
                     </div>
                     <input
                       className="pl-[4.125rem] h-full w-full rounded-[0.3125rem] border-2 border-[#1D2015] text-white focus:outline-none focus:border-lemongreen focus:ring-lemongreen bg-[#1D2015]"
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       placeholder='*******************'
                       {...register("password")}
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-[50%] -translate-y-[50%]"
+                    >
+                      <img
+                        src={showPassword ? "/image/Icon/Action/HideEye.png" : "/image/Icon/Action/eye.png"}
+                        alt={showPassword ? "Hide Password" : "Show Password"}
+                      />
+                    </button>
                   </div>
-                  {errors.password && <span className='text-Error'>{errors.password.message}</span>}
+                  {errors.password && <span className='text-Error text-[1rem]'>{errors.password.message}</span>}
                 </div>
 
                 {/* Login button */}
