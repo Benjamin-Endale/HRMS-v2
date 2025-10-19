@@ -45,7 +45,7 @@ const MainBody = ({ readPath, modules }) => {
   const isActive = (item) =>
     readPath === item.path.replace('/', '') ||
     (item.path === '/Admin/Employees' &&
-      ['Admin/EmployeeRegistration/AddNewemployee','Admin/EmployeeRegistration/AddNewemployeesecond','Admin/EmployeeRegistration/Compensation','Admin/EmployeeRegistration/System'].includes(readPath)) ||
+      ['Admin/EmployeeRegistration/AddNewemployee','Admin/EmployeeRegistration/AddNewemployeesecond','Admin/EmployeeRegistration/Compensation','Admin/EmployeeRegistration/System' , 'Admin/EmployeeView'].includes(readPath)) ||
     (item.path === '/Admin/PerformancePages/Overview' &&
       ['Admin/PerformancePages/Goals','Admin/PerformancePages/FeedBack','Admin/PerformancePages/Reviews'].includes(readPath));
 

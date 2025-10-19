@@ -6,7 +6,7 @@ const Header = ({ readPath , session }) => {
   const parag = {
     Dashboard: "Welcome back! Here's what's happening at your organization today.",
     Organization: "Manage company structure, departments, and organizational hierarchy.",
-    Employee: "Manage employee profile, roles, and organizational structure.",
+    Employee_Management: "Manage employee profile, roles, and organizational structure.",
     Attendance: "Monitor employee attendance, working hours, and presence status.",
     Leave_Management: "Manage employee leave requests, balances, and policies.",
     Recruitment_and_ATS: "Manage job postings, candidates, and hiring process",
@@ -27,7 +27,7 @@ const Header = ({ readPath , session }) => {
   const keyMap = {
     "Admin/Dashboard": "Dashboard",
     "Admin/Organization": "Organization",
-    "Admin/Employees": "Employee",
+    "Admin/Employees": "Employee_Management",
     "Admin/Attendance": "Attendance",
     "Admin/LeaveManagment": "Leave_Management",
     "Admin/Performance":"Performance_Management",
@@ -62,7 +62,9 @@ const Header = ({ readPath , session }) => {
     'Admin/TrainingPages/Feedback':'Training_and_Development',
     'Admin/UserAuthentication': 'User_Authentication',
     'Admin/UserAuthentication/All': 'User_Authentication',
-    'Admin/UserAuthentication/Authorized': 'User_Authentication'
+    'Admin/UserAuthentication/Authorized': 'User_Authentication',
+    "Admin/EmployeeView": "Employee_Management",
+
 
 
   }

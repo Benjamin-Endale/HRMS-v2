@@ -64,7 +64,7 @@ const Page = () => {
 
       <div className='between gap-[12.25rem]'>
         {/* Main Form */}
-        <div className='w-[49.5625rem] h-[36.3125rem] overflow-y-auto scrollBarDash'>
+        <div className='w-[52.5625rem] h-[36.3125rem] overflow-y-auto scrollBarDash'>
           <form className='flex gap-[2.5625rem] px-[10px] flex-wrap' onSubmit={handleSubmit(onSubmit)}>
          {/* two column */}
           <div className='flex gap-[2.5625rem]'>  

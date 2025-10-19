@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useRouter } from "next/navigation";
-const page = () => {
+const Page = () => {
 
 const router = useRouter();
 
@@ -56,7 +56,7 @@ const router = useRouter();
               <td className='pt-[2.25rem]'>Engineering</td>
               <td className='pt-[2.25rem] max-w-[150px] whitespace-normal break-words'>Senior Software Developer</td>
               <td className='flex items-center gap-[2.5625rem] pt-[2.25rem]'>
-                <button type="button" className='cursor-pointer'>
+                <button onClick={() => router.push('/Admin/EmployeeView')} type="button" className='cursor-pointer'>
                   <img src="/image/Icon/Action/eye.png" alt="" />
                 </button>
                 <button type="button" className='cursor-pointer'>
@@ -75,4 +75,4 @@ const router = useRouter();
   )
 }
 
-export default page
+export default Page

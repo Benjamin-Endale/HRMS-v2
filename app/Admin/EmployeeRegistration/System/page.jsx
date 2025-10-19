@@ -8,9 +8,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 // Zod schema
 const schema = z.object({
-  Username: z.string().min(3, 'Username is required'),
-  Password: z.string().min(6, 'Password must be at least 6 characters'),
-  Role: z.string().nonempty('Role is required'),
   Shift: z.string().nonempty('Shift is required'),
   WorkLocation: z.string().nonempty('Work Location is required'),
   Certification: z
@@ -27,9 +24,6 @@ const Page = () => {
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      Username: '',
-      Password: '',
-      Role: '',
       Shift: '',
       WorkLocation: '',
       Certification: null,
@@ -51,7 +45,7 @@ const Page = () => {
             src='/image/Icon/ArrowLeft.png'
             alt='Back'
           />
-          <li className='textWhite list-none'>4. System Access & Work Details</li>
+          <li className='textWhite list-none'>4. Work Details</li>
         </div>
 
         {/* ProgressBar */}
@@ -65,7 +59,7 @@ const Page = () => {
 
       <div className='between gap-[12.25rem]'>
         {/* Form */}
-        <div className='w-[49.5625rem] h-[36.3125rem] overflow-y-auto scrollBarDash'>
+        <div className='w-[52.5625rem] h-[36.3125rem] overflow-y-auto scrollBarDash'>
           
           <form
             className='flex gap-[2.5625rem] px-[10px] flex-wrap'
@@ -74,67 +68,6 @@ const Page = () => {
              {/* two column */}
           <div className='flex gap-[2.5625rem]'> 
             <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
-              {/* Username */}
-              <div className='flex flex-col gap-[1rem]'>
-                <label className='text-formColor'>Username</label>
-                <input
-                  type='text'
-                  placeholder='e.x bereketdan'
-                  className='inputMod'
-                  {...register('Username')}
-                />
-                {errors.Username && <span className='text-Error text-[1rem]'>{errors.Username.message}</span>}
-              </div>
-
-              {/* Role */}
-              <div>
-                <Controller
-                  control={control}
-                  name='Role'
-                  render={({ field }) => (
-                    <Dropdown
-                      label='Role'
-                      options={['Employee', 'Admin', 'HR', 'CTO']}
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      placeholder='Employee'
-                    />
-                  )}
-                />
-                {errors.Role && <span className='text-Error text-[1rem]'>{errors.Role.message}</span>}
-              </div>
-
-              {/* Shift */}
-              <div>
-                <Controller
-                  control={control}
-                  name='Shift'
-                  render={({ field }) => (
-                    <Dropdown
-                      label='Shift Details'
-                      options={['Morning Shift', 'Night Shift']}
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      placeholder='Morning Shift'
-                    />
-                  )}
-                />
-                {errors.Shift && <span className='text-Error text-[1rem]'>{errors.Shift.message}</span>}
-              </div>
-            </div>
-
-            <div className='w-[23.1875rem] flex flex-col gap-[35px]'>
-              {/* Password */}
-              <div className='flex flex-col gap-[1rem]'>
-                <label className='text-formColor'>Password</label>
-                <input
-                  type='password'
-                  placeholder='*************'
-                  className='inputMod'
-                  {...register('Password')}
-                />
-                {errors.Password && <span className='text-Error text-[1rem]'>{errors.Password.message}</span>}
-              </div>
 
               {/* Work Location */}
               <div>
@@ -164,6 +97,30 @@ const Page = () => {
                 </label>
                 {errors.Certification && <span className='text-Error text-[1rem]'>{errors.Certification.message}</span>}
               </div>
+
+            </div>
+
+            <div className='w-[23.1875rem] flex flex-col gap-[35px]'>
+              {/* Shift */}
+              <div>
+                <Controller
+                  control={control}
+                  name='Shift'
+                  render={({ field }) => (
+                    <Dropdown
+                      label='Shift Details'
+                      options={['Morning Shift', 'Night Shift']}
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      placeholder='Morning Shift'
+                    />
+                  )}
+                />
+                {errors.Shift && <span className='text-Error text-[1rem]'>{errors.Shift.message}</span>}
+              </div>
+
+
+
             </div>
           </div>
             {/* Buttons */}
