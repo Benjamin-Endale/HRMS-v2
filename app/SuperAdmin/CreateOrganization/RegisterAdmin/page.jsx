@@ -43,7 +43,18 @@ const schema = z.object({
     jobTitle: z.string().nonempty("Job Title is required"),
     employeeEducationStatus:z.string().nonempty("Status Title is required"),
     employmentType: z.string().nonempty("Employment Type is required"),
-    hireDate: z.string().nonempty("Joining Date is required"),
+hireDate: z
+  .string()
+  .min(1, { message: "Joining date is required" })
+  .refine((date) => {
+    const selected = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    selected.setHours(0, 0, 0, 0);
+    return selected.getTime() === today.getTime();
+  }, {
+    message: "Joining date must be today",
+  }),
     shiftDetails: z.string().nonempty('Shift is required'),
     workLocation: z.string().nonempty('Work Location is required'),
     certificationFile: z

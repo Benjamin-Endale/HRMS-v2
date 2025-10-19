@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useAdminForm } from '@/app/Store/AdminFormContext';
 
 
-// ✅ Schema
+
 const AddorgSchema = z.object({
   name: z.string().min(4, "Tenant is required"),
   domain: z.string().min(4, "Domain is required"),
@@ -96,12 +96,12 @@ const Page = () => {
               <div className="flex flex-col gap-[2.875rem]">
                 <div className="flex gap-[2.1875rem]">
                   <div className="w-[20.1875rem] flex flex-col gap-[2.875rem]">
-                    <div className="flex flex-col gap-[1rem] relative  border border-Error">
+                    <div className="flex flex-col gap-[1rem] relative ">
                       <label className="text-formColor">Tenant Name*</label>
                       <input type="text" placeholder="Enter Tenant Name" className="inputMod" {...register("name")} />
                       {errors.name && <span className="text-Error absolute bottom-[-2rem] text-[1rem]">{errors.name.message}</span>}
                     </div>
-                    <div className='border border-Error relative '>
+                    <div className=' relative '>
                       <Controller
                         control={control}
                         name="industry"

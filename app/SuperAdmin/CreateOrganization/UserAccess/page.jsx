@@ -34,6 +34,8 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const { employeeData, setEmployeeData, tenantData, compensationData } = useAdminForm()
   const [isOpen , setisOpen] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   
 
@@ -200,37 +202,61 @@ const onSubmit = async (data) => {
                 </div>
 
                 {/* Passwords */}
-                <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
-                  <div className='flex flex-col gap-[1rem]'>
-                    <label className='text-formColor'>Password</label>
-                    <input
-                      type='password'
-                      placeholder='*************'
-                      className='inputMod'
-                      {...register('password')}
-                    />
-                    {errors.password && (
-                      <span className='text-Error text-[1rem]'>
-                        {errors.password.message}
-                      </span>
-                    )}
-                  </div>
+                {/* Passwords */}
+<div className='flex flex-col w-[23.1875rem] gap-[35px]'>
+  {/* Password Field */}
+  <div className='flex flex-col gap-[1rem] relative'>
+    <label className='text-formColor'>Password</label>
+    <input
+      type={showPassword ? 'text' : 'password'}
+      placeholder='*************'
+      className='inputMod pr-16'
+      {...register('password')}
+    />
+    <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-[70%] -translate-y-[50%]"
+              >
+                <img
+                  src={showPassword ? "/image/Icon/Action/HideEye.png" : "/image/Icon/Action/eye.png"}
+                  alt={showPassword ? "Hide Password" : "Show Password"}
+                />
+              </button>
+    {errors.password && (
+      <span className='text-Error text-[1rem]'>
+        {errors.password.message}
+      </span>
+    )}
+  </div>
 
-                  <div className='flex flex-col gap-[1rem]'>
-                    <label className='text-formColor'>Confirm Password</label>
-                    <input
-                      type='password'
-                      placeholder='*************'
-                      className='inputMod'
-                      {...register('ConfirmPassword')}
-                    />
-                    {errors.ConfirmPassword && (
-                      <span className='text-Error text-[1rem]'>
-                        {errors.ConfirmPassword.message}
-                      </span>
-                    )}
-                  </div>
-                </div>
+  {/* Confirm Password Field */}
+  <div className='flex flex-col gap-[1rem] relative'>
+    <label className='text-formColor'>Confirm Password</label>
+    <input
+      type={showConfirmPassword ? 'text' : 'password'}
+      placeholder='*************'
+      className='inputMod pr-16'
+      {...register('ConfirmPassword')}
+    />
+   <button
+                type="button"
+                onClick={() => setshowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-4 top-[70%] -translate-y-[50%]"
+              >
+                <img
+                  src={showConfirmPassword ? "/image/Icon/Action/HideEye.png" : "/image/Icon/Action/eye.png"}
+                  alt={showConfirmPassword ? "Hide Password" : "Show Password"}
+                />
+              </button>
+    {errors.ConfirmPassword && (
+      <span className='text-Error text-[1rem]'>
+        {errors.ConfirmPassword.message}
+      </span>
+    )}
+  </div>
+</div>
+
               </div>
 
               {/* Buttons */}
