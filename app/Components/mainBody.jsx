@@ -47,7 +47,9 @@ const MainBody = ({ readPath, modules }) => {
     (item.path === '/Admin/Employees' &&
       ['Admin/EmployeeRegistration/AddNewemployee','Admin/EmployeeRegistration/AddNewemployeesecond','Admin/EmployeeRegistration/Compensation','Admin/EmployeeRegistration/System' , 'Admin/EmployeeView'].includes(readPath)) ||
     (item.path === '/Admin/PerformancePages/Overview' &&
-      ['Admin/PerformancePages/Goals','Admin/PerformancePages/FeedBack','Admin/PerformancePages/Reviews'].includes(readPath));
+      ['Admin/PerformancePages/Goals','Admin/PerformancePages/FeedBack','Admin/PerformancePages/Reviews'].includes(readPath)) ||
+    (item.path === '/Admin/UserAuthentication/All' &&
+      ['Admin/UserAuthentication/Authorized'].includes(readPath));
 
   return (
     <aside className="font-semibold customBorder scrollBar w-[20.5rem] h-screen flex flex-col gap-[4.25rem] relative pt-[3.5rem] overflow-y-auto">

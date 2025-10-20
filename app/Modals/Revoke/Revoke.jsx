@@ -1,6 +1,6 @@
 import React from 'react';
 import { logout } from '@/app/lib/actions/auth';
-export default function  Revoke({Header , Parag ,  onNavigate , confirmation }) {
+export default function  Revoke({Header , Parag ,  onNavigate , confirmation,onConfirm }) {
 
   return (
     <div className=' flex-col center-center gap-[4rem] px-[3rem] py-[2.875rem] font-semibold'>
@@ -13,7 +13,7 @@ export default function  Revoke({Header , Parag ,  onNavigate , confirmation }) 
             <button onClick={onNavigate}   className='w-full h-full  cursor-pointer'>Cancel</button>
         </div>
         <div  className='rounded-[10px]  center-center bg-Error w-[14.375rem]  text-formColor h-[3.4375rem]'>
-            <button onClick={onNavigate}   className='w-full h-full  cursor-pointer'>{confirmation}</button>
+            <button onClick={onConfirm}   className='w-full h-full  cursor-pointer'>{confirmation}</button>
         </div>
       </div>
     </div>

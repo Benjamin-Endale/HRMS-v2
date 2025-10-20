@@ -3,10 +3,16 @@ import { Dropdown } from '@/app/Components/DropDown';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { hrmsAPI } from '@/app/lib/api/client';
+import { toPascal } from '@/app/lib/utils/toPascal';
+import ModalContainerSuccessful from '../Successfully/ModalContainerSuccessful';
+import Successful from '../Successfully/Successful';
+import { useRouter } from 'next/navigation';
+
 
 const AuthSchema = z
   .object({
-    Role: z.string().nonempty("Role is required"),
+    role: z.string().nonempty("Role is required"),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters long")
@@ -23,10 +29,11 @@ const AuthSchema = z
     path: ["confirmPassword"],
   });
 
-const AddAuth = ({ onClose }) => {
-  const [selectedRole, setSelectedRole] = useState();
+const AddAuth = ({ onClose , employee , token , tenantId }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+      const [isOpen,setisOpen] = useState(false)
+  
 
   const {
     register,
@@ -36,15 +43,43 @@ const AddAuth = ({ onClose }) => {
   } = useForm({
     resolver: zodResolver(AuthSchema),
     defaultValues: {
-      Role: "",
+      role: "",
       password: "",
       confirmPassword: "",
     },
   });
+  const router = useRouter()
 
-  const onSubmit = (data) => {
-    console.log("✅ Submitted data:", data);
-  };
+    const onSubmit = async (data) => {
+      try {
+        
+        if (!employee) return;
+
+
+        console.log(employee)
+            const rawEmployee = {
+              tenantId,
+              employeeId:employee.employeeID,
+              email:  employee.email,
+              password: data.password,
+              role: data.role,
+              fullName: `${employee.firstName} ${employee.lastName}`
+              
+        };
+
+
+        const Payload = toPascal(rawEmployee)
+      
+        console.log('Payload: ' ,Payload) 
+
+        
+        await hrmsAPI.createUser(Payload,token);
+      } catch (error) {
+        console.error("❌ Failed to authorize user:", error);
+        alert("Failed to authorize user.");
+      }
+    };
+
 
   return (
     <form
@@ -72,21 +107,21 @@ const AddAuth = ({ onClose }) => {
         {/* Role Dropdown */}
         <div className="flex flex-col gap-[0.5rem] relative">
           <Controller
-            name="Role"
+            name="role"
             control={control}
             render={({ field }) => (
               <Dropdown
                 label="Role"
                 options={["HR", "Employee", "SystemAdmin"]}
-                value={field.value}
-                onSelect={(value) => field.onChange(value)}
+                selected={field.value}
+                onSelect={field.onChange}
                 placeholder="Select Role"
               />
             )}
           />
-          {errors.Role && (
+          {errors.role && (
             <span className="text-Error text-[1rem] absolute bottom-[-1.5rem]">
-              {errors.Role.message}
+              {errors.role.message}
             </span>
           )}
         </div>
@@ -161,9 +196,22 @@ const AddAuth = ({ onClose }) => {
           <button
             type="submit"
             className="w-full h-full bg-lemongreen rounded-[10px] cursor-pointer"
+            onClick={() => {
+                setisOpen(true);}}
           >
             Authorize
           </button>
+        {/* Modal */}
+          <ModalContainerSuccessful open={isOpen}>
+              <Successful
+              Header='Successfully Authorized'
+              Parag={`This Employees has been successfully Authorized!`}
+              confirmation='Ok'
+              onNavigate={onClose}
+              
+              />
+          </ModalContainerSuccessful>
+          
         </div>
       </div>
     </form>

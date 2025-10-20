@@ -16,7 +16,7 @@ salary: z.coerce
   })
   .min(1000, 'Salary must be at least 1000 birr'),
   paymentMethod: z.string().nonempty('Payment Method is required'),
-taxIdentificationNumber: z
+taxIdenitificationNumber: z
   .string()
   .length(10, 'Tax Identification Number must be exactly 10 digits')
   .regex(/^\d+$/, 'Tax Identification Number must contain only digits'),
@@ -130,9 +130,9 @@ console.log(errors)
                     type='number'
                     placeholder='e.x 78567578'
                     className='inputMod'
-                    {...register('taxIdentificationNumber')}
+                    {...register('taxIdenitificationNumber')}
                   />
-                  {errors.taxIdentificationNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.taxIdentificationNumber.message}</span>}
+                  {errors.taxIdenitificationNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.taxIdenitificationNumber.message}</span>}
                 </div>
 
                 {/* Passport */}

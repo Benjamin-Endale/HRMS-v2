@@ -11,6 +11,7 @@ export default function ClientWrapper({ children, session }) {
     const router = useRouter();
     const pathname = usePathname() || '/';
     
+    
     const role = session?.user?.role;
     const requiresOtp = session?.requiresOtp;
     const otpVerified = session?.otpVerified;
@@ -50,7 +51,6 @@ export default function ClientWrapper({ children, session }) {
         };
         updateLastLogin();
     }, [session?.user?.id, requiresOtp, otpVerified]);
-        console.log("hi")
         useEffect(() => {
             if (!session?.user?.tenantId || !session.accessToken) return;
             if (!['SystemAdmin', 'HR'].includes(session.user.role)) return;
@@ -58,11 +58,6 @@ export default function ClientWrapper({ children, session }) {
             const fetchModules = async () => {
                 try {
                     const res = await hrmsAPI.getTenantModule(session.user.tenantId, session.accessToken);
-                    console.log("Modules fetched from API:", res);
-                        Object.entries(res || {}).forEach(([key, value]) => {
-                            console.log(`➡ ${key}: ${value}`);
-                        });
-
                     setModules(res || {});
                 } catch (err) {
                     console.error("Failed to fetch tenant modules:", err);
@@ -87,7 +82,9 @@ export default function ClientWrapper({ children, session }) {
     }
 
 
-    const readPath = pathname === '/' ? defaultPaths[role] : pathname.replace('/', '');
+    const cleanPath = pathname === '/' ? defaultPaths[role] : pathname.replace('/', '');
+    const readPath = cleanPath.replace(/\/[0-9a-f-]{36}$/, ""); 
+
     const Layout = ROLE_LAYOUTS[role];
     const BodyComponent = Layout.body;
     const HeaderComponent = Layout.header;

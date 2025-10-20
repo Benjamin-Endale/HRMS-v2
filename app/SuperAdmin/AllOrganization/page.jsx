@@ -28,10 +28,14 @@ export default async function Page () {
   let organizations = [];
   let tenants = [];
 
+
+
   try {
     // 1️⃣ Fetch all Tenants
     tenants = await hrmsAPI.getTenant(token);
+    console.log("tenants response: " , tenants)
     employees = await hrmsAPI.getEmployees(token)
+
     try {
       organizations = await hrmsAPI.getOrganizations(token);
     } catch (error) {
@@ -43,6 +47,7 @@ export default async function Page () {
     tenants.map(async (tenant) => {
       try {
         const systemAdmin = await hrmsAPI.getTenantSystemAdmin(tenant.id, token);
+        console.log(systemAdmin)
         return { ...tenant, admin: systemAdmin }; // attach as "admin"
       } catch (error) {
         console.error(`Failed to fetch admin for ${tenant.name}:`, error);
@@ -53,7 +58,8 @@ export default async function Page () {
 const tenantsWithAdminsAndEmployees = await Promise.all(
   tenantsWithAdmins.map(async (tenant) => {
     try {
-      const data = await hrmsAPI.getTenantEmployees(tenant.id, token); // now returns {count}
+      const data = await hrmsAPI.getTenantEmployees(tenant.id, token); 
+      console.log("Employees: " , data)// now returns {count}
       return { ...tenant, employeesCount: data.count }; // attach as employeesCount
     } catch (error) {
       console.error(`Failed to fetch employees for ${tenant.name}:`, error);
@@ -65,7 +71,7 @@ const tenantsWithAdminsAndEmployees = await Promise.all(
 
 
   tenants = tenantsWithAdminsAndEmployees;
-
+  console.log(tenants)
 
   } catch (err) {
     console.error("Failed to fetch Tenants:", err);

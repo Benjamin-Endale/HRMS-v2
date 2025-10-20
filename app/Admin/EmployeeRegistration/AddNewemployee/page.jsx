@@ -6,11 +6,12 @@ import { Dropdown } from '@/app//Components/DropDown';
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAdminForm } from '@/app/Store/AdminFormContext';
 
 const schema = z.object({
-    FirstName: z.string().min(3, "First name is required"),  
-    LastName: z.string().min(2, "Last name is required"),
-    DateofBirth: z.
+    firstName: z.string().min(3, "First name is required"),  
+    lastName: z.string().min(2, "Last name is required"),
+    dateOfBirth: z.
     string()
     .min(1, { message: "Date of Birth is required" }) 
     .refine((value) => {
@@ -27,22 +28,25 @@ const schema = z.object({
   }, {
     message: "You must be at least 18 years old",
   }),
-    Nationality: z.string().nonempty("Nationality is required"),
-    Email: z.string().email("Enter a valid email"),
-    Address: z.string().min(3, "Address is required"),
-    Gender: z.string().nonempty("Gender is required"),
-    Marital: z.string().nonempty("Marital status is required"),
-    Phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
+    nationality: z.string().nonempty("Nationality is required"),
+    email: z.string().email("Enter a valid email"),
+    address: z.string().min(3, "Address is required"),
+    gender: z.string().nonempty("Gender is required"),
+    maritalStatus: z.string().nonempty("Marital status is required"),
+    phoneNumber: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
     emergencyContactName: z.string().min(3, "Contact Name  is required"),
     employeeEducationStatus:z.string().nonempty("Status Title is required"),
     emergencyContactNumber: z.string().regex(/^\+?[0-9]{10,15}$/, "Enter a valid phone number"),
-    photo: z
+    photoUrl: z
         .any()
         .refine(file => file?.length > 0, 'Certification file is required'),
+
 });
 
 const Page = () => {
     const router = useRouter();
+    const { addEmployee, setAddEmployee } = useAdminForm();
+
 
     const {
         register,
@@ -52,25 +56,26 @@ const Page = () => {
     } = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
-            FirstName: "",
-            LastName: "",
-            DateofBirth: "",
-            Nationality: "",
-            Email: "",
-            Address: "",
-            Gender: "",
-            Marital: "",
-            Phone: "",
-            emergencyContactName:"",
-            photo: '',
-            emergencyContactNumber: "",
-            employeeEducationStatus:"",
+            firstName: addEmployee.firstName || "",
+            lastName: addEmployee.lastName || "",
+            dateOfBirth: addEmployee.dateOfBirth || "",
+            nationality: addEmployee.nationality || "",
+            email: addEmployee.email || "",
+            address: addEmployee.address || "",
+            gender: addEmployee.gender || "",
+            maritalStatus: addEmployee.maritalStatus || "",
+            phoneNumber: addEmployee.phoneNumber || "",
+            emergencyContactName:addEmployee.emergencyContactName || "",
+            emergencyContactNumber: addEmployee.emergencyContactNumber || "",
+            employeeEducationStatus: addEmployee.employeeEducationStatus || "",
+            photoUrl: addEmployee.photoUrl || '',
 
 
         },
     });
     console.log(errors)
     const onSubmit = (data) => {
+        setAddEmployee(data);
         console.log("Form Data", data);
         router.push('/Admin/EmployeeRegistration/AddNewemployeesecond');         
     };
@@ -109,22 +114,22 @@ const Page = () => {
                             {/* First Name */}
                             <div className='flex flex-col gap-[1rem]'>
                               <label className='text-formColor'>First Name</label>
-                              <input type="text" placeholder='John' className='inputMod' {...register("FirstName")} />
-                              {errors.FirstName && <span className='text-Error text-[1rem]'>{errors.FirstName.message}</span>}
+                              <input type="text" placeholder='John' className='inputMod' {...register("firstName")} />
+                              {errors.firstName && <span className='text-Error text-[1rem]'>{errors.firstName.message}</span>}
                             </div>
 
                             {/* Date of Birth */}
-                            <div className='flex flex-col gap-[1rem] mr-[10px]'>
+                            <div className='flex flex-col gap-[1rem] '>
                               <label className='text-formColor'>Date Of Birth</label>
-                              <input type="date" className='inputMod' {...register("DateofBirth")} />
-                              {errors.DateofBirth && <span className='text-Error text-[1rem]'>{errors.DateofBirth.message}</span>}
+                              <input type="date" className='inputMod pr-[1.5625rem]' {...register("dateOfBirth")} />
+                              {errors.dateOfBirth && <span className='text-Error text-[1rem]'>{errors.dateOfBirth.message}</span>}
                             </div>
 
                             {/* Nationality */}
                             <div>
                               <Controller
                                 control={control}
-                                name="Nationality"
+                                name="nationality"
                                 render={({ field }) => (
                                   <Dropdown
                                     label="Nationality"
@@ -135,14 +140,14 @@ const Page = () => {
                                   />
                                 )}
                               />
-                              {errors.Nationality && <span className='text-Error text-[1rem]'>{errors.Nationality.message}</span>}
+                              {errors.nationality && <span className='text-Error text-[1rem]'>{errors.nationality.message}</span>}
                             </div>
 
                             {/* Email */}
                             <div className='flex flex-col gap-[1rem]'>
                               <label className='text-formColor'>Email</label>
-                              <input type="email" placeholder='example@gmail.com' className='inputMod' {...register("Email")} />
-                              {errors.Email && <span className='text-Error text-[1rem]'>{errors.Email.message}</span>}
+                              <input type="email" placeholder='example@gmail.com' className='inputMod' {...register("email")} />
+                              {errors.email && <span className='text-Error text-[1rem]'>{errors.email.message}</span>}
                             </div>
 
                             {/* EmergencyContactName */}
@@ -158,9 +163,9 @@ const Page = () => {
                                 <label className='inputModfile cursor-pointer border-none'>
                                     <img src='/image/Icon/File.png' alt='' />
                                     <span className='text-limeLight'>Upload Photo</span>
-                                    <input type='file' className='hidden' {...register('photo')} />
+                                    <input type='file' className='hidden' {...register('photoUrl')} />
                                 </label>
-                                {errors.photo && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.photo.message}</span>}
+                                {errors.photoUrl && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.photoUrl.message}</span>}
                             </div>
                             <div className='flex flex-col gap-[1rem] relative'>
                                 <label className='text-formColor'>Employee Education Status</label>
@@ -179,15 +184,15 @@ const Page = () => {
                             {/* Last Name */}
                             <div className='flex flex-col gap-[1rem]'>
                               <label className='text-formColor'>Last Name</label>
-                              <input type="text" placeholder='Doe' className='inputMod' {...register("LastName")} />
-                              {errors.LastName && <span className='text-Error text-[1rem]'>{errors.LastName.message}</span>}
+                              <input type="text" placeholder='Doe' className='inputMod' {...register("lastName")} />
+                              {errors.lastName && <span className='text-Error text-[1rem]'>{errors.lastName.message}</span>}
                             </div>
 
                             {/* Gender */}
                             <div>
                               <Controller
                                 control={control}
-                                name="Gender"
+                                name="gender"
                                 render={({ field }) => (
                                   <Dropdown
                                     label="Gender"
@@ -198,14 +203,14 @@ const Page = () => {
                                   />
                                 )}
                               />
-                              {errors.Gender && <span className='text-Error text-[1rem]'>{errors.Gender.message}</span>}
+                              {errors.gender && <span className='text-Error text-[1rem]'>{errors.gender.message}</span>}
                             </div>
 
                             {/* Marital Status */}
                             <div>
                               <Controller
                                 control={control}
-                                name="Marital"
+                                name="maritalStatus"
                                 render={({ field }) => (
                                   <Dropdown
                                     label="Marital Status"
@@ -216,14 +221,14 @@ const Page = () => {
                                   />
                                 )}
                               />
-                              {errors.Marital && <span className='text-Error text-[1rem]'>{errors.Marital.message}</span>}
+                              {errors.maritalStatus && <span className='text-Error text-[1rem]'>{errors.maritalStatus.message}</span>}
                             </div>
 
                             {/* Phone */}
                             <div className='flex flex-col gap-[1rem]'>
                               <label className='text-formColor'>Phone Number</label>
-                              <input type="text" placeholder='+251987654321' className='inputMod' {...register("Phone")} />
-                              {errors.Phone && <span className='text-Error text-[1rem]'>{errors.Phone.message}</span>}
+                              <input type="text" placeholder='+251987654321' className='inputMod' {...register("phoneNumber")} />
+                              {errors.phoneNumber && <span className='text-Error text-[1rem]'>{errors.phoneNumber.message}</span>}
                             </div>
 
                             {/* Emergency Contact */}
@@ -234,8 +239,8 @@ const Page = () => {
                             </div>
                             <div className='flex flex-col gap-[1rem]'>
                               <label className='text-formColor'>Address</label>
-                              <input type="text" placeholder='Bole, Addis Ababa' className='inputMod' {...register("Address")} />
-                              {errors.Address && <span className='text-Error text-[1rem]'>{errors.Address.message}</span>}
+                              <input type="text" placeholder='Bole, Addis Ababa' className='inputMod' {...register("address")} />
+                              {errors.address && <span className='text-Error text-[1rem]'>{errors.address.message}</span>}
                             </div>
                           </div>
 

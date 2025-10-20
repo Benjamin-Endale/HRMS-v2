@@ -5,18 +5,18 @@ import { Dropdown } from '@/app/Components/DropDown';
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAdminForm } from '@/app/Store/AdminFormContext';
 
 const schema = z.object({
-  JobTitle: z.string().nonempty("Job Title is required"),
-  EmploymentType: z.string().nonempty("Employment Type is required"),
-  DepartmentHead: z.string().nonempty("Department Head is required"),
-  Department: z.string().nonempty("Department is required"),
-  SubDepartmentHead: z.string().nonempty("Sub Department Head is required"),
-  JoiningDate: z.string().nonempty("Joining Date is required"),
+  jobTitle: z.string().nonempty("Job Title is required"),
+  employmentType: z.string().nonempty("Employment Type is required"),
+  hireDate: z.string().nonempty("Joining Date is required"),
 });
 
 const Page = () => {
   const router = useRouter();
+const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
+  
 
   const {
     register,
@@ -26,20 +26,19 @@ const Page = () => {
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      JobTitle: "",
-      EmploymentType: "",
-      DepartmentHead: "",
-      Department: "",
-      SubDepartmentHead: "",
-      JoiningDate: "",
+        jobTitle: addEmployeeSecond.jobTitle || "",
+        employmentType: addEmployeeSecond.employmentType || "",
+        hireDate: addEmployeeSecond.hireDate || "",
     },
   });
 
   const onSubmit = (data) => {
+    setAddEmployeeSecond(data)
     console.log("Form Data", data);
     router.push('/Admin/EmployeeRegistration/Compensation');         
   };
 
+  
   return (
     <div className='font-semibold flex flex-col gap-[4rem]'>
       {/* Header */}
@@ -77,16 +76,16 @@ const Page = () => {
                   type="text" 
                   placeholder='e.g. Senior Developer' 
                   className='inputMod' 
-                  {...register("JobTitle")}
+                  {...register("jobTitle")}
                 />
-                {errors.JobTitle && <span className="text-Error">{errors.JobTitle.message}</span>}
+                {errors.jobTitle && <span className="text-Error">{errors.jobTitle.message}</span>}
               </div>
 
               {/* Employment Type */}
               <div>
                 <Controller
                   control={control}
-                  name="EmploymentType"
+                  name="employmentType"
                   render={({ field }) => (
                     <Dropdown
                       label="Employment Type"
@@ -97,63 +96,19 @@ const Page = () => {
                     />
                   )}
                 />
-                {errors.EmploymentType && <span className="text-Error text-[1rem]">{errors.EmploymentType.message}</span>}
-              </div>
-
-              {/* Department Head */}
-              <div className='flex flex-col gap-[1rem]'>
-                <label className='text-formColor'>Department Head</label>
-                <input 
-                  type="text" 
-                  placeholder='e.g. John Doe' 
-                  className='inputMod' 
-                  {...register("DepartmentHead")}
-                />
-                {errors.DepartmentHead && <span className="text-Error text-[1rem]">{errors.DepartmentHead.message}</span>}
+                {errors.employmentType && <span className="text-Error text-[1rem]">{errors.employmentType.message}</span>}
               </div>
             </div>
-
-            {/* Right Column */}
-            <div className='w-[23.1875rem] flex flex-col gap-[35px]'>
-              {/* Department */}
-              <div>
-                <Controller
-                  control={control}
-                  name="Department"
-                  render={({ field }) => (
-                    <Dropdown
-                      label="Department"
-                      options={['Department1','Department2','Department3']}
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      placeholder="Select Department"
-                    />
-                  )}
-                />
-                {errors.Department && <span className="text-Error text-[1rem]">{errors.Department.message}</span>}
-              </div>
-
-              {/* Sub Department Head */}
-              <div className='flex flex-col gap-[1rem]'>
-                <label className='text-formColor'>Sub Department Head</label>
-                <input 
-                  type="text" 
-                  placeholder='e.g. Jane Smith' 
-                  className='inputMod' 
-                  {...register("SubDepartmentHead")}
-                />
-                {errors.SubDepartmentHead && <span className="text-Error text-[1rem]">{errors.SubDepartmentHead.message}</span>}
-              </div>
-
+            <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
               {/* Joining Date */}
               <div className='flex flex-col gap-[1rem]'>
                 <label className='text-formColor'>Joining Date</label>
                 <input 
                   type="date" 
                   className='inputMod pr-[1.5625rem]' 
-                  {...register("JoiningDate")}
+                  {...register("hireDate")}
                 />
-                {errors.JoiningDate && <span className="text-Error text-[1rem]">{errors.JoiningDate.message}</span>}
+                {errors.hireDate && <span className="text-Error text-[1rem]">{errors.hireDate.message}</span>}
               </div>
             </div>
           </div>

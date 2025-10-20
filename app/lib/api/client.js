@@ -5,10 +5,9 @@ const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5270/api";
 
 export async function apiClient(endpoint, options = {}, providedToken = null) {
   const url = `${API_BASE_URL}${endpoint}`;
-
   let token = providedToken;
 
-  // 🧩 Server-side auth
+  // Server-side auth
   if (!token && typeof window === "undefined") {
     try {
       const { auth } = await import("@/app/auth");
@@ -19,35 +18,63 @@ export async function apiClient(endpoint, options = {}, providedToken = null) {
     }
   }
 
-  // 🧩 Client-side auth fallback
+  // Client-side fallback
   if (!token && typeof window !== "undefined") {
     const session = await getSession();
     token = session?.accessToken || localStorage.getItem("accessToken");
   }
 
-  // 🧩 Set up headers
   const headers = {
     Authorization: token ? `Bearer ${token}` : undefined,
     ...options.headers,
   };
 
-  // 🧩 Handle FormData vs JSON automatically
   let body = options.body;
   if (body instanceof FormData) {
-    // Do NOT set Content-Type manually — browser will handle it
+    // browser handles content-type
   } else if (body && typeof body === "object") {
     headers["Content-Type"] = "application/json";
     body = JSON.stringify(body);
   }
 
-  // 🧩 Execute fetch
   const response = await fetch(url, {
     method: options.method || "GET",
     headers,
     body,
   });
 
-  // 🧩 Handle response
+  // ✅ If access token expired, try refresh
+  if (response.status === 401 && typeof window !== "undefined") {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) throw new Error("Unauthorized and no refresh token");
+
+    const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${refreshToken}` },
+    });
+
+    if (!refreshRes.ok) {
+      // Refresh failed → logout
+      localStorage.removeItem("accessToken"); 
+      localStorage.removeItem("refreshToken");
+      window.location.href = "/";
+      throw new Error("Session expired. Please login again.");
+    }
+
+    const refreshData = await refreshRes.json();
+    localStorage.setItem("accessToken", refreshData.accessToken);
+
+    // Retry original request with new access token
+    headers.Authorization = `Bearer ${refreshData.accessToken}`;
+    const retryResponse = await fetch(url, { method: options.method || "GET", headers, body });
+    if (!retryResponse.ok) {
+      const errorText = await retryResponse.text();
+      throw new Error(errorText || `API request failed: ${retryResponse.status}`);
+    }
+    return retryResponse.json();
+  }
+
+  // Original response handling
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(errorText || `API request failed: ${response.status}`);
@@ -56,9 +83,10 @@ export async function apiClient(endpoint, options = {}, providedToken = null) {
   try {
     return await response.json();
   } catch {
-    return {}; // Handle empty or non-JSON responses
+    return {};
   }
 }
+
 
 // 🔐 ADD THESE NEW AUTHENTICATION METHODS BELOW 🔐
 
@@ -173,15 +201,25 @@ export const hrmsAPI = {
   // Employee management
   // getEmployees: (params = {}) =>
   //   apiClient(`/employees?${new URLSearchParams(params)}`),
-  
-  getEmployeeById: (id) =>
-    apiClient(`/employees/${id}`),
+// hrmsAPI.js
+getEmployeeById: (id, token) => apiClient(`/employees/${id}`, { method: "GET" }, token),
 
-getEmployees: (token) =>
-  apiClient('/employees', 
+getEmployeesTenant: (tenantId, token) =>
+  apiClient(`/employees/by-tenant/${tenantId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+
+  getEmployees: (token) =>
+  apiClient('/employees/all', 
     { 
       method: 'GET' },
      token),
+
+
 
 getOrganizations: (token) =>
   apiClient('/organizations', 
@@ -190,8 +228,14 @@ getOrganizations: (token) =>
      token),
 
 
-  getuser:() =>
-    apiClient(`/users`),
+  getUser: (tenantId, token) =>
+    apiClient(`/users/by-tenant/${tenantId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }),
+
 
   getuserAdmins:() =>
     apiClient(`/users/superadmins`),
@@ -205,7 +249,7 @@ getTenantEmployees: (tenantId, token) =>
   createEmployee: (employees, token) =>
     apiClient('/employees', {
       method: 'POST',
-      body: employees, // Can be FormData or JSON
+      body: employees, 
     }, token),
 
     getTenantModule: (id, token) => 
@@ -254,6 +298,11 @@ getTenantEmployees: (tenantId, token) =>
       method: 'DELETE' 
     }),
 
+  deleteUser: (id) =>
+    apiClient(`/users/${id}`, { 
+      method: 'DELETE' 
+    }),
+
   // Organization management
     getTenant: (token) =>
       apiClient('/tenants', {
@@ -262,9 +311,14 @@ getTenantEmployees: (tenantId, token) =>
         },
       }),
 
-  
-  getTenantById: (id) =>
-    apiClient(`/tenants/${id}`),
+        
+      getTenantById: (id, token) =>
+        apiClient(`/tenants/${id}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
 
   // Attendance management
   getAttendanceRecords: (params = {}) =>

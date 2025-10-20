@@ -52,16 +52,11 @@ useEffect(() => {
   if (employeeData?.email) setValue('email', employeeData.email)
 }, [employeeData, setValue])
 
-console.log("employeeData:", employeeData);
-console.log("compensationData:", compensationData);
-
 const employeePayload = {...employeeData , ...compensationData};
 
       // Convert keys to PascalCase
 const pascalEmployee = toPascal(employeePayload);
 
-console.log(employeePayload)
-console.log(pascalEmployee)
 
 const onSubmit = async (data) => {
   try {

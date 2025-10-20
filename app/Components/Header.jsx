@@ -64,6 +64,8 @@ const Header = ({ readPath , session }) => {
     'Admin/UserAuthentication/All': 'User_Authentication',
     'Admin/UserAuthentication/Authorized': 'User_Authentication',
     "Admin/EmployeeView": "Employee_Management",
+    "Admin/EmployeeDetail": "Employee_Management",
+
 
 
 

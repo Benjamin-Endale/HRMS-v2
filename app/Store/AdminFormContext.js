@@ -10,6 +10,12 @@ export const AdminFormProvider = ({ children }) => {
   const [userData, setUserData] = useState({});
   const [tenantSettings, setTenantSettings] = useState({});
 
+  const [addEmployee, setAddEmployee] = useState({});
+  const [addEmployeeSecond, setAddEmployeeSecond] = useState({});
+  const [compensation, setcompensation] = useState({});
+  const [system, setSystem] = useState({});
+
+
 
   return (
     <AdminFormContext.Provider
@@ -23,7 +29,15 @@ export const AdminFormProvider = ({ children }) => {
         userData,
         setUserData,
         tenantSettings, 
-        setTenantSettings
+        setTenantSettings,
+        addEmployee,
+        setAddEmployee,
+        addEmployeeSecond, 
+        setAddEmployeeSecond,
+        compensation, 
+        setcompensation,
+        system, 
+        setSystem,
       }}
     >
       {children}
