@@ -8,7 +8,7 @@ export default async function EmployeesServerPage() {
   const token = session?.accessToken;
   const tenantId = session?.user?.tenantId;
 
-  const employees = await hrmsAPI.getEmployees(tenantId, token);
+  const employees = await hrmsAPI.getEmployeesTenant(tenantId, token);
   console.log("🧾 Employees fetched from backend:", employees);
 
   return <Allpage employees={employees || []} token={token} tenantId={tenantId} />;
