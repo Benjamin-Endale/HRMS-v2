@@ -383,6 +383,13 @@ getTenantEmployees: (tenantId, token) =>
 }),
 
 
+createPermanentSettings: (settings) =>
+  apiClient('/PermanentTenantSetting', {
+    method: 'POST',
+    body: settings,  
+  }),
+
+
   createSuperadmin: (userData) =>
     apiClient('/users', { 
       method: 'POST', 

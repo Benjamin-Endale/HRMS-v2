@@ -6,23 +6,26 @@ import { useRouter } from 'next/navigation'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, Controller } from 'react-hook-form'
+import { toPascal } from '@/app/lib/utils/toPascal';
+import { hrmsAPI } from '@/app/lib/api/client'
+
 
 const orgSettingSchema = z.object({
-  ssoProvider: z.string().optional(),
-  sessionTimer: z.string().nonempty("Session Timer is required"),
+  sSOProvider: z.string().optional(),
+  sessionTimerOut: z.string().nonempty("Session Timer is required"),
   backupFrequency: z.string().nonempty("Backup Frequency is required"),
-  dataRetention: z.string().nonempty("Data Retention is required"),
-  exportFormat: z.string().nonempty("Default Export Format is required"),
+  dataRetentionYears: z.string().nonempty("Data Retention is required"),
+  defaultExportFormat: z.string().nonempty("Default Export Format is required"),
   enableSSO: z.boolean(),
-  enableDoubleAuthentication: z.boolean(),
-  enableEncryption: z.boolean(),
+  requireTwoFactorAuth: z.boolean(),
+  dataEncryptionAtRest: z.boolean(),
   pushNotifications: z.boolean(),
   emailNotifications: z.boolean(),
   criticalAlertsOnly: z.boolean(),
 }).superRefine((data, ctx) => {
-  if (data.enableSSO && (!data.ssoProvider || data.ssoProvider.trim() === "")) {
+  if (data.enableSSO && (!data.sSOProvider || data.sSOProvider.trim() === "")) {
     ctx.addIssue({
-      path: ["SSOProvider"],
+      path: ["sSOProvider"],
       message: "SSO Provider is required when SSO is enabled",
       code: z.ZodIssueCode.custom,
     })
@@ -33,57 +36,52 @@ const orgSettingSchema = z.object({
 const Page = () => {
   const router = useRouter()
 
-  // Local state for dropdown selections
-  const [selectedSSO, setSelectedSSO] = useState()
-  const [selectedSt, setSelectedSt] = useState()
-  const [selectedB, setSelectedB] = useState()
-  const [selectedEf, setSelectedEf] = useState()
+  // Remove local state for Dropdowns (react-hook-form will track)
   const [edit, setEdit] = useState(true)
-
 
   const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm({
     resolver: zodResolver(orgSettingSchema),
     defaultValues: {
       ssoProvider: '',
-      sessionTimer: '',
+      sessionTimerOut: '',
       backupFrequency: '',
-      dataRetention: '',
-      exportFormat: '',
+      dataRetentionYears: '',
+      defaultExportFormat: '',
       enableSSO: false,
-      enableDoubleAuthentication: true,
-      enableEncryption: false,
+      requireTwoFactorAuth: true,
+      dataEncryptionAtRest: false,
       emailNotifications: false,
       pushNotifications: false,
       criticalAlertsOnly: false,
-      // notifications: [false, false, false],
     },
   })
 
   console.log(errors)
 
-  const onSubmit = (data) => {
-    if (!data.enableSSO) {
-      data.ssoProvider = null
-    }
-    console.log("✅ Submitted Data:", data)
-    setEdit(false)
+  const onSubmit =  async (data) => {
+    try{
+        if (!data.enableSSO) {
+          data.sSOProvider = null
+        }
+        console.log("✅ Submitted Data:", data)
+        const pascalSettings = toPascal(data);
+        console.log("✅ Submitted Data Pascal:", pascalSettings)
+
+        const settings = await hrmsAPI.createPermanentSettings(pascalSettings);
+        setEdit(false)
+      } catch (err) {
+        console.error('Submission Error:', err);
+        alert('Error: ' + (err.message || JSON.stringify(err)));
+      } 
   }
 
   // Watch toggles
   const enableSSO = watch("enableSSO")
-  const enableDoubleAuthentication = watch("enableDoubleAuthentication")
-  const enableEncryption = watch("enableEncryption")
+  const requireTwoFactorAuth = watch("requireTwoFactorAuth")
+  const dataEncryptionAtRest = watch("dataEncryptionAtRest")
   const emailNotifications = watch("emailNotifications")
   const pushNotifications = watch("pushNotifications")
   const criticalAlertsOnly = watch("criticalAlertsOnly")
-
-  // const notifications = watch("notifications")
-
-  // const handleToggleN = (index) => {
-  //   const newNotifications = [...notifications]
-  //   newNotifications[index] = !newNotifications[index]
-  //   setValue("notifications", newNotifications)
-  // }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flex gap-[7.0625rem] font-semibold'>
@@ -104,7 +102,6 @@ const Page = () => {
                 </h4>
               </div>
 
- 
               <div className="flex justify-between items-center">
                 <div>
                   <h1 className="text-formColor">Enable Single Sign-On (SSO)</h1>
@@ -116,25 +113,22 @@ const Page = () => {
               </div>
 
               {/* SSO PROVIDER */}
-              <div   className={`relative transition-all ${!enableSSO ? 'opacity-50 pointer-events-none select-none' : ''}`}>
+              <div className={`relative transition-all ${!enableSSO ? 'opacity-50 pointer-events-none select-none' : ''}`}>
                 <Controller
-                  name="ssoProvider"
+                  name="sSOProvider"
                   control={control}
                   render={({ field }) => (
                     <Dropdown
                       label="SSO Provider"
                       options={["Google Workspace", "Okta", "OneLogin", "Microsoft", "Entra ID", "Auth0", "JumpCloud"]}
-                      selected={selectedSSO}
-                      onSelect={(value) => {
-                        setSelectedSSO(value)
-                        field.onChange(value)
-                      }}
+                      selected={field.value} // bind directly to react-hook-form
+                      onSelect={field.onChange} // update form state
                       placeholder="Google Workspace"
                       disabled={!enableSSO}
                     />
                   )}
                 />
-                {errors.ssoProvider && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.ssoProvider.message}</span>}
+                {errors.sSOProvider && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.sSOProvider.message}</span>}
               </div>
             </div>
 
@@ -172,6 +166,7 @@ const Page = () => {
                           <div className={`${pushNotifications ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
                         </div>
                       </div>
+
                       <div className="flex justify-between items-center">
                         <div>
                           <h1 className="text-formColor">Critical Alerts Only</h1>
@@ -182,6 +177,7 @@ const Page = () => {
                         </div>
                       </div>
                   </div>
+
                   {/* Save / Reset Buttons */}
                   <div className='mb-[4.125rem] w-full'>
                     {edit ? (
@@ -225,11 +221,10 @@ const Page = () => {
 
       {/* RIGHT SIDE */}
       <div className='w-[43.5625rem] space-y-[7.25rem]'>
-
         {/* SESSION SETTINGS */}
         <div className='space-y-[5.125rem]'>
           <div className='space-y-[2.375rem]'>
-            <div className='flex between-center'>
+             <div className='flex between-center'>
               <div>
                 <h1 className="text-formColor flex items-center gap-2">
                   Require Two-Factor Authentication
@@ -245,22 +240,19 @@ const Page = () => {
             <div className='flex gap-[2.1875rem]'>
               <div className='w-full relative'>
                 <Controller
-                  name="sessionTimer"
+                  name="sessionTimerOut"
                   control={control}
                   render={({ field }) => (
                     <Dropdown
                       label="Session Timeout (minutes)"
                       options={["60sec", "120sec", "20sec", "30sec"]}
-                      selected={selectedSt}
-                      onSelect={(value) => {
-                        setSelectedSt(value)
-                        field.onChange(value)
-                      }}
+                      selected={field.value}
+                      onSelect={field.onChange}
                       placeholder="60sec"
                     />
                   )}
                 />
-                {errors.sessionTimer && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.sessionTimer.message}</span>}
+                {errors.sessionTimerOut && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.sessionTimerOut.message}</span>}
               </div>
             </div>
           </div>
@@ -287,11 +279,8 @@ const Page = () => {
                       <Dropdown
                         label="Backup Frequency"
                         options={["Daily", "Weekly", "Month", "Year"]}
-                        selected={selectedB}
-                        onSelect={(value) => {
-                          setSelectedB(value)
-                          field.onChange(value)
-                        }}
+                        selected={field.value}
+                        onSelect={field.onChange}
                         placeholder="Daily"
                       />
                     )}
@@ -300,29 +289,27 @@ const Page = () => {
                 </div>
 
                 <div className='w-[20.1875rem] flex flex-col gap-[1rem]'>
-                                <label className='textFormColor1'>Data Retention (Years)</label>
-                                <input type="number" placeholder='5' className='inputMod pr-[1.5625rem]' {...register("dataRetention")} />
-                                {errors.dataRetention && <span className='text-Error text-[1rem]'>{errors.dataRetention.message}</span>}
-                            </div>
+                  <label className='textFormColor1'>Data Retention (Years)</label>
+                  <input type="number" placeholder='5' className='inputMod pr-[1.5625rem]' {...register("dataRetentionYears")} />
+                  {errors.dataRetentionYears && <span className='text-Error text-[1rem]'>{errors.dataRetentionYears.message}</span>}
+                </div>
               </div>
+
               <div className='relative'>
                 <Controller
-                  name="exportFormat"
+                  name="defaultExportFormat"
                   control={control}
                   render={({ field }) => (
                     <Dropdown
                       label="Default Export Format"
                       options={["CSV", "CSV1", "CSV2", "CSV3"]}
-                      selected={selectedEf}
-                      onSelect={(value) => {
-                        setSelectedEf(value)
-                        field.onChange(value)
-                      }}
+                      selected={field.value}
+                      onSelect={field.onChange}
                       placeholder="CSV"
                     />
                   )}
                 />
-                {errors.exportFormat && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.exportFormat.message}</span>}
+                {errors.defaultExportFormat && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.defaultExportFormat.message}</span>}
               </div>
             </div>
 
@@ -333,8 +320,8 @@ const Page = () => {
                   Ensure all stored data is encrypted for maximum security.
                 </h4>
               </div>
-              <div onClick={() => setValue("enableEncryption", !enableEncryption)} className={`${enableEncryption ? ' bg-lemongreen' : ' bg-limegray'} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
-                <div className={`${enableEncryption ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
+              <div onClick={() => setValue("dataEncryptionAtRest", !dataEncryptionAtRest)} className={`${dataEncryptionAtRest ? ' bg-lemongreen' : ' bg-limegray'} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
+                <div className={`${dataEncryptionAtRest ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
               </div>
             </div>
           </div>
