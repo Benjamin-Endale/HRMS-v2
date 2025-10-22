@@ -17,6 +17,7 @@ const orgSettingSchema = z.object({
   enableDoubleAuthentication: z.boolean(),
   enableEncryption: z.boolean(),
   pushNotifications: z.boolean(),
+  emailNotifications: z.boolean(),
   criticalAlertsOnly: z.boolean(),
 }).superRefine((data, ctx) => {
   if (data.enableSSO && (!data.ssoProvider || data.ssoProvider.trim() === "")) {
@@ -39,7 +40,6 @@ const Page = () => {
   const [selectedEf, setSelectedEf] = useState()
   const [edit, setEdit] = useState(true)
 
-  const [isclicked, setIsClicked] = useState()
 
   const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm({
     resolver: zodResolver(orgSettingSchema),
