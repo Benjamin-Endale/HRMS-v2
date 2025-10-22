@@ -8,19 +8,26 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, Controller } from 'react-hook-form'
 
 const orgSettingSchema = z.object({
-  SSOProvider: z.string().nonempty("SSO Provider is required"),
-  SessionTimer: z.string().nonempty("Session Timer is required"),
-  BackupFrequency: z.string().nonempty("Backup Frequency is required"),
- DataRetention: z.string().nonempty("Data Retention is required"),
-  ExportFormat: z.string().nonempty("Default Export Format is required"),
+  ssoProvider: z.string().optional(),
+  sessionTimer: z.string().nonempty("Session Timer is required"),
+  backupFrequency: z.string().nonempty("Backup Frequency is required"),
+  dataRetention: z.string().nonempty("Data Retention is required"),
+  exportFormat: z.string().nonempty("Default Export Format is required"),
   enableSSO: z.boolean(),
   enableDoubleAuthentication: z.boolean(),
   enableEncryption: z.boolean(),
-  notifications: z.tuple([z.boolean(), z.boolean(), z.boolean()]).refine(
-    (arr) => arr.some(Boolean),
-    " "
-  ),
+  pushNotifications: z.boolean(),
+  criticalAlertsOnly: z.boolean(),
+}).superRefine((data, ctx) => {
+  if (data.enableSSO && (!data.ssoProvider || data.ssoProvider.trim() === "")) {
+    ctx.addIssue({
+      path: ["SSOProvider"],
+      message: "SSO Provider is required when SSO is enabled",
+      code: z.ZodIssueCode.custom,
+    })
+  }
 })
+
 
 const Page = () => {
   const router = useRouter()
@@ -32,22 +39,32 @@ const Page = () => {
   const [selectedEf, setSelectedEf] = useState()
   const [edit, setEdit] = useState(true)
 
+  const [isclicked, setIsClicked] = useState()
+
   const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm({
     resolver: zodResolver(orgSettingSchema),
     defaultValues: {
-      SSOProvider: '',
-      SessionTimer: '',
-      BackupFrequency: '',
-      DataRetention: '',
-      ExportFormat: '',
+      ssoProvider: '',
+      sessionTimer: '',
+      backupFrequency: '',
+      dataRetention: '',
+      exportFormat: '',
       enableSSO: false,
-      enableDoubleAuthentication: false,
+      enableDoubleAuthentication: true,
       enableEncryption: false,
-      notifications: [false, false, false],
+      emailNotifications: false,
+      pushNotifications: false,
+      criticalAlertsOnly: false,
+      // notifications: [false, false, false],
     },
   })
 
+  console.log(errors)
+
   const onSubmit = (data) => {
+    if (!data.enableSSO) {
+      data.ssoProvider = null
+    }
     console.log("✅ Submitted Data:", data)
     setEdit(false)
   }
@@ -56,13 +73,17 @@ const Page = () => {
   const enableSSO = watch("enableSSO")
   const enableDoubleAuthentication = watch("enableDoubleAuthentication")
   const enableEncryption = watch("enableEncryption")
-  const notifications = watch("notifications")
+  const emailNotifications = watch("emailNotifications")
+  const pushNotifications = watch("pushNotifications")
+  const criticalAlertsOnly = watch("criticalAlertsOnly")
 
-  const handleToggleN = (index) => {
-    const newNotifications = [...notifications]
-    newNotifications[index] = !newNotifications[index]
-    setValue("notifications", newNotifications)
-  }
+  // const notifications = watch("notifications")
+
+  // const handleToggleN = (index) => {
+  //   const newNotifications = [...notifications]
+  //   newNotifications[index] = !newNotifications[index]
+  //   setValue("notifications", newNotifications)
+  // }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flex gap-[7.0625rem] font-semibold'>
@@ -95,9 +116,9 @@ const Page = () => {
               </div>
 
               {/* SSO PROVIDER */}
-              <div className='relative'>
+              <div   className={`relative transition-all ${!enableSSO ? 'opacity-50 pointer-events-none select-none' : ''}`}>
                 <Controller
-                  name="SSOProvider"
+                  name="ssoProvider"
                   control={control}
                   render={({ field }) => (
                     <Dropdown
@@ -109,10 +130,11 @@ const Page = () => {
                         field.onChange(value)
                       }}
                       placeholder="Google Workspace"
+                      disabled={!enableSSO}
                     />
                   )}
                 />
-                {errors.SSOProvider && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.SSOProvider.message}</span>}
+                {errors.ssoProvider && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.ssoProvider.message}</span>}
               </div>
             </div>
 
@@ -131,24 +153,35 @@ const Page = () => {
 
                 <div className='space-y-[9.1875rem]'>
                   <div className='space-y-[2.875rem]'>
-                    {[
-                      { title: 'Email Notifications', desc: 'Send system alerts and updates via email.' },
-                      { title: 'Push Notifications', desc: 'Enable in-app push notifications for real-time updates.' },
-                      { title: 'Critical Alerts Only', desc: 'Only send notifications for high-priority system events.' }
-                    ].map((item, i) => (
-                      <div key={i} className='flex between-center'>
+                      <div className="flex justify-between items-center">
                         <div>
-                          <h1 className='textFormColor1'>{item.title}</h1>
-                          <h4 className='textLimegray'>{item.desc}</h4>
+                          <h1 className="text-formColor">Email Notifications</h1>
+                          <h4 className="text-limegray">Send system alerts and updates via email.</h4>
                         </div>
-                        <div onClick={() => handleToggleN(i)} className={`${notifications[i] ? ' bg-lemongreen' : ' bg-limegray'} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
-                          <div className={`${notifications[i] ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
+                        <div onClick={() => setValue("emailNotifications", !emailNotifications)} className={`${emailNotifications ? ' bg-lemongreen' : ' bg-limegray'} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
+                          <div className={`${emailNotifications ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                  {errors.notifications && <span className='text-Error text-[1rem]'>{errors.notifications.message}</span>}
 
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <h1 className="text-formColor">Push Notifications</h1>
+                          <h4 className="text-limegray">Enable in-app push notifications for real-time updates.</h4>
+                        </div>
+                        <div onClick={() => setValue("pushNotifications", !pushNotifications)} className={`${pushNotifications ? ' bg-lemongreen' : ' bg-limegray'} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
+                          <div className={`${pushNotifications ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <h1 className="text-formColor">Critical Alerts Only</h1>
+                          <h4 className="text-limegray">Only send notifications for high-priority system events.</h4>
+                        </div>
+                        <div onClick={() => setValue("criticalAlertsOnly", !criticalAlertsOnly)} className={`${criticalAlertsOnly ? ' bg-lemongreen' : ' bg-limegray'} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
+                          <div className={`${criticalAlertsOnly ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
+                        </div>
+                      </div>
+                  </div>
                   {/* Save / Reset Buttons */}
                   <div className='mb-[4.125rem] w-full'>
                     {edit ? (
@@ -204,15 +237,15 @@ const Page = () => {
                 </h1>
                 <h4 className='textLimegray'>Require 2FA for all admin users.</h4>
               </div>
-              <div onClick={() => setValue("enableDoubleAuthentication", !enableDoubleAuthentication)} className={`${enableDoubleAuthentication ? ' bg-lemongreen' : ' bg-limegray'} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
-                <div className={`${enableDoubleAuthentication? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
+              <div  className=' bg-lemongreen    w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]'>
+                <div className='translate-x-full    mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300'></div>
               </div>
             </div>
 
             <div className='flex gap-[2.1875rem]'>
               <div className='w-full relative'>
                 <Controller
-                  name="SessionTimer"
+                  name="sessionTimer"
                   control={control}
                   render={({ field }) => (
                     <Dropdown
@@ -227,7 +260,7 @@ const Page = () => {
                     />
                   )}
                 />
-                {errors.SessionTimer && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.SessionTimer.message}</span>}
+                {errors.sessionTimer && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.sessionTimer.message}</span>}
               </div>
             </div>
           </div>
@@ -248,7 +281,7 @@ const Page = () => {
               <div className='flex gap-[2.1875rem]'>
                 <div className='w-[20.1875rem] relative'>
                   <Controller
-                    name="BackupFrequency"
+                    name="backupFrequency"
                     control={control}
                     render={({ field }) => (
                       <Dropdown
@@ -263,18 +296,18 @@ const Page = () => {
                       />
                     )}
                   />
-                  {errors.BackupFrequency && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.BackupFrequency.message}</span>}
+                  {errors.backupFrequency && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.backupFrequency.message}</span>}
                 </div>
 
                 <div className='w-[20.1875rem] flex flex-col gap-[1rem]'>
                                 <label className='textFormColor1'>Data Retention (Years)</label>
-                                <input type="number" placeholder='5' className='inputMod pr-[1.5625rem]' {...register("DataRetention")} />
-                                {errors.DataRetention && <span className='text-Error text-[1rem]'>{errors.DataRetention.message}</span>}
+                                <input type="number" placeholder='5' className='inputMod pr-[1.5625rem]' {...register("dataRetention")} />
+                                {errors.dataRetention && <span className='text-Error text-[1rem]'>{errors.dataRetention.message}</span>}
                             </div>
               </div>
               <div className='relative'>
                 <Controller
-                  name="ExportFormat"
+                  name="exportFormat"
                   control={control}
                   render={({ field }) => (
                     <Dropdown
@@ -289,7 +322,7 @@ const Page = () => {
                     />
                   )}
                 />
-                {errors.ExportFormat && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.ExportFormat.message}</span>}
+                {errors.exportFormat && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.exportFormat.message}</span>}
               </div>
             </div>
 
