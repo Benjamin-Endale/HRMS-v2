@@ -49,8 +49,11 @@ const MainBody = ({ readPath, modules }) => {
     (item.path === '/Admin/PerformancePages/Overview' &&
       ['Admin/PerformancePages/Goals','Admin/PerformancePages/FeedBack','Admin/PerformancePages/Reviews'].includes(readPath)) ||
     (item.path === '/Admin/UserAuthentication/All' &&
-      ['Admin/UserAuthentication/Authorized'].includes(readPath));
-
+      ['Admin/UserAuthentication/Authorized'].includes(readPath)) ||
+    (item.path === '/Admin/Organization' &&
+      ['Admin/OrganizationView'].includes(readPath)) ||
+    (item.path === '/Admin/EmployeeEdit' &&
+      ['Admin/EmployeeEdit/AddNewemployee','Admin/EmployeeEdit/AddNewemployeesecond','Admin/EmployeeEdit/Compensation','Admin/EmployeeEdit/System' , 'Admin/EmployeeView'].includes(readPath)) 
   return (
     <aside className="font-semibold customBorder scrollBar w-[20.5rem] h-screen flex flex-col gap-[4.25rem] relative pt-[3.5rem] overflow-y-auto">
       <div className="flex items-center gap-[1.25rem] pl-[2.75rem]">

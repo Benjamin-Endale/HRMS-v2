@@ -36,7 +36,7 @@ const Page = () => {
   };
 
   const router = useRouter();
-  const { register, handleSubmit, control, formState: { errors } } = useForm({
+  const { register, handleSubmit, control,watch, setValue,formState: { errors } } = useForm({
     resolver: zodResolver(orgSettingSchema),
     defaultValues: {
       SSOProvider: '',
@@ -44,6 +44,8 @@ const Page = () => {
       BackupFrequency: '',
       DataRetention: '',
       ExportFormat: '',
+      EnableSSO: '',
+      leaveManagement: tenantData.leaveManagement ?? false,
     },
   });
 
@@ -71,13 +73,17 @@ const Page = () => {
                 </h4>
               </div>
 
-              <div className='flex between-center'>
+ 
+              <div className="flex justify-between items-center">
                 <div>
-                  <h1 className='textFormColor1'>Enable Single Sign-On (SSO)</h1>
-                  <h4 className='textLimegray'>Allow users to login with SSO providers</h4>
+                  <h1 className="text-formColor">Enable Single Sign-On (SSO)</h1>
+                  <h4 className="text-limegray">Allow users to login with SSO providers</h4>
                 </div>
-                <div onClick={() => settoggleOn(!toggleOn)} className={`${toggleOn ? ' bg-lemongreen' : ' bg-limegray'} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
-                  <div className={`${toggleOn ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
+                <div
+                  onClick={() => setValue("EnableSSO", !watch("EnableSSO"))}
+                  className={`w-[4.0625rem] h-[2.1875rem] rounded-full border flex items-center px-[4px] cursor-pointer transition-all duration-300 ${watch("EnableSSO") ? 'bg-lemongreen justify-end' : 'bg-limegray justify-start'}`}
+                >
+                  <div className="w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-all duration-300 shadow-md"></div>
                 </div>
               </div>
 
@@ -184,18 +190,21 @@ const Page = () => {
         {/* SESSION SETTINGS */}
         <div className='space-y-[5.125rem]'>
           <div className='space-y-[2.375rem]'>
-            <div className='flex between-center'>
-              <div>
-                <h1 className="text-formColor flex items-center gap-2">
-                  Require Two-Factor Authentication
-                  <span className="text-lemongreen text-sm font-medium bg-limegray/10 px-2 py-1 rounded-md">Default</span>
-                </h1>
-                <h4 className='textLimegray'>Require 2FA for all admin users.</h4>
+              <div className="flex justify-between items-center">
+                <div>
+                  <h1 className="text-formColor flex items-center gap-2">
+                    Require Two-Factor Authentication
+                    <span className="text-lemongreen text-sm font-medium bg-limegray/10 px-2 py-1 rounded-md">Default</span>
+                  </h1>
+                  <h4 className="text-limegray">Require 2FA for all admin users.</h4>
+                </div>
+                <div
+                  onClick={() => setValue("EnableSSO", !watch("EnableSSO"))}
+                  className={`w-[4.0625rem] h-[2.1875rem] rounded-full border flex items-center px-[4px] cursor-pointer transition-all duration-300 ${watch("EnableSSO") ? 'bg-lemongreen justify-end' : 'bg-limegray justify-start'}`}
+                >
+                  <div className="w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-all duration-300 shadow-md"></div>
+                </div>
               </div>
-              <div onClick={() => settoggleOnR(true)} className={`${toggleOnR ? ' bg-lemongreen' : ' bg-limegray'} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
-                <div className={`${toggleOnR ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
-              </div>
-            </div>
 
             <div className='flex gap-[2.1875rem]'>
               <div className='w-full relative'>
@@ -231,6 +240,18 @@ const Page = () => {
               <div className={`${toggleOnA ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
             </div>
           </div>
+              <div className="flex justify-between items-center">
+                <div>
+                  <h4 className='textFormColor1'>Enable Audit Logging</h4>
+                  <h4 className="text-limegray">Track all system activities for compliance and security.</h4>
+                </div>
+                <div
+                  onClick={() => setValue("EnableSSO", !watch("EnableSSO"))}
+                  className={`w-[4.0625rem] h-[2.1875rem] rounded-full border flex items-center px-[4px] cursor-pointer transition-all duration-300 ${watch("EnableSSO") ? 'bg-lemongreen justify-end' : 'bg-limegray justify-start'}`}
+                >
+                  <div className="w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-all duration-300 shadow-md"></div>
+                </div>
+              </div>
         </div>
 
         {/* DATA & BACKUP SETTINGS */}

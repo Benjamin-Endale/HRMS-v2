@@ -98,7 +98,7 @@ const EmployeesPage = ({ employees }) => {
                     <button className='cursor-pointer' onClick={() => router.push(`/Admin/EmployeeView/${emp.employeeID}`)}>
                       <img src="/image/Icon/Action/eye.png" alt="" />
                     </button>
-                    <button>
+                    <button className='cursor-pointer' onClick={() => router.push(`/Admin/EmployeeEdit/${emp.employeeID}`)}>
                       <img src="/image/Icon/Action/pen.png" alt="" />
                     </button>
                     <button>
@@ -109,7 +109,7 @@ const EmployeesPage = ({ employees }) => {
               ))
             ) : (
              
-              <tr><td colSpan="5" className="pt-[2rem] text-center text-gray-400">No employees found</td></tr>
+              <tr><td colSpan="5" className="pt-[2rem] text-center text-Error">No employees found</td></tr>
             )}
           </tbody>
         </table>

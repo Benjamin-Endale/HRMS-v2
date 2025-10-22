@@ -60,9 +60,9 @@ hireDate: z
     certificationFile: z
         .any()
         .refine(file => file?.length > 0, 'Certification file is required'),
-    photo: z
+    photoUrl: z
         .any()
-        .refine(file => file?.length > 0, 'Certification file is required'),
+        .refine(file => file?.length > 0, 'emplyoee photo is required'),
 });
 
 const Page = () => {
@@ -95,7 +95,7 @@ const Page = () => {
         workLocation: employeeData.workLocation || "",
         employeeEducationStatus: employeeData.employeeEducationStatus || "",
         certificationFile: employeeData.certificationFile || "",
-        photo: employeeData.photo || '',
+        photoUrl: employeeData.photoUrl || '',
     },
     });
 
@@ -296,9 +296,9 @@ const Page = () => {
                                         <label className='inputModfile cursor-pointer border-none'>
                                             <img src='/image/Icon/File.png' alt='' />
                                             <span className='text-limeLight'>Upload Photo</span>
-                                            <input type='file' className='hidden' {...register('photo')} />
+                                            <input type='file' className='hidden' {...register('photoUrl')} />
                                         </label>
-                                        {errors.photo && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.photo.message}</span>}
+                                        {errors.photoUrl && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.photoUrl.message}</span>}
                                     </div>
                             </div>
 

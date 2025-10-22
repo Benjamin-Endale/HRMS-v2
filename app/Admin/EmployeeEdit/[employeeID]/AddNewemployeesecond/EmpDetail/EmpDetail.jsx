@@ -13,10 +13,10 @@ const schema = z.object({
   hireDate: z.string().nonempty("Joining Date is required"),
 });
 
-const Page = () => {
+const EmpDetail = ({employees}) => {
   const router = useRouter();
+  const hireDate = new Date(employees.hireDate).toISOString().split("T")[0];
 const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
-  
 
   const {
     register,
@@ -26,16 +26,16 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-        jobTitle: addEmployeeSecond.jobTitle || "",
-        employmentType: addEmployeeSecond.employmentType || "",
-        hireDate: addEmployeeSecond.hireDate || "",
+        jobTitle: addEmployeeSecond?.jobTitle || employees.jobTitle|| "",
+        employmentType: addEmployeeSecond.employmentType || employees.employmentType || "",
+        hireDate:  hireDate || "",
     },
   });
 
   const onSubmit = (data) => {
     setAddEmployeeSecond(data)
     console.log("Form Data", data);
-    router.push('/Admin/EmployeeRegistration/Compensation');         
+    router.push(`/Admin/EmployeeEdit/${employees.employeeID}/Compensation`);
   };
 
   
@@ -105,6 +105,7 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
                 <label className='text-formColor'>Joining Date</label>
                 <input 
                   type="date" 
+                  readOnly
                   className='inputMod pr-[1.5625rem]' 
                   {...register("hireDate")}
                 />
@@ -116,7 +117,7 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
             <div className='w-full h-[3.4375rem] mt-[4rem] flex gap-[2.5625rem]'>
               <button 
                 type="button" 
-                onClick={() => router.push('/Admin/EmployeeRegistration/AddNewemployee')} 
+                onClick={() => router.back()} 
                 className='w-[23.1875rem] border border-formColor text-formColor rounded-[10px] cursor-pointer'
               >
                 Back
@@ -153,4 +154,4 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
   )
 }
 
-export default Page;
+export default EmpDetail;

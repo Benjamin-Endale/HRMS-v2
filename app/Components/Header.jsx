@@ -5,7 +5,6 @@ const Header = ({ readPath , session }) => {
   // Object with code-friendly keys
   const parag = {
     Dashboard: "Welcome back! Here's what's happening at your organization today.",
-    Organization: "Manage company structure, departments, and organizational hierarchy.",
     Employee_Management: "Manage employee profile, roles, and organizational structure.",
     Attendance: "Monitor employee attendance, working hours, and presence status.",
     Leave_Management: "Manage employee leave requests, balances, and policies.",
@@ -14,7 +13,7 @@ const Header = ({ readPath , session }) => {
     Announcements_and_Notifications:"Manage company-wide communications and employee notifications.",
     Assets:"",
     Add_New_Employee:"Enter employee details to create a new profile",
-    All_Organizations: 'Manage all organizations in your HRMS platform',
+    Organization_Management: 'Manage all organizations in your HRMS platform',
     Create_Organization: 'Set up a new organization in your HRMS platform',
     Organization_Settings: 'Set up a new organization in your HRMS platform',
     Super_Administrators: 'Manage system administrators and their permissions',
@@ -26,7 +25,7 @@ const Header = ({ readPath , session }) => {
   // Map human-readable titles to object keys
   const keyMap = {
     "Admin/Dashboard": "Dashboard",
-    "Admin/Organization": "Organization",
+    "Admin/Organization": "Organization_Management",
     "Admin/Employees": "Employee_Management",
     "Admin/Attendance": "Attendance",
     "Admin/LeaveManagment": "Leave_Management",
@@ -37,6 +36,10 @@ const Header = ({ readPath , session }) => {
     "Admin/EmployeeRegistration/AddNewemployeesecond": 'Add_New_Employee',
     "Admin/EmployeeRegistration/Compensation": "Add_New_Employee",
     "Admin/EmployeeRegistration/System": "Add_New_Employee",
+    "Admin/EmployeeEdit/AddNewemployee": 'Add_New_Employee',
+    "Admin/EmployeeEdit/AddNewemployeesecond": 'Add_New_Employee',
+    "Admin/EmployeeEdit/Compensation": "Add_New_Employee",
+    "Admin/EmployeeEdit/System": "Add_New_Employee",
     "SuperAdmin/AllOrganization": 'All_Organizations',
     "SuperAdmin/CreateOrganization/CreateTenant": "Create_Organization",
     "SuperAdmin/CreateOrganization/RegisterAdmin": "Create_Organization",
@@ -65,6 +68,9 @@ const Header = ({ readPath , session }) => {
     'Admin/UserAuthentication/Authorized': 'User_Authentication',
     "Admin/EmployeeView": "Employee_Management",
     "Admin/EmployeeDetail": "Employee_Management",
+    "Admin/EmployeeEdit": "Employee_Management",
+
+    "Admin/OrganizationView": "Organization_Management"
 
 
 

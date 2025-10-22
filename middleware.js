@@ -78,5 +78,5 @@ if (pathname.startsWith("/Admin") && role !== "HR" && role !== "SystemAdmin") {
 }
 
 export const config = {
-  matcher: ["/", "/Login", "/Login/:path*", "/Admin/:path*", "/SuperAdmin/:path*", "/EmployeePortal/:path*"],
+  matcher: ["/Login", "/Login/:path*", "/Admin/:path*", "/SuperAdmin/:path*", "/EmployeePortal/:path*"],
 };

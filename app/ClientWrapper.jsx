@@ -82,8 +82,14 @@ export default function ClientWrapper({ children, session }) {
     }
 
 
-    const cleanPath = pathname === '/' ? defaultPaths[role] : pathname.replace('/', '');
-    const readPath = cleanPath.replace(/\/[0-9a-f-]{36}$/, ""); 
+        // Regex to match UUIDs anywhere in the path
+        const uuidRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/g;
+
+        const cleanPath = pathname === '/' ? defaultPaths[role] : pathname.replace('/', '');
+
+        // ignore UUIDs for readPath logic
+        const readPath = cleanPath.replace(uuidRegex, '');
+
 
     const Layout = ROLE_LAYOUTS[role];
     const BodyComponent = Layout.body;

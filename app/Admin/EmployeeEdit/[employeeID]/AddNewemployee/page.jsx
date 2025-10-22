@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation';
-import { Dropdown } from '@/app//Components/DropDown';
+import { Dropdown } from '@/app/Components/DropDown';
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,9 +43,11 @@ const schema = z.object({
 
 });
 
-const Page = () => {
+const Page = ({employees}) => {
     const router = useRouter();
     const { addEmployee, setAddEmployee } = useAdminForm();
+    const dateOfBirth  = new Date(employees.dateOfBirth).toISOString().split("T")[0];
+
 
 
     const {
@@ -56,29 +58,28 @@ const Page = () => {
     } = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
-            firstName: addEmployee.firstName || "",
-            lastName: addEmployee.lastName || "",
-            dateOfBirth: addEmployee.dateOfBirth || "",
-            nationality: addEmployee.nationality || "",
-            email: addEmployee.email || "",
-            address: addEmployee.address || "",
-            gender: addEmployee.gender || "",
-            maritalStatus: addEmployee.maritalStatus || "",
-            phoneNumber: addEmployee.phoneNumber || "",
-            emergencyContactName:addEmployee.emergencyContactName || "",
-            emergencyContactNumber: addEmployee.emergencyContactNumber || "",
-            employeeEducationStatus: addEmployee.employeeEducationStatus || "",
-            photoUrl: addEmployee.photoUrl || '',
-
-
+            firstName: addEmployee?.firstName || employees.firstName || "",
+            lastName: addEmployee?.lastName || employees.lastName || "",
+            dateOfBirth: addEmployee?.dateOfBirth || dateOfBirth || "",
+            nationality: addEmployee?.nationality || employees.nationality || "",
+            email: addEmployee?.email || employees.email || "",
+            address: addEmployee?.address || employees.address || "",
+            gender: addEmployee?.gender || employees.gender || "",
+            maritalStatus: addEmployee?.maritalStatus || employees.maritalStatus || "",
+            phoneNumber: addEmployee?.phoneNumber || employees.phoneNumber || "",
+            emergencyContactName:addEmployee?.emergencyContactName || employees.emergencyContactName || "",
+            emergencyContactNumber: addEmployee?.emergencyContactNumber || employees.emergencyContactNumber || "",
+            employeeEducationStatus: addEmployee?.employeeEducationStatus || employees.employeeEducationStatus || "",
+            photoUrl: addEmployee?.photoUrl || employees.photoUrl || '',
         },
+
     });
     console.log(errors)
-    const onSubmit = (data) => {
-        setAddEmployee(data);
-        console.log("Form Data", data);
-        router.push('/Admin/EmployeeRegistration/AddNewemployeesecond');         
-    };
+const onSubmit = (data) => {
+    setAddEmployee(data)
+    console.log("Form Data", data);
+    router.push(`/Admin/EmployeeEdit/${employees.employeeID}/AddNewemployeesecond`);
+};
 
     return (
         <div className='font-semibold flex flex-col gap-[4rem]'>

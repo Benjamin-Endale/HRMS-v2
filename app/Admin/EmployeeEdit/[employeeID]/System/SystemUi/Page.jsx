@@ -19,7 +19,7 @@ const schema = z.object({
       .any()
       .refine(file => file?.length > 0, 'Certification file is required'),
 });
-const Page = ({tenantId}) => {
+const Page = ({employees}) => {
   const router = useRouter();
   const { system, setSystem } = useAdminForm();
   const { addEmployee, setAddEmployee, addEmployeeSecond, setAddEmployeeSecond,compensation,setcompensation } = useAdminForm()
@@ -33,9 +33,9 @@ const Page = ({tenantId}) => {
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      shiftDetails: system.shiftDetails || "",
-      workLocation: system.workLocation || "",
-      certificationFile: system.certificationFile || "",
+      shiftDetails: system?.shiftDetails || employees.shiftDetails || "",
+      workLocation: system?.workLocation || employees.workLocation ||  "",
+      certificationFile: system.certificationFile || employees.workLocation || "",
 
     },
   });
@@ -46,7 +46,7 @@ const onSubmit = async (data) => {
   try {
     setLoading(true);
     setSystem(data)
-    if (!tenantId) throw new Error('Tenant creation failed: tenantId missing');
+    if (!employees) throw new Error('Tenant creation failed: tenantId missing');
 
 
     // --- Prepare Employee Payload ---
@@ -55,12 +55,10 @@ const onSubmit = async (data) => {
     const plainAddEmployeeSecond = JSON.parse(JSON.stringify( addEmployeeSecond|| {}));
 
 
-
     const rawEmployee= {
       ...plainAddEmployee,
       ...plainCompensation,
       ...plainAddEmployeeSecond,
-      TenantId: tenantId, 
       WorkLocation:data.workLocation,
       ShiftDetails:data.shiftDetails,
       CertificationFile:data.certificationFile
@@ -71,29 +69,33 @@ const onSubmit = async (data) => {
     const pascalEmployee = toPascal(rawEmployee);
 
     // --- Convert to FormData ---
-    const formData = new FormData();
+// --- Convert to FormData ---
+const formData = new FormData();
 
-    for (const key in pascalEmployee) {
-      if (!pascalEmployee.hasOwnProperty(key)) continue;
+for (const key in pascalEmployee) {
+  if (!pascalEmployee.hasOwnProperty(key)) continue;
 
-      const value = pascalEmployee[key];
+  const value = pascalEmployee[key];
 
-      if (value instanceof FileList) {
-        for (let i = 0; i < value.length; i++) {
-          formData.append(key, value[i]);
-        }
-      } else if (value !== undefined && value !== null) {
-        formData.append(key, value.toString());
-      }
+  if (value instanceof FileList) {
+    for (let i = 0; i < value.length; i++) {
+      formData.append(key, value[i]);
     }
+  } else if (value !== undefined && value !== null) {
+    formData.append(key, value.toString());
+  }
+}
 
+// ✅ Add EmployeeId explicitly to avoid mismatch
+formData.append("EmployeeId", employees.employeeID);
 
-    // --- Create Employee ---
-    const employeeRes = await hrmsAPI.createEmployee(formData);
+// --- Update Employee ---
+console.log("ID: ", employees.employeeID);
+const employeeRes = await hrmsAPI.updateEmployee(employees.employeeID, formData);
 
     console.log("This IS Employee data",employeeRes)
     // --- Update Local State ---
-    setAddEmployee((prev) => ({ ...prev, ...data, tenantId }));
+    setAddEmployee((prev) => ({ ...prev, ...data}));
 
   } catch (err) {
     console.error('Submission Error:', err);
@@ -102,6 +104,8 @@ const onSubmit = async (data) => {
     setLoading(false);
   }
 };
+
+
 
 
   return (

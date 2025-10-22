@@ -38,10 +38,13 @@ if (!employees) return <div>No employee data</div>;
         <div className='flex gap-[3.375rem]'>
             <div className='w-[19.125rem] flex flex-col gap-[1.25rem]'>
                 <div className='space-y-[2.125rem] bg-[rgba(190,229,50,0.05)] px-[0.9375rem] pt-[0.9375rem] pb-[1.625rem] rounded-[1rem] w-full'>
-                    <div className='w-[17.25rem] h-[17.25rem]'>
-                        <img src={`${employees.photoUrl}`} className='w-full h-full rounded-[1rem]' alt="EmployeeImage" />
+                    <div className='w-[17.25rem] h-[17.25rem] flex items-center'>
+                        <img src={employees.photoUrl === "" 
+                            ? '/image/photoTemplate.png' 
+                            : employees.photoUrl}  alt="" />
+                   
                     </div>
-                    <div className='flex justify-between '>
+                    <div className='between '>
                         <div>
                             <div className='flex gap-[0.8125rem]'>
                                 <h4 className='text-formColor'>{employees.firstName} {employees.lastName}</h4>

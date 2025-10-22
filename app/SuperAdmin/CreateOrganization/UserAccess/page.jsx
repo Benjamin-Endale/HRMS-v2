@@ -236,7 +236,7 @@ const onSubmit = async (data) => {
     />
    <button
                 type="button"
-                onClick={() => setshowConfirmPassword(!showConfirmPassword)}
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-4 top-[70%] -translate-y-[50%]"
               >
                 <img
@@ -306,6 +306,7 @@ const onSubmit = async (data) => {
                 setisOpen(false);
                 router.push('/');
               }}
+              confirmation="Okay"
 
             />
           </ModalContainerSuccessful>

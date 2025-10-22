@@ -1,5 +1,5 @@
 // lib/api/client.js
-import { getSession } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 
 const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5270/api";
 
@@ -7,7 +7,7 @@ export async function apiClient(endpoint, options = {}, providedToken = null) {
   const url = `${API_BASE_URL}${endpoint}`;
   let token = providedToken;
 
-  // Server-side auth
+  // Server-side auth (Next.js server components)
   if (!token && typeof window === "undefined") {
     try {
       const { auth } = await import("@/app/auth");
@@ -24,70 +24,185 @@ export async function apiClient(endpoint, options = {}, providedToken = null) {
     token = session?.accessToken || localStorage.getItem("accessToken");
   }
 
-  const headers = {
-    Authorization: token ? `Bearer ${token}` : undefined,
-    ...options.headers,
+  const config = {
+    method: options.method || "GET",
+    headers: {
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...options.headers,
+    },
   };
 
   let body = options.body;
-  if (body instanceof FormData) {
-    // browser handles content-type
-  } else if (body && typeof body === "object") {
-    headers["Content-Type"] = "application/json";
-    body = JSON.stringify(body);
-  }
-
-  const response = await fetch(url, {
-    method: options.method || "GET",
-    headers,
-    body,
-  });
-
-  // ✅ If access token expired, try refresh
-  if (response.status === 401 && typeof window !== "undefined") {
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (!refreshToken) throw new Error("Unauthorized and no refresh token");
-
-    const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
-      method: "POST",
-      headers: { "Authorization": `Bearer ${refreshToken}` },
-    });
-
-    if (!refreshRes.ok) {
-      // Refresh failed → logout
-      localStorage.removeItem("accessToken"); 
-      localStorage.removeItem("refreshToken");
-      window.location.href = "/";
-      throw new Error("Session expired. Please login again.");
-    }
-
-    const refreshData = await refreshRes.json();
-    localStorage.setItem("accessToken", refreshData.accessToken);
-
-    // Retry original request with new access token
-    headers.Authorization = `Bearer ${refreshData.accessToken}`;
-    const retryResponse = await fetch(url, { method: options.method || "GET", headers, body });
-    if (!retryResponse.ok) {
-      const errorText = await retryResponse.text();
-      throw new Error(errorText || `API request failed: ${retryResponse.status}`);
-    }
-    return retryResponse.json();
-  }
-
-  // Original response handling
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || `API request failed: ${response.status}`);
+  if (body && !(body instanceof FormData)) {
+    config.headers["Content-Type"] = "application/json";
+    config.body = JSON.stringify(body);
+  } else if (body) {
+    config.body = body;
   }
 
   try {
-    return await response.json();
-  } catch {
-    return {};
+    const response = await fetch(url, config);
+
+    // 🟡 If access token expired → try refresh
+    if (response.status === 401 && typeof window !== "undefined") {
+      console.log("Access token expired, attempting refresh...");
+      
+      const refreshResult = await handleTokenRefresh();
+      
+      if (refreshResult.success) {
+        // Retry original request with new access token
+        config.headers.Authorization = `Bearer ${refreshResult.accessToken}`;
+        const retryResponse = await fetch(url, config);
+        
+        if (!retryResponse.ok) {
+          const errorText = await retryResponse.text();
+          throw new Error(errorText || `API request failed: ${retryResponse.status}`);
+        }
+
+        return await parseResponse(retryResponse);
+      } else {
+        // Refresh failed, redirect to login
+        await redirectToLogin(refreshResult.error || "Session expired");
+        return;
+      }
+    }
+
+    // ✅ Handle normal success or other errors
+    if (!response.ok) {
+      const errorText = await response.text();
+      
+      // Handle "No data found" as a non-error case - RETURN EMPTY ARRAY
+      if (errorText.includes('No employees found') || 
+          errorText.includes('No tenants found') || 
+          errorText.includes('No organizations found')) {
+        console.log(`Info: ${errorText}`);
+        return []; // Return empty array instead of throwing error
+      }
+      
+      // Handle other errors normally
+      throw new Error(errorText || `API request failed: ${response.status}`);
+    }
+
+    return await parseResponse(response);
+  } catch (error) {
+    console.error("API Client Error:", error);
+    throw error;
+  }
+}
+// 🔄 Handle token refresh
+async function handleTokenRefresh() {
+  try {
+    const session = await getSession();
+    const refreshToken = session?.refreshToken || localStorage.getItem("refreshToken");
+
+    if (!refreshToken) {
+      return { success: false, error: "No refresh token available" };
+    }
+
+    const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${refreshToken}`,
+      },
+    });
+
+    // 🟥 If refresh token also expired or invalid
+    if (refreshRes.status === 401 || refreshRes.status === 403) {
+      return { success: false, error: "Refresh token expired or invalid" };
+    }
+
+    if (!refreshRes.ok) {
+      const errorText = await refreshRes.text();
+      return { success: false, error: errorText || "Refresh failed" };
+    }
+
+    const refreshData = await refreshRes.json();
+
+    if (!refreshData.accessToken) {
+      return { success: false, error: "No access token in refresh response" };
+    }
+
+    // Save new tokens
+    localStorage.setItem("accessToken", refreshData.accessToken);
+    if (refreshData.refreshToken) {
+      localStorage.setItem("refreshToken", refreshData.refreshToken);
+    }
+
+    // Update NextAuth session if available
+    if (typeof window !== "undefined" && window.nextAuth) {
+      // You might need to update the session here
+      // This depends on your NextAuth configuration
+    }
+
+    return { 
+      success: true, 
+      accessToken: refreshData.accessToken,
+      refreshToken: refreshData.refreshToken 
+    };
+
+  } catch (error) {
+    console.error("Token refresh error:", error);
+    return { success: false, error: error.message };
   }
 }
 
+// 🔁 Redirect helper
+async function redirectToLogin(message = "Session expired") {
+  console.warn("Redirecting to login:", message);
+  
+  // Clear local storage
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  
+  // Sign out from NextAuth
+  try {
+    await signOut({ redirect: false });
+  } catch (error) {
+    console.warn("NextAuth signout error:", error);
+  }
+  
+  // Redirect to login
+  window.location.href = "/Login";
+}
 
+// 📄 Parse response helper
+async function parseResponse(response) {
+  const contentType = response.headers.get("content-type");
+  
+  if (contentType && contentType.includes("application/json")) {
+    try {
+      return await response.json();
+    } catch (error) {
+      console.warn("Failed to parse JSON response:", error);
+      return null;
+    }
+  }
+  
+  // Handle empty responses or other content types
+  const text = await response.text();
+  return text ? text : null;
+}
+
+// // Optional: Utility function to check token status
+// export async function validateTokens() {
+//   if (typeof window === "undefined") return { isValid: false };
+  
+//   const accessToken = localStorage.getItem("accessToken");
+//   const refreshToken = localStorage.getItem("refreshToken");
+  
+//   if (!accessToken && !refreshToken) {
+//     return { isValid: false, reason: "No tokens available" };
+//   }
+  
+//   // You could add JWT expiration check here if tokens are JWTs
+//   // const isAccessTokenExpired = checkJWTExpiration(accessToken);
+  
+//   return { 
+//     isValid: !!accessToken, 
+//     hasRefreshToken: !!refreshToken 
+//   };
+// }
 // 🔐 ADD THESE NEW AUTHENTICATION METHODS BELOW 🔐
 
 // Authentication-specific API methods
@@ -287,12 +402,12 @@ getTenantEmployees: (tenantId, token) =>
     }),
 
   
-  updateEmployee: (id, employeeData) =>
-    apiClient(`/employees/${id}`, { 
-      method: 'PUT', 
-      body: employeeData 
-    }),
-  
+  updateEmployee: (id,employeeData ,token) =>
+    apiClient(`/employees/${id}`, {
+      method: 'PUT',
+      body: employeeData, 
+    }, token),
+
   deleteEmployee: (id) =>
     apiClient(`/employees/${id}`, { 
       method: 'DELETE' 

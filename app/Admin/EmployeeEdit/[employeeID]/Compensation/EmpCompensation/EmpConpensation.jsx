@@ -38,7 +38,7 @@ taxIdenitificationNumber: z
     .refine(file => file?.length > 0, 'Resume file is required'),
 })
 
-  const Page = () => {
+  const Page = ({employees}) => {
     const router = useRouter()
     const { compensation, setcompensation } = useAdminForm();
 
@@ -52,22 +52,22 @@ taxIdenitificationNumber: z
     } = useForm({
       resolver: zodResolver(schema),
       defaultValues: {
-        salary: compensation.salary || '',
-        paymentMethod: compensation.paymentMethod || '',
-        taxIdenitificationNumber: compensation.taxIdentificationNumber || '',
-        passportNumber: compensation.passportNumber || '',
-        bankAccountNumber: compensation.bankAccountNumber || '',
-        currency: compensation.currency || '',
-        benefitsEnrollment: compensation.benefitsEnrollment || '',
-        contractFile: compensation.contractFile || '',
-        resume: compensation.resume || '',
+        salary: compensation?.salary ||employees.salary || '',
+        paymentMethod: compensation?.paymentMethod ||employees.paymentMethod || '',
+        taxIdenitificationNumber: compensation?.taxIdentificationNumber ||employees.taxIdenitificationNumber || '',
+        passportNumber: compensation?.passportNumber ||employees.passportNumber || '',
+        bankAccountNumber: compensation?.bankAccountNumber ||employees.bankAccountNumber || '',
+        currency: compensation?.currency ||employees.currency || '',
+        benefitsEnrollment: compensation?.benefitsEnrollment ||employees.benefitsEnrollment || '',
+        contractFile: compensation?.contractFile ||employees.contractFile || '',
+        resume: compensation?.resume ||employees.resume || '',
       },
     })
 
     const onSubmit = (data) => {
       setcompensation(data)
       console.log('Form Data:', data)
-      router.push('/Admin/EmployeeRegistration/System')
+       router.push(`/Admin/EmployeeEdit/${employees.employeeID}/System`);
     }
 
     return (

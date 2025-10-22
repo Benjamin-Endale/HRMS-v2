@@ -32,12 +32,11 @@ export default async function EmployeesServerPage() {
   const users = await hrmsAPI.getUser(tenantId, token);
   console.log("🧾 Users fetched from backend:", users);
 
-  const employees = await hrmsAPI.getEmployees(tenantId, token);
+  const employees = await hrmsAPI.getEmployeesTenant(tenantId, token);
   console.log("🧾 Employees fetched from backend:", employees);
 
   // Merge employeeCode into users
   const usersPayload = users.map(user => {
-    // Find corresponding employee by user id or email (depending on your backend structure)
     const employee = employees.find(emp => emp.employeeID === user.employeeID || emp.email === user.email);
     return {
       ...user,
