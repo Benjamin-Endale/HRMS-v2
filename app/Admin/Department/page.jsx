@@ -23,7 +23,7 @@ const Page = () => {
   ]
 
   // Pagination setup: 4 cards per page
-  const perPage = 4
+  const perPage = 8
   const totalPages = Math.ceil(departments.length / perPage)
   const startIndex = (page - 1) * perPage
   const currentDepartments = departments.slice(startIndex, startIndex + perPage)

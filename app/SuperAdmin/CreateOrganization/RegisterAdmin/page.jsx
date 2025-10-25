@@ -204,7 +204,7 @@ const Page = () => {
                                 name="nationality"
                                 render={({ field }) => (
                                     <Dropdown
-                                    label="nationality"
+                                    label="Nationality"
                                     options={["Ethiopia", "Kenya", "Nigeria", "South Africa"]}
                                     selected={field.value}
                                     onSelect={field.onChange}
