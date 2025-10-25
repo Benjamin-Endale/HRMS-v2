@@ -171,6 +171,34 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 filter: invert(100%) sepia(20%) saturate(7445%) hue-rotate(17deg) brightness(102%) contrast(86%);
 }
 
+
+input[type="color"]::-w{
+filter: invert(100%) sepia(20%) saturate(7445%) hue-rotate(17deg) brightness(102%) contrast(86%);
+}
+
+input[type="color"] {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  width: 18px;     /* width */
+  height: 19px;    /* height */
+  border-radius: 3px; /* optional */
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Remove default inner padding (esp. Safari/Chrome) */
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+/* Style the color box itself */
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 3px;
+}
+
+
 .backgroundColor{
   @apply bg-[rgba(190,229,50,0.05)]
 }

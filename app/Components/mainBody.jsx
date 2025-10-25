@@ -11,6 +11,8 @@ import Performance from '@/public/svg/DashboardSvg/Performance';
 import Training from '@/public/svg/DashboardSvg/Training';
 import Announcement from '@/public/svg/DashboardSvg/Announcement';
 import UserAuth from '@/public/svg/DashboardSvg/UserAuth';
+import Settings from '@/public/svg/DashboardSvg/Setting'
+import Department from '@/public/svg/DashboardSvg/Department'
 
 const MainBody = ({ readPath, modules }) => {
   const menuSections = [
@@ -19,6 +21,7 @@ const MainBody = ({ readPath, modules }) => {
       items: [
         { path: '/Admin/Dashboard', label: 'Dashboard', icon: DashboardIcon },
         { path: '/Admin/Organization', label: 'Organization', icon: Organization },
+        { path: '/Admin/Department', label: 'Department', icon: Department },
         { path: '/Admin/Employees', label: 'Employees', icon: Employee },
         { path: '/Admin/Attendance', label: 'Attendance', icon: Attendance, moduleKey: 'attendanceTracking' },
         { path: '/Admin/LeaveManagment', label: 'Leave Management', icon: LeaveManegment, moduleKey: 'leaveManagement' },
@@ -38,6 +41,7 @@ const MainBody = ({ readPath, modules }) => {
       title: 'OPERATION',
       items: [
         { path: '/Admin/Announcement', label: 'Announcement', icon: Announcement },
+        { path: '/Admin/SettingPages/General', label: 'Settings', icon: Settings },
       ],
     },
   ];
@@ -53,9 +57,13 @@ const MainBody = ({ readPath, modules }) => {
     (item.path === '/Admin/Organization' &&
       ['Admin/OrganizationView'].includes(readPath)) ||
     (item.path === '/Admin/EmployeeEdit' &&
-      ['Admin/EmployeeEdit/AddNewemployee','Admin/EmployeeEdit/AddNewemployeesecond','Admin/EmployeeEdit/Compensation','Admin/EmployeeEdit/System' , 'Admin/EmployeeView'].includes(readPath)) 
+      ['Admin/EmployeeEdit/AddNewemployee','Admin/EmployeeEdit/AddNewemployeesecond','Admin/EmployeeEdit/Compensation','Admin/EmployeeEdit/System' , 'Admin/EmployeeView'].includes(readPath)) ||
+    (item.path === '/Admin/Department' &&
+      ['Admin/DepartmentView'].includes(readPath)) ||
+    (item.path === '/Admin/SettingPages/General' &&
+      ['Admin/SettingPages/Core','Admin/SettingPages/Talent','Admin/SettingPages/System'].includes(readPath)) 
   return (
-    <aside className="font-semibold customBorder scrollBar w-[20.5rem] h-screen flex flex-col gap-[4.25rem] relative pt-[3.5rem] overflow-y-auto">
+    <aside className="font-semibold customBorder scrollBar w-[20.5rem] h-screen pb-[3.5rem] flex flex-col gap-[4.25rem] relative pt-[3.5rem] overflow-y-auto">
       <div className="flex items-center gap-[1.25rem] pl-[2.75rem]">
         <img className="w-[2.0625rem] h-[2.3125rem]" src="/image/logo.png" alt="" />
         <div>

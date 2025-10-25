@@ -6,8 +6,7 @@ import { Dropdown } from '@/app/Components/DropDown'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useAdminForm } from '@/app/Store/AdminFormContext';
-
+import { useAdminForm } from '@/app/Store/AdminFormContext'; 
 // Zod schema for validation
 const schema = z.object({
 salary: z.coerce
@@ -52,7 +51,7 @@ const Page = () => {
       defaultValues: {
         salary: compensationData.salary || '',
         paymentMethod: compensationData.paymentMethod || '',
-        taxIdentificationNumber: compensationData.taxIdentificationNumber || '',
+        taxIdenitificationNumber: compensationData.taxIdenitificationNumber || '',
         passportNumber: compensationData.passportNumber || '',
         bankAccountNumber: compensationData.bankAccountNumber || '',
         currency: compensationData.currency || '',
@@ -62,13 +61,58 @@ const Page = () => {
       }
 
   })
+  
+  const onSubmit = (data) => {
+    console.log("Form data:", data)
+    
+    // Debug file data
+    console.log("Contract file:", data.contractFile)
+    console.log("Resume file:", data.resumeFile)
+    console.log("Contract file type:", typeof data.contractFile)
+    console.log("Contract file is FileList:", data.contractFile instanceof FileList)
+    
+    if (data.contractFile instanceof FileList) {
+      console.log("Contract files count:", data.contractFile.length)
+      console.log("First contract file:", data.contractFile[0])
+    }
+    
+    if (data.resumeFile instanceof FileList) {
+      console.log("Resume files count:", data.resumeFile.length)
+      console.log("First resume file:", data.resumeFile[0])
+    }
 
-const onSubmit = (data) => {
+    // Create FormData to see actual file contents
+    const formData = new FormData()
+    
+    // Properly handle FileList objects
+    if (data.contractFile instanceof FileList && data.contractFile.length > 0) {
+      formData.append("contractFile", data.contractFile[0])
+    }
+    
+    if (data.resumeFile instanceof FileList && data.resumeFile.length > 0) {
+      formData.append("resumeFile", data.resumeFile[0])
+    }
 
-  setCompensationData(data); // store for later steps
-  router.push('/SuperAdmin/CreateOrganization/UserAccess');
-};
+    // Log FormData contents
+      console.log("FormData contents:")
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ', pair[1])
+      }
 
+      // Store the actual File objects, not just the FileList
+      const dataToStore = {
+        ...data,
+        contractFile: data.contractFile instanceof FileList && data.contractFile.length > 0 
+          ? data.contractFile[0] 
+          : data.contractFile,
+        resumeFile: data.resumeFile instanceof FileList && data.resumeFile.length > 0 
+          ? data.resumeFile[0] 
+          : data.resumeFile,
+      }
+
+    setCompensationData(dataToStore)
+    router.push('/SuperAdmin/CreateOrganization/UserAccess')
+  }
 
 console.log(errors)
   return (
@@ -153,7 +197,7 @@ console.log(errors)
                   <label className='inputModfile cursor-pointer border-none'>
                     <img src='/image/Icon/File.png' alt='' />
                     <span className='text-limeLight'>Upload Contract File</span>
-                    <input type='file' className='hidden' {...register('contractFile')} />
+                    <input type='file' className='hidden'  {...register('contractFile')} />
                   </label>
                   {errors.contractFile && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.contractFile.message}</span>}
                 </div>

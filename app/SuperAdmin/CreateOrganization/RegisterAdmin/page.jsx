@@ -60,7 +60,7 @@ hireDate: z
     certificationFile: z
         .any()
         .refine(file => file?.length > 0, 'Certification file is required'),
-    photoUrl: z
+    photo: z
         .any()
         .refine(file => file?.length > 0, 'emplyoee photo is required'),
 });
@@ -95,16 +95,66 @@ const Page = () => {
         workLocation: employeeData.workLocation || "",
         employeeEducationStatus: employeeData.employeeEducationStatus || "",
         certificationFile: employeeData.certificationFile || "",
-        photoUrl: employeeData.photoUrl || '',
+        photo: employeeData.photo || '',
     },
     });
 
 
         console.log(errors)
+        // const [certificationFileName, setCertificationFileName] = useState('')
+        // const [photoFileName, setPhotoFileName] = useState('')
+
         const onSubmit = (data) => {
-            setEmployeeData(data);
-            router.push('/SuperAdmin/CreateOrganization/Compensation');
-        };
+        console.log("Form data:", data)
+        
+        // Debug file data
+        console.log("Certification file:", data.certificationFile)
+        console.log("Photo file:", data.photo)
+        console.log("Certification file type:", typeof data.certificationFile)
+        console.log("Certification file is FileList:", data.certificationFile instanceof FileList)
+        
+        if (data.certificationFile instanceof FileList) {
+            console.log("Certification files count:", data.certificationFile.length)
+            console.log("First certification file:", data.certificationFile[0])
+        }
+        
+        if (data.photo instanceof FileList) {
+            console.log("Photo files count:", data.photo.length)
+            console.log("First photo file:", data.photo[0])
+        }
+
+        // Create FormData to see actual file contents
+        const formData = new FormData()
+        
+        // Properly handle FileList objects
+        if (data.certificationFile instanceof FileList && data.certificationFile.length > 0) {
+            formData.append("certificationFile", data.certificationFile[0])
+        }
+        
+        if (data.photo instanceof FileList && data.photo.length > 0) {
+            formData.append("photo", data.photo[0])
+        }
+
+        // Log FormData contents
+        console.log("FormData contents:")
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ', pair[1])
+        }
+
+        // Store the actual File objects, not just the FileList
+        const dataToStore = {
+            ...data,
+            certificationFile: data.certificationFile instanceof FileList && data.certificationFile.length > 0 
+            ? data.certificationFile[0] 
+            : data.certificationFile,
+            photo: data.photo instanceof FileList && data.photo.length > 0 
+            ? data.photo[0] 
+            : data.photo,
+        }
+
+        setEmployeeData(dataToStore)
+        router.push('/SuperAdmin/CreateOrganization/Compensation')
+        }
 
 
     return (
@@ -296,9 +346,9 @@ const Page = () => {
                                         <label className='inputModfile cursor-pointer border-none'>
                                             <img src='/image/Icon/File.png' alt='' />
                                             <span className='text-limeLight'>Upload Photo</span>
-                                            <input type='file' className='hidden' {...register('photoUrl')} />
+                                            <input type='file' className='hidden' {...register('photo')} />
                                         </label>
-                                        {errors.photoUrl && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.photoUrl.message}</span>}
+                                        {errors.photo && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.photo.message}</span>}
                                     </div>
                             </div>
 

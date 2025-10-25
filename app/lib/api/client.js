@@ -389,6 +389,14 @@ createPermanentSettings: (settings) =>
     body: settings,  
   }),
 
+getPermanentSettings: (token) =>
+  apiClient('/PermanentTenantSetting', {
+    method: 'GET',
+    headers: {
+        Authorization: `Bearer ${token}`
+    }
+  }),
+
 
   createSuperadmin: (userData) =>
     apiClient('/users', { 

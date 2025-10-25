@@ -19,13 +19,17 @@ const Header = ({ readPath , session }) => {
     Super_Administrators: 'Manage system administrators and their permissions',
     User_Statics: '',
     Training_and_Development: 'Manage training programs, enrollments, and employee development',
-    User_Authentication: ''
+    User_Authentication: '',
+    Department_Management: 'Manage company structure, departments hierarchy.',
+    Admin_Settings: 'Manage training programs, enrollments, and employee development'
   }
 
   // Map human-readable titles to object keys
   const keyMap = {
     "Admin/Dashboard": "Dashboard",
     "Admin/Organization": "Organization_Management",
+    "Admin/Department": "Department_Management",
+    "Admin/DepartmentView": "Department_Management",
     "Admin/Employees": "Employee_Management",
     "Admin/Attendance": "Attendance",
     "Admin/LeaveManagment": "Leave_Management",
@@ -69,8 +73,11 @@ const Header = ({ readPath , session }) => {
     "Admin/EmployeeView": "Employee_Management",
     "Admin/EmployeeDetail": "Employee_Management",
     "Admin/EmployeeEdit": "Employee_Management",
-
-    "Admin/OrganizationView": "Organization_Management"
+    "Admin/OrganizationView": "Organization_Management",
+    "Admin/SettingPages/General": "Admin_Settings",
+    "Admin/SettingPages/Core": "Admin_Settings",
+    "Admin/SettingPages/Talent": "Admin_Settings",
+    "Admin/SettingPages/System": "Admin_Settings",
 
 
 

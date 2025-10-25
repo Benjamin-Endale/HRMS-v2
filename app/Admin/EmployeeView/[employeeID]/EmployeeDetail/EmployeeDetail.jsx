@@ -8,7 +8,7 @@ const EmployeeDetail = ({employees}) => {
 const router = useRouter({})
 if (!employees) return <div>No employee data</div>;
 
-
+console.log(employees.photoUrl)
 // const [time, setTime] = useState('');
 // const hireDate = new Date(employees.hireDate).toLocaleDateString();
 

@@ -26,20 +26,20 @@ export default async function Page() {
     );
   }
 
-  // Initialize with empty arrays
-  let employees = [];
-  let organizations = [];
-  let tenants = [];
+    // Initialize with empty arrays
+    let employees = [];
+    let organizations = [];
+    let tenants = [];
 
-  try {
-    // 1️⃣ Fetch all Tenants with error handling
     try {
-      tenants = await hrmsAPI.getTenant(token);
-      console.log("tenants response: ", tenants);
-    } catch (tenantError) {
-      console.error("Failed to fetch tenants:", tenantError);
-      tenants = []; // Ensure it's always an array
-    }
+      // 1️⃣ Fetch all Tenants with error handling
+      try {
+        tenants = await hrmsAPI.getTenant(token);
+        console.log("tenants response: ", tenants);
+      } catch (tenantError) {
+        console.error("Failed to fetch tenants:", tenantError);
+        tenants = []; // Ensure it's always an array
+      }
 
     // 2️⃣ Fetch Employees with error handling
     try {
@@ -101,11 +101,6 @@ export default async function Page() {
   const safeEmployees = Array.isArray(employees) ? employees : [];
   const safeOrganizations = Array.isArray(organizations) ? organizations : [];
 
-  console.log("Final data:", {
-    tenants: safeTenants.length,
-    employees: safeEmployees.length,
-    organizations: safeOrganizations.length
-  });
 
   // Empty state component
   const EmptyState = ({ title, description }) => (

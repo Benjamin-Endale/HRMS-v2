@@ -36,6 +36,14 @@ const SubNavigation = ({ readPath }) => {
     { label: "Authorized", path: "/Admin/UserAuthentication/Authorized" },
     ]
 
+    const NavSettings = [
+    { label: "General", path: "/Admin/SettingPages/General" },
+    { label: "Core", path: "/Admin/SettingPages/Core" },
+    { label: "Talent", path: "/Admin/SettingPages/Talent" },
+    { label: "System", path: "/Admin/SettingPages/System" },
+
+    ]
+
   return (
     <div className='w-full'>
         <div className={`${readPath === 'Recruitment' || readPath === '/RecruitmentPages/Jobposting' || readPath === "/RecruitmentPages/Candidates" || readPath === "/RecruitmentPages/Interviews" || readPath === '/RecruitmentPages/Shortlist' ? 'block' : 'hidden'} cursor-pointer flex flex-col gap-[3.3125rem]`}>
@@ -207,22 +215,38 @@ const SubNavigation = ({ readPath }) => {
             </div>
         </div>
         {/* UserAuth */}
-            <div className={`${readPath === '/Admin/UserAuthentication/All' || readPath === "/Admin/UserAuthentication/Authorized"   ? 'block' : 'hidden'} cursor-pointer flex flex-col gap-[3.3125rem]`}>
-                <div>
-                    <div className="flex font-medium gap-[1.75rem]">
-                        {NavAuth.map(item => (
-                        <div
-                            key={item.path}
-                            onClick={() => router.push(item.path)}
-                            className={`w-[8.875rem] center-center py-[0.875rem] relative px-[1.875rem]  text-nowrap  ${pathname === item.path ? 'text-lemongreen' : 'textLimegray1'}`}>
-                            {item.label}
-                            <div className={`${pathname === item.path ? 'absolute left-0 h-[3px] w-full bottom-0 rounded-[0.375rem] bg-lemongreen' : ''}`}></div>
-                        </div>
-                        ))}
-                        
+        <div className={`${readPath === '/Admin/UserAuthentication/All' || readPath === "/Admin/UserAuthentication/Authorized"   ? 'block' : 'hidden'} cursor-pointer flex flex-col gap-[3.3125rem]`}>
+            <div>
+                <div className="flex font-medium gap-[1.75rem]">
+                    {NavAuth.map(item => (
+                    <div
+                        key={item.path}
+                        onClick={() => router.push(item.path)}
+                        className={`w-[8.875rem] center-center py-[0.875rem] relative px-[1.875rem]  text-nowrap  ${pathname === item.path ? 'text-lemongreen' : 'textLimegray1'}`}>
+                        {item.label}
+                        <div className={`${pathname === item.path ? 'absolute left-0 h-[3px] w-full bottom-0 rounded-[0.375rem] bg-lemongreen' : ''}`}></div>
                     </div>
+                    ))}
+                    
                 </div>
             </div>
+        </div>
+        <div className={`${readPath === '/Admin/SettingPages/General' || readPath === '/Admin/SettingPages/Core' || readPath === '/Admin/SettingPages/Talent' || readPath === '/Admin/SettingPages/System'    ? 'block' : 'hidden'} cursor-pointer flex flex-col gap-[3.3125rem]`}>
+            <div>
+                <div className="flex font-medium gap-[1.75rem]">
+                    {NavSettings.map(item => (
+                    <div
+                        key={item.path}
+                        onClick={() => router.push(item.path)}
+                        className={`w-[8.875rem] center-center py-[0.875rem] relative px-[1.875rem]  text-nowrap  ${pathname === item.path ? 'text-lemongreen' : 'textLimegray1'}`}>
+                        {item.label}
+                        <div className={`${pathname === item.path ? 'absolute left-0 h-[3px] w-full bottom-0 rounded-[0.375rem] bg-lemongreen' : ''}`}></div>
+                    </div>
+                    ))}
+                    
+                </div>
+            </div>
+        </div>
     </div>
   )
 }
