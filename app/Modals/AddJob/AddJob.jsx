@@ -79,7 +79,7 @@ export default function AddJob({ onClose }) {
           {/* Left Column */}
           <div className="flex flex-col gap-[2.375rem] w-[15.5625rem]">
             {/* Job Title */}
-            <div className="flex flex-col w-full gap-[1rem]">
+            <div className="flex flex-col w-full gap-[1rem] relative">
               <label className="textFormColor1">Job Title</label>
               <input
                 type="text"
@@ -87,11 +87,11 @@ export default function AddJob({ onClose }) {
                 className="inputMod pr-[1.5625rem]"
                 {...register('jobTitle')}
               />
-              {errors.jobTitle && <p className="text-Error text-[1rem]">{errors.jobTitle.message}</p>}
+              {errors.jobTitle && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.jobTitle.message}</p>}
             </div>
 
             {/* Location */}
-            <div className="flex flex-col w-full gap-[1rem]">
+            <div className="flex flex-col w-full gap-[1rem] relative">
               <label className="textFormColor1">Location</label>
               <input
                 type="text"
@@ -99,11 +99,11 @@ export default function AddJob({ onClose }) {
                 className="inputMod pr-[1.5625rem]"
                 {...register('location')}
               />
-              {errors.location && <p className="text-Error text-[1rem]">{errors.location.message}</p>}
+              {errors.location && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.location.message}</p>}
             </div>
 
             {/* Salary Range */}
-            <div className="flex flex-col w-full gap-[1rem]">
+            <div className="flex flex-col w-full gap-[1rem] relative">
               <label className="textFormColor1">Salary Range</label>
               <input
                 type="text"
@@ -111,14 +111,14 @@ export default function AddJob({ onClose }) {
                 className="inputMod pr-[1.5625rem]"
                 {...register('salaryRange')}
               />
-              {errors.salaryRange && <p className="text-Error text-[1rem]">{errors.salaryRange.message}</p>}
+              {errors.salaryRange && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.salaryRange.message}</p>}
             </div>
           </div>
 
           {/* Right Column */}
           <div className="w-[15.5625rem] flex flex-col gap-[2.375rem]">
             {/* Department Dropdown */}
-            <div>
+            <div className='relative'>
               <Controller
                 name="department"
                 control={control}
@@ -132,7 +132,7 @@ export default function AddJob({ onClose }) {
                   />
                 )}
               />
-              {errors.department && <p className="text-Error text-[1rem]">{errors.department.message}</p>}
+              {errors.department && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.department.message}</p>}
             </div>
 
             {/* Job Type Dropdown */}
@@ -150,38 +150,38 @@ export default function AddJob({ onClose }) {
                   />
                 )}
               />
-              {errors.jobType && <p className="text-Error text-[1rem]">{errors.jobType.message}</p>}
+              {errors.jobType && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.jobType.message}</p>}
             </div>
 
             {/* Application Deadline */}
-            <div className="flex flex-col w-full gap-[1rem]">
+            <div className="flex flex-col w-full gap-[1rem] relative">
               <label className="textFormColor1">Application Deadline</label>
               <input type="date" className="inputMod pr-[1.5625rem]" {...register('deadline')} />
-              {errors.deadline && <p className="text-Error text-[1rem]">{errors.deadline.message}</p>}
+              {errors.deadline && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.deadline.message}</p>}
             </div>
           </div>
         </div>
 
         {/* Description & Requirement */}
         <div className="flex flex-col gap-[2.375rem]">
-          <div className="flex flex-col gap-[1rem]">
+          <div className="flex flex-col gap-[1rem] relative">
             <label className="text-formColor">Job Description</label>
             <textarea
               placeholder="Enter detailed job description..."
               className="text-formColor bg-inputBack rounded-[10px] placeholder-input pt-[0.59375rem] pl-[1.1875rem] resize-none h-[5.5rem]"
               {...register('description')}
             />
-            {errors.description && <p className="text-Error text-[1rem]">{errors.description.message}</p>}
+            {errors.description && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.description.message}</p>}
           </div>
 
-          <div className="flex flex-col gap-[1rem]">
+          <div className="flex flex-col gap-[1rem] relative">
             <label className="text-formColor">Requirement</label>
             <textarea
               placeholder="List required skills, experience and qualification"
               className="text-formColor bg-inputBack rounded-[10px] placeholder-input pt-[0.59375rem] pl-[1.1875rem] resize-none h-[5.5rem]"
               {...register('requirement')}
             />
-            {errors.requirement && <p className="text-Error text-[1rem]">{errors.requirement.message}</p>}
+            {errors.requirement && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.requirement.message}</p>}
           </div>
         </div>
 

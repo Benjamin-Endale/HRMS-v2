@@ -67,48 +67,48 @@ export default function AddAdmin({ onClose }) {
                 <form onSubmit={handleSubmit(onSubmit)} className='space-y-[2.6875rem]'>
                     {/* formContainer */}
                     <div className='space-y-[1.9375rem]'>
-                        <div className='flex flex-col gap-[1rem]'>
+                        <div className='flex flex-col gap-[1rem] relative'>
                             <label htmlFor="fullName" className='text-formColor'>Full Name</label>
                             <input id='fullName' type="text" placeholder='ex. John Don' className='inputMod'
                                 {...register("fullName")}
                             />
                             {errors.fullName && (
-                                <span className='text-Error text-[1rem]'>
+                                <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                                     {errors.fullName.message}
                                 </span>
                             )}
                         </div>
-                       <div className='flex flex-col gap-[1rem]'>
+                       <div className='flex flex-col gap-[1rem] relative'>
                             <label htmlFor="username" className='text-formColor'>User Name</label>
                             <input id='username' type="text" placeholder='ex. John Don' className='inputMod'
                                 {...register("username")}
                             />
                             {errors.username && (
-                                <span className='text-Error text-[1rem]'>
+                                <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                                     {errors.username.message}
                                 </span>
                             )}
                         </div>
-                        <div className='flex flex-col gap-[1rem]'>
+                        <div className='flex flex-col gap-[1rem] relative'>
                             <label htmlFor="emailAdd" className='text-formColor'>Email</label>
                             <input id='emailAdd' type="email" placeholder='ex. example@Gmail.com' className='inputMod'
                                 {...register("email")}
                             />
                             {errors.email && (
-                                <span className='text-Error text-[1rem]'>
+                                <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                                     {errors.email.message}
                                 </span>
                             )}
                         </div>
                         <div className='space-y-[2.125rem]'>      
-                            <div className='flex flex-col gap-[1rem]'>
+                            <div className='flex flex-col gap-[1rem] relative'>
                                 <label htmlFor="phoneNumber" className='text-formColor'>Phone</label>
                                 <input id='phoneNumber' type="text" placeholder='+251987654321' className='inputMod'
                                     {...register("phoneNumber")}
                                 />
                                 {/* FIX: Corrected error field name */}
                                 {errors.phoneNumber && (
-                                    <span className='text-Error text-[1rem]'>
+                                    <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                                         {errors.phoneNumber.message}
                                     </span>
                                 )}
@@ -118,13 +118,13 @@ export default function AddAdmin({ onClose }) {
                                 <input id='role' disabled type="text" placeholder='SuperAdmin' className='inputMod'
                                 />
                             </div>
-                            <div className='flex flex-col gap-[1rem]'>
+                            <div className='flex flex-col gap-[1rem] relative'>
                                 <label htmlFor="password" className='text-formColor'>Default password</label>
                                 <input id='password' type="password" placeholder='admin1234' className='inputMod'
                                     {...register("password")}
                                 />
                                 {errors.password && (
-                                    <span className='text-Error text-[1rem]'>
+                                    <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                                         {errors.password.message}
                                     </span>
                                 )}

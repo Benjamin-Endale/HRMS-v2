@@ -11,7 +11,12 @@ import { authAPI } from "@/app/lib/api/client";
 const orgSchema = z.object({
   Name: z.string().min(2, "Organization Name is required"),
   OrgCode: z.string().min(2, "Organization Code is required"),
-  Domain: z.string().url("Enter a valid domain (e.g. https://example.com)"),
+Domain: z
+  .string()
+  .min(4, "Domain is required")
+  .refine((val) => val.trim().toLowerCase().endsWith(".com"), {
+    message: "Domain must end with .com",
+  }),
   Industry: z.string().min(1, "Please select an industry"),
   Location: z.string().min(2, "Location is required"),
   LogoUrl: z
@@ -66,7 +71,7 @@ const AddOrg = ({ onClose }) => {
     setIsSubmitting(true);
     try {
       if (!data.LogoUrl || data.LogoUrl.length === 0) {
-        console.error("❌ Please upload a company logo");
+        console.error(" Please upload a company logo");
         return;
       }
 
@@ -107,7 +112,7 @@ const AddOrg = ({ onClose }) => {
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[2.375rem]">
         {/* Name */}
-        <div className="flex flex-col w-full gap-[1rem]">
+        <div className="flex flex-col w-full gap-[1rem] relative">
           <label className="textFormColor1">Organization Name</label>
           <input
             type="text"
@@ -115,11 +120,11 @@ const AddOrg = ({ onClose }) => {
             {...register("Name")}
             className="inputMod pr-[1.5625rem]"
           />
-          {errors.Name && <p className="text-Error">{errors.Name.message}</p>}
+          {errors.Name && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.Name.message}</p>}
         </div>
 
         {/* Code */}
-        <div className="flex flex-col w-full gap-[1rem]">
+        <div className="flex flex-col w-full gap-[1rem] relative">
           <label className="textFormColor1">Organization Code</label>
           <input
             type="text"
@@ -127,23 +132,23 @@ const AddOrg = ({ onClose }) => {
             {...register("OrgCode")}
             className="inputMod pr-[1.5625rem]"
           />
-          {errors.OrgCode && <p className="text-Error">{errors.OrgCode.message}</p>}
+          {errors.OrgCode && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.OrgCode.message}</p>}
         </div>
 
         {/* Domain */}
-        <div className="flex flex-col w-full gap-[1rem]">
+        <div className="flex flex-col w-full gap-[1rem] relative">
           <label className="textFormColor1">Domain</label>
           <input
             type="text"
-            placeholder="ex. https://domain.com"
+            placeholder="domain.com"
             {...register("Domain")}
             className="inputMod pr-[1.5625rem]"
           />
-          {errors.Domain && <p className="text-Error">{errors.Domain.message}</p>}
+          {errors.Domain && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.Domain.message}</p>}
         </div>
 
         {/* Industry Dropdown */}
-        <div>
+        <div className="relative">
           <Dropdown
             label="Industry"
             options={["Engineering", "Marketing", "Finance"]}
@@ -151,11 +156,11 @@ const AddOrg = ({ onClose }) => {
             onSelect={handleIndustrySelect}
             placeholder="Select Industry"
           />
-          {errors.Industry && <p className="text-Error">{errors.Industry.message}</p>}
+          {errors.Industry && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.Industry.message}</p>}
         </div>
 
         {/* Location */}
-        <div className="flex flex-col w-full gap-[1rem]">
+        <div className="flex flex-col w-full gap-[1rem] relative">
           <label className="textFormColor1">Location</label>
           <input
             type="text"
@@ -163,30 +168,38 @@ const AddOrg = ({ onClose }) => {
             {...register("Location")}
             className="inputMod pr-[1.5625rem]"
           />
-          {errors.Location && <p className="text-Error">{errors.Location.message}</p>}
+          {errors.Location && <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.Location.message}</p>}
         </div>
 
         {/* Logo */}
-        <div className="flex flex-col gap-[1rem]">
-          <label htmlFor="logo" className="text-formColor">Upload Company Logo</label>
-          <label htmlFor="logo" className="inputModfile cursor-pointer flex items-center gap-2">
-            <img src="/image/Icon/File.png" alt="File" />
-            <span className="text-limeLight">
-              {watchLogo && watchLogo.length > 0 ? watchLogo[0].name : "Upload Logo"}
-            </span>
-          </label>
-          <input
-            type="file"
-            id="logo"
-            {...register("LogoUrl")}
-            onChange={(e) => {
-              if (e.target.files) setValue("LogoUrl", e.target.files, { shouldValidate: true });
-            }}
-            className="hidden"
-          />
-          {errors.LogoUrl && <p className="text-Error">{errors.LogoUrl.message}</p>}
-        </div>
+    <div className='flex flex-col gap-[1rem] relative border-none'>
+      <label htmlFor="logo" className="text-formColor">Upload Company Logo</label>
+      <label htmlFor="logo" className="inputModfile cursor-pointer flex items-center gap-2 border-none">
+        <img src='/image/Icon/File.png' alt='' />
+        <span className='text-limeLight'>Upload Company Logo</span>
+        <input
+          id="logo"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          {...register('LogoUrl', {
+            required: 'Logo is required',
+            onChange: (e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                console.log('Selected file:', file);
+              }
+            }
+          })}
+        />
+      </label>
 
+      {errors.LogoUrl && (
+        <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
+          {errors.LogoUrl.message}
+        </span>
+      )}
+    </div>
         {/* Submit */}
         <div className="w-full h-[3.4375rem] mt-[0.5rem]">
           <button 

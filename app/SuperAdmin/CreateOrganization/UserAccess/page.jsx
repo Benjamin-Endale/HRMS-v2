@@ -219,7 +219,7 @@ const onSubmit = async (data) => {
                 />
               </button>
     {errors.password && (
-      <span className='text-Error text-[1rem]'>
+      <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
         {errors.password.message}
       </span>
     )}
@@ -245,7 +245,7 @@ const onSubmit = async (data) => {
                 />
               </button>
     {errors.ConfirmPassword && (
-      <span className='text-Error text-[1rem]'>
+      <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
         {errors.ConfirmPassword.message}
       </span>
     )}

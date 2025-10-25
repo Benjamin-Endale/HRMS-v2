@@ -11,16 +11,16 @@ import { SignInButton } from './SignInButton';
 // ✅ Validation schema
 const loginSchema = z.object({
     email: z.string()
-      .email("Invalid email address")
-      .min(3, "Email must be at least 3 characters long")
-      .max(50, "Email must not exceed 50 characters"),
+      .email("")
+      .min(3, "")
+      .max(50, ""),
 
   password: z.string()
-    .min(8, "Password must be at least 8 characters long")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(/[@$!%*?&]/, "Password must contain at least one special character (@, $, !, %, *, ?, &)"),
+    .min(8, "")
+    .regex(/[A-Z]/, "")
+    .regex(/[a-z]/, "")
+    .regex(/[0-9]/, "")
+    .regex(/[@$!%*?&]/, ""),
 });
 
 export default function LoginPage() {
@@ -138,11 +138,10 @@ export default function LoginPage() {
                     <input
                       className="pl-[66px] h-full w-full rounded-[5px] border-2 border-[#1D2015] text-white focus:outline-none focus:border-lemongreen focus:ring-lemongreen bg-[#1D2015]"
                       type="text"
-                      placeholder='ex. John Don'
+                      placeholder='example@gmail.com'
                       {...register("email")}
                     />
                   </div>
-                  {errors.email && <span className='text-Error'>{errors.email.message}</span>}
                 </div>
 
                 {/* Password */}
@@ -169,9 +168,7 @@ export default function LoginPage() {
                       />
                     </button>
                   </div>
-                  {errors.password && <span className='text-Error text-[1rem]'>{errors.password.message}</span>}
                 </div>
-
                 {/* Login button */}
                 <div className='flex flex-col gap-2'>
                   <div className="bg-lemongreen w-full h-[3.4375rem] flex items-center justify-center rounded-[0.3125rem]">

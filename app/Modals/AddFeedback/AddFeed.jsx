@@ -46,7 +46,7 @@ export default function AddFeed({ onClose }) {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-[2.375rem]'>
-        <div className='flex flex-col gap-[1rem]'>
+        <div className='flex flex-col gap-[1rem] relative'>
           <label htmlFor='instruction' className='text-formColor'>
             Instructions for Reviewers
           </label>
@@ -57,7 +57,7 @@ export default function AddFeed({ onClose }) {
             {...register('instruction')}
           />
           {errors.instruction && (
-            <span className='text-Error text-[1rem]'>{errors.instruction.message}</span>
+            <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.instruction.message}</span>
           )}
         </div>
 

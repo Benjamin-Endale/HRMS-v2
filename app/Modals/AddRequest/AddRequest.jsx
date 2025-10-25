@@ -225,20 +225,20 @@ const page = () => {
                   {/* firstForm */}
                   <div className='w-[20.1875rem] flex flex-col gap-[2.875rem]'>
                     {/* OrganizationName */}
-                    <div className='flex flex-col gap-[1rem]'>
+                    <div className='flex flex-col gap-[1rem] relative'>
                       <label htmlFor="organizationName" className='text-formColor'>Organization Name*</label>
                       <input  type="text" placeholder='Enter Organization Name' className='inputMod' 
                       {...register("OrgName")}
                       />
                       {errors.OrgName && (
-                        <span className='text-Error text-[1rem]'>
+                        <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                           {errors.OrgName.message}
                         </span>
                       )
                       }
                     </div>
-                    {/* Insustry */}
-                    <div>
+                    {/* Industry */}
+                    <div className='relative'>
                       <Controller
                       control={control}
                       name='Industry'
@@ -252,7 +252,7 @@ const page = () => {
                         />
                       )}
                       />
-                   { errors.Industry &&  <span className='text-Error text-[1rem]'>
+                   { errors.Industry &&  <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                         {errors.Industry.message}
                       </span>}
                     </div>
@@ -260,19 +260,19 @@ const page = () => {
                   {/* secondForm */}
                   <div className='w-[20.1875rem] flex flex-col gap-[2.875rem]'>
                     {/* Domain */}
-                    <div className='flex flex-col gap-[1rem]'>
+                    <div className='flex flex-col gap-[1rem] relative'>
                       <label htmlFor="domain " className='text-formColor'>Domain*</label>
                       <input  id='domain' type="text" placeholder='Enter Organization Domain' className='inputMod'
                       {...register("Domain")}
                       />
                       {errors.Domain && (
-                        <span className='text-Error text-[1rem]'>
+                        <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                           {errors.Domain.message}
                         </span>
                       )}
                     </div>
                     {/* Company Size */}
-                    <div>
+                    <div className='relative'>
                       <Controller
                       control={control}
                       name='CompanyName'
@@ -287,7 +287,7 @@ const page = () => {
                       )}
                       />
                       {errors.CompanyName &&(
-                        <span className='text-Error text-[1rem]'>
+                        <span className='text-Error text-[1rem] absolute bottom-[-2rem] '>
                           {errors.CompanyName.message}
                         </span>
                       )}
@@ -296,13 +296,13 @@ const page = () => {
                 </div>
 
                 {/* TextArea */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label htmlFor="" className='text-formColor'>Description</label>
                   <textarea name="" id=""  placeholder='Brief description of the organization '  className='text-formColor bg-inputBack rounded-[10px] placeholder-input pt-[1.75rem] pl-[1.1875rem] resize-none  h-[8.4375rem]'
                   {...register("Description")}
                   ></textarea>
                   {errors.Description && (
-                    <span className='text-Error text-[1rem]'>
+                    <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                       {errors.Description.message}
                     </span>
                   )}
@@ -374,25 +374,25 @@ const page = () => {
                   {/* firstForm */} 
                     <div className='w-[20.1875rem] flex flex-col gap-[2.875rem]'>
                         {/* First Name */}
-                      <div className='flex flex-col gap-[1rem]'>
+                      <div className='flex flex-col gap-[1rem] relative'>
                         <label htmlFor="firstName" className='text-formColor'>First Name*</label>
                         <input id='firstName' type="text" placeholder='Enter First Name' className='inputMod' 
                         {...register("FirstName")}
                         />
                         {errors.FirstName && (
-                          <span className='text-Error text-[1rem]'>
+                          <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                             {errors.FirstName}
                           </span>
                         )}
                       </div>
                       {/* Email */}
-                      <div className='flex flex-col gap-[1rem]'>
+                      <div className='flex flex-col gap-[1rem] relative'>
                         <label htmlFor="Email" className='text-formColor'>Email*</label>
                         <input id='Email' type="email" placeholder='example@company.name' className='inputMod' 
                         {...register("Email")}
                         />
                         {errors.Email && (
-                          <span className='text-Error text-[1rem]'>
+                          <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                             {errors.Email.message}
                           </span>
                         )}
@@ -401,25 +401,25 @@ const page = () => {
                     {/* secondForm */}
                     <div className='w-[20.1875rem] flex flex-col gap-[2.875rem]'>
                         {/* Last Name */}
-                      <div className='flex flex-col gap-[1rem]'>
+                      <div className='flex flex-col gap-[1rem] relative'>
                         <label htmlFor="lastName" className='text-formColor'>Last Name*</label>
                         <input id='lastName' type="text" placeholder='Enter Last Name' className='inputMod'
                         {...register ("LastName")}
                         />
                         {errors.LastName && (
-                          <span className='text-Error tex-[1rem]'>
+                          <span className='text-Error tex-[1rem] absolute bottom-[-2rem]'>
                             {errors.LastName.message}
                           </span>
                         )}
                       </div>
                       {/* Phone Number */}
-                      <div className='flex flex-col gap-[1rem]'>
+                      <div className='flex flex-col gap-[1rem] relative'>
                         <label htmlFor="phoneNumber" className='text-formColor'>Phone number</label>
                         <input id='phoneNumber' type="email" placeholder='+1(555) 123-4567' className='inputMod'
                         {...register("Phone")}
                         />
                         {errors.Phone && (
-                          <span className='text-Error text-[1rem]'>
+                          <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                             {errors.Phone.message}
                           </span>
                         )}
@@ -446,12 +446,12 @@ const page = () => {
                   <div className='flex gap-[2.1875rem]'>
                     {/* Country */}
                     <div className='w-[20.1875rem]'>
-                      <div>
+                      <div className='relative'>
                         <Controller
                           control={control}
                           name='Country'
                           render={({field}) => (
-                                 <Dropdown
+                            <Dropdown
                           label="Country"
                           options={['Ethiopia', 'USA', 'UK' , 'Sudan']}
                           selected={field.value}
@@ -460,18 +460,22 @@ const page = () => {
                           />
                           )}
                         />
-                         
+                         {errors.Country && (
+                          <span  className='text-Error text-[1rem] absolute bottom-[-2rem]'>
+                            {errors.Country.message}
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     {/* Time Zone */}
                     <div className='w-[20.1875rem]'>
-                      <div>
+                      <div className='relative'>
                         <Controller
                         control={control}
                         name='TimeZone'
                         render={({field}) => (
-                           <Dropdown
+                          <Dropdown
                           label="Time Zone "
                           options={['Ethiopia', 'USA', 'UK' , 'Sudan']}
                           selected={field.value}
@@ -481,7 +485,7 @@ const page = () => {
                         )}
                         />
                         {errors.TimeZone && (
-                          <span  className='text-Error text-[1rem]'>
+                          <span  className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                             {errors.TimeZone.message}
                           </span>
                         )}

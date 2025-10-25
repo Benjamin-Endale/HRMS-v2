@@ -11,21 +11,23 @@
 
   // Zod schema for validation
 const schema = z.object({
-salary: z.coerce
-  .number({
-    invalid_type_error: 'Salary is required',
-  })
-  .min(1000, 'Salary must be at least 1000 birr'),
-  paymentMethod: z.string().nonempty('Payment Method is required'),
-taxIdenitificationNumber: z
+salary: z
   .string()
+  .min(1, "Salary is required") // Step 1: ensure it's not empty
+  .transform((val) => Number(val)) // Step 2: convert to number
+  .refine((val) => !isNaN(val), { message: "Salary must be a number" }) // Step 3: numeric check
+  .refine((val) => val >= 1000, { message: "Salary must be at least 1000 birr" }), // Step 4: minimum check
+
+  paymentMethod: z.string().nonempty('Payment Method is required'),
+  taxIdenitificationNumber: z
+  .string().nonempty("Tax Identification Number is required")
   .length(10, 'Tax Identification Number must be exactly 10 digits')
   .regex(/^\d+$/, 'Tax Identification Number must contain only digits'),
   passportNumber: z
     .string()
     .min(1, 'Passport number is required'),   
   bankAccountNumber: z
-  .string()
+  .string().nonempty("Bank Account Number is required")
   .length(13, 'Bank Account Number must be exactly 13 digits')
   .regex(/^\d+$/, 'Bank Account Number must contain only digits'),
   currency: z.string().nonempty('Currency is required'),
@@ -100,7 +102,7 @@ taxIdenitificationNumber: z
             <div className='flex gap-[2.5625rem]'> 
               <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
                 {/* Salary */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Salary</label>
                   <input
                     type='number'
@@ -108,11 +110,11 @@ taxIdenitificationNumber: z
                     className='inputMod'
                     {...register('salary')}
                   />
-                  {errors.salary && <span className='text-Error text-[1rem]'>{errors.salary.message}</span>}
+                  {errors.salary && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.salary.message}</span>}
                 </div>
 
                 {/* Payment Method */}
-                <div>
+                <div className='relative'>
                   <Controller
                     control={control}
                     name='paymentMethod'
@@ -126,11 +128,11 @@ taxIdenitificationNumber: z
                       />
                     )}
                   />
-                  {errors.paymentMethod && <span className='text-Error text-[1rem]'>{errors.paymentMethod.message}</span>}
+                  {errors.paymentMethod && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.paymentMethod.message}</span>}
                 </div>
 
                 {/* Tax ID */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Tax Identification Number</label>
                   <input
                     type='number'
@@ -138,11 +140,11 @@ taxIdenitificationNumber: z
                     className='inputMod'
                     {...register('taxIdenitificationNumber')}
                   />
-                  {errors.taxIdenitificationNumber && <span className='text-Error text-[1rem]'>{errors.taxIdenitificationNumber.message}</span>}
+                  {errors.taxIdenitificationNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.taxIdenitificationNumber.message}</span>}
                 </div>
 
                 {/* Passport */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Passport Number</label>
                   <input
                     type='text'
@@ -150,24 +152,24 @@ taxIdenitificationNumber: z
                     className='inputMod'
                     {...register('passportNumber')}
                   />
-                  {errors.passportNumber && <span className='text-Error text-[1rem]'>{errors.passportNumber.message}</span>}
+                  {errors.passportNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.passportNumber.message}</span>}
                 </div>
 
                 {/* Contract File */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Contract File</label>
                   <label className='inputModfile cursor-pointer border-none'>
                     <img src='/image/Icon/File.png' alt='' />
                     <span className='text-limeLight'>Upload Contract File</span>
                     <input type='file' className='hidden' {...register('contractFile')} />
                   </label>
-                  {errors.contractFile && <span className='text-Error text-[1rem]'>{errors.contractFile.message}</span>}
+                  {errors.contractFile && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.contractFile.message}</span>}
                 </div>
               </div>
 
               <div className='w-[23.1875rem] flex flex-col gap-[35px]'>
                 {/* Currency */}
-                <div>
+                <div className='relative'>
                   <Controller
                     control={control}
                     name='currency'
@@ -181,11 +183,11 @@ taxIdenitificationNumber: z
                       />
                     )}
                   />
-                  {errors.currency && <span className='text-Error text-[1rem]'>{errors.currency.message}</span>}
+                  {errors.currency && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.currency.message}</span>}
                 </div>
 
                 {/* Bank Account */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Bank Account Number</label>
                   <input
                     type='text'
@@ -193,11 +195,11 @@ taxIdenitificationNumber: z
                     className='inputMod'
                     {...register('bankAccountNumber')}
                   />
-                  {errors.bankAccountNumber && <span className='text-Error text-[1rem]'>{errors.bankAccountNumber.message}</span>}
+                  {errors.bankAccountNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.bankAccountNumber.message}</span>}
                 </div>
 
                 {/* Benefits */}
-                <div>
+                <div className='relative'>
                   <Controller
                     control={control}
                     name='benefitsEnrollment'
@@ -211,21 +213,21 @@ taxIdenitificationNumber: z
                       />
                     )}
                   />
-                  {errors.benefitsEnrollment && <span className='text-Error text-[1rem]'>{errors.benefitsEnrollment.message}</span>}
+                  {errors.benefitsEnrollment && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.benefitsEnrollment.message}</span>}
                 </div>
 
                 {/* Resume */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                   <label className='text-formColor'>Resume</label>
                   <label className='inputModfile cursor-pointer border-none'>
                     <img src='/image/Icon/File.png' alt='' />
                     <span className='text-limeLight'>Upload CV</span>
                     <input type='file' className='hidden' {...register('resume')} />
                   </label>
-                  {errors.resume && <span className='text-Error text-[1rem]'>{errors.resume.message}</span>}
+                  {errors.resume && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.resume.message}</span>}
                 </div>
               </div>
-  </div>
+          </div>
               {/* Buttons */}
               <div className='w-full h-[3.4375rem] my-[4rem] px-[10px] flex gap-[2.5625rem]'>
                 <button

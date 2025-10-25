@@ -57,7 +57,7 @@ const AddDep = ({ onClose }) => {
         <div className='w-full flex gap-[1.125rem]'>
           <div className='flex flex-col gap-[2.375rem] w-full'>
             {/* Department Name */}
-            <div className='flex flex-col w-full gap-[1rem]'>
+            <div className='flex flex-col w-full gap-[1rem] relative'>
               <label className='textFormColor1'>Department Name</label>
               <input
                 type='text'
@@ -66,12 +66,12 @@ const AddDep = ({ onClose }) => {
                 {...register('departmentName')}
               />
               {errors.departmentName && (
-                <p className='text-Error text-[1rem]'>{errors.departmentName.message}</p>
+                <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.departmentName.message}</p>
               )}
             </div>
 
             {/* Department Head */}
-            <div className='flex flex-col w-full gap-[1rem]'>
+            <div className='flex flex-col w-full gap-[1rem] relative'>
               <label className='textFormColor1'>Department Head</label>
               <input
                 type='text'
@@ -80,12 +80,12 @@ const AddDep = ({ onClose }) => {
                 {...register('departmentHead')}
               />
               {errors.departmentHead && (
-                <p className='text-Error text-[1rem]'>{errors.departmentHead.message}</p>
+                <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.departmentHead.message}</p>
               )}
             </div>
 
             {/* Initial Employee Count */}
-            <div className='flex flex-col w-full gap-[1rem]'>
+            <div className='flex flex-col w-full gap-[1rem] relative'>
               <label className='textFormColor1'>Initial Employee Count</label>
               <input
                 type='text'
@@ -94,12 +94,12 @@ const AddDep = ({ onClose }) => {
                 {...register('initialEmployeeCount')}
               />
               {errors.initialEmployeeCount && (
-                <p className='text-Error text-[1rem]'>{errors.initialEmployeeCount.message}</p>
+                <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.initialEmployeeCount.message}</p>
               )}
             </div>
 
             {/* Department Description */}
-            <div className='flex flex-col gap-[1rem]'>
+            <div className='flex flex-col gap-[1rem] relative'>
               <label className='text-formColor'>Department Description</label>
               <textarea
                 placeholder='Enter department description ..'
@@ -107,7 +107,7 @@ const AddDep = ({ onClose }) => {
                 {...register('description')}
               />
               {errors.description && (
-                <p className='text-Error text-[1rem]'>{errors.description.message}</p>
+                <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.description.message}</p>
               )}
             </div>
           </div>

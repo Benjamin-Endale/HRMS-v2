@@ -79,7 +79,7 @@ export default function AddReview({ onClose }) {
       >
         {/* Dropdown */}
         <div className="flex justify-between w-full gap-[1.125rem]">
-          <div className="flex-1">
+          <div className="flex-1 relative">
             <Controller
               name="reviewType"
               control={control}
@@ -94,7 +94,7 @@ export default function AddReview({ onClose }) {
               )}
             />
             {errors.reviewType && (
-              <p className="text-Error text-[1rem]">{errors.reviewType.message}</p>
+              <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.reviewType.message}</p>
             )}
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function AddReview({ onClose }) {
             <div key={idx} className="flex flex-col gap-[1rem]">
               <div className="between">
                 <label className="text-formColor">{category}</label>
-                <div className="flex gap-[0.8125rem] items-center">
+                <div className="flex gap-[0.8125rem] items-center relative">
                   <span className="text-limegray">
                     {ratings[idx]?.toFixed(1)}/5.0
                   </span>
@@ -125,26 +125,28 @@ export default function AddReview({ onClose }) {
                 </div>
               </div>
               {errors.ratings?.[idx] && (
-                <p className="text-Error text-[1rem]">
+                <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
                   {errors.ratings[idx].message}
                 </p>
               )}
-              <textarea
+              <div className='relative'>
+                <textarea
                 placeholder={`Feedback for ${category}`}
                 className="text-formColor bg-inputBack rounded-[10px] placeholder-input pt-[0.59375rem] pl-[1.1875rem] resize-none h-[4.75rem]"
                 {...register(`feedbacks.${idx}`)}
               />
               {errors.feedbacks?.[idx] && (
-                <p className="text-Error text-[1rem]">
+                <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
                   {errors.feedbacks[idx].message}
                 </p>
               )}
+              </div>          
             </div>
           ))}
         </div>
 
         {/* Overall Feedback */}
-        <div className="flex flex-col gap-[1rem]">
+        <div className="flex flex-col gap-[1rem] relative">
           <div className="between">
             <label className="text-formColor">Overall Feedback</label>
             <div className="flex gap-[0.8125rem] items-center">
@@ -157,7 +159,7 @@ export default function AddReview({ onClose }) {
             {...register('overallFeedback')}
           />
           {errors.overallFeedback && (
-            <p className="text-Error text-[1rem]">
+            <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
               {errors.overallFeedback.message}
             </p>
           )}

@@ -66,23 +66,23 @@ export default function ApplyLeave({ onClose }) {
         <div className='flex  w-full gap-[1.125rem]'>
             <div className='w-[15.5625rem] space-y-[2.125rem]'>
                 {/* Starting Date  */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                     <label htmlFor="firstName" className='text-formColor'>Starting Date</label>
                     <input type="date"   className='inputMod pr-[1.5625rem]'
                     {...register("StartDate")}
                     />
                     {errors.StartDate && 
-                          <span className='text-Error text-[1rem]'>{errors.StartDate.message}</span>
+                          <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.StartDate.message}</span>
                     }
                 </div>
                 {/* Duration */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                     <label htmlFor="firstName" className='text-formColor'>Duration</label>
                     <input type="number" placeholder='Duration'  className='inputMod pr-[1.5625rem]'
                     {...register("Duration")}
                     />
                     {errors.Duration && 
-                    <span className='text-Error text-[1rem]'>
+                    <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                       {errors.Duration.message}
                     </span>
                     }
@@ -90,25 +90,24 @@ export default function ApplyLeave({ onClose }) {
             </div>
             <div className='w-[15.5625rem] space-y-[2.125rem]'>
                 {/* End DAte  */}
-                <div className='flex flex-col gap-[1rem]'>
+                <div className='flex flex-col gap-[1rem] relative'>
                     <label htmlFor="firstName" className='text-formColor'>Ending Date</label>
                     <input type="date"   className='inputMod pr-[1.5625rem]'
                     {...register("EndDate")}
                     />
-                     {errors.EndDate && 
-                    <span className='text-Error text-[1rem]'>
+                    {errors.EndDate && 
+                    <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                       {errors.EndDate.message}
                     </span>
                     }
                 </div>
-                <div>
+                <div className='relative'>
                   <Controller
                     name="LeaveType"
                     control={control}
                     render={({field}) => (
                       <Dropdown
-                    label="Leave Type"
-                   
+                    label="Leave Type"           
                     options={['Engineering', 'Marketing', 'Finance']}
                     selected={field.value}
                     onSelect={field.onChange}
@@ -117,7 +116,7 @@ export default function ApplyLeave({ onClose }) {
                     )}
                   /> 
                   {errors.LeaveType && (
-                    <span className='text-Error text-[1rem]'>
+                    <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>
                       {errors.LeaveType.message}
                     </span>
                   )
@@ -126,7 +125,7 @@ export default function ApplyLeave({ onClose }) {
             </div>
 
         </div>
-        <div className="flex flex-col gap-[1rem]">
+        <div className="flex flex-col gap-[1rem] relative">
           <label className="text-formColor">Reason</label>
           <textarea
             placeholder="Provide specific reason"
@@ -135,7 +134,7 @@ export default function ApplyLeave({ onClose }) {
           />
           {errors.Reason && 
           (
-            <span className='text-Error text-[1rem]'>
+            <span className='text-Error text-[1rem] absolute bottom-[-2rem] '>
               {errors.Reason.message}
             </span>
           )

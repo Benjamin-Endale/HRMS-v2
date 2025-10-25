@@ -10,8 +10,14 @@ import { useAdminForm } from '@/app/Store/AdminFormContext';
 
 
 const AddorgSchema = z.object({
+
   name: z.string().min(4, "Tenant is required"),
-  domain: z.string().min(4, "Domain is required"),
+ domain: z
+  .string()
+  .min(4, "Domain is required")
+  .refine((val) => val.trim().toLowerCase().endsWith(".com"), {
+    message: "Domain must end with .com",
+  }),
   industry: z.string().min(3, "Industry is required"),
   location: z.string().min(3, "Location is required"),
   description: z.string().min(10, "Description is required"),
@@ -147,7 +153,7 @@ const Page = () => {
                     <h4 className="text-limegray leading-none">Timezone and location settings</h4>
                   </div>
                   <div className='space-y-[3.5rem]'>
-                    <div>
+                    <div className='relative'>
                       <Controller
                         control={control}
                         name="country"
@@ -155,9 +161,9 @@ const Page = () => {
                           <Dropdown label="Country" options={['Ethiopia', 'USA']} selected={field.value} onSelect={field.onChange} placeholder="Select Country" />
                         )}
                       />
-                      {errors.country && <span className="text-Error text-[1rem]">{errors.country.message}</span>}
+                      {errors.country && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.country.message}</span>}
                     </div>
-                    <div>
+                    <div className='relative'>
                       <Controller
                         control={control}
                         name="timeZone"
@@ -165,7 +171,7 @@ const Page = () => {
                           <Dropdown label="Time Zone" options={['GMT', 'EAT']} selected={field.value} onSelect={field.onChange} placeholder="Select Time Zone" />
                         )}
                       />
-                      {errors.timeZone && <span className="text-Error text-[1rem]">{errors.timeZone.message}</span>}
+                      {errors.timeZone && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.timeZone.message}</span>}
                     </div>
                   </div>
                 </div>

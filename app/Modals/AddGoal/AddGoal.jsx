@@ -21,7 +21,7 @@ const goalSchema = z.object({
       },
       { message: 'Due Date must be today or later' }
     ),
-  title: z.string().min(3, 'Goal title must be at least 3 characters'),
+  title: z.string().nonempty('Goal title is required').min(3, 'Goal title must be at least 3 characters'),
   description: z.string().min(10, 'Description is required'),
 });
 
@@ -75,7 +75,7 @@ export default function AddGoal({ onClose }) {
         <div className="w-full flex gap-[1.125rem]">
           <div className="flex flex-col gap-[2.375rem] w-[15.5625rem]">
             {/* Employee */}
-            <div>
+            <div className='relative'>
               <Controller
                 name="employee"
                 control={control}
@@ -90,14 +90,14 @@ export default function AddGoal({ onClose }) {
                 )}
               />
               {errors.employee && (
-                <p className="text-Error text-[1rem]">
+                <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
                   {errors.employee.message}
                 </p>
               )}
             </div>
 
             {/* Priority */}
-            <div>
+            <div className='relative'>
               <Controller
                 name="priority"
                 control={control}
@@ -112,7 +112,7 @@ export default function AddGoal({ onClose }) {
                 )}
               />
               {errors.priority && (
-                <p className="text-Error text-[1rem]">
+                <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
                   {errors.priority.message}
                 </p>
               )}
@@ -121,7 +121,7 @@ export default function AddGoal({ onClose }) {
 
           <div className="w-[15.5625rem] flex flex-col gap-[2.375rem]">
             {/* Category */}
-            <div>
+            <div className='relative'>
               <Controller
                 name="category"
                 control={control}
@@ -136,14 +136,14 @@ export default function AddGoal({ onClose }) {
                 )}
               />
               {errors.category && (
-                <p className="text-Error text-[1rem]">
+                <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
                   {errors.category.message}
                 </p>
               )}
             </div>
 
             {/* Due Date */}
-            <div className="flex flex-col w-full gap-[1rem]">
+            <div className="flex flex-col w-full gap-[1rem] relative">
               <label className="textFormColor1">Due Date</label>
               <input
                 type="date"
@@ -151,7 +151,7 @@ export default function AddGoal({ onClose }) {
                 {...register('dueDate')}
               />
               {errors.dueDate && (
-                <p className="text-Error text-[1rem]">
+                <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
                   {errors.dueDate.message}
                 </p>
               )}
@@ -162,7 +162,7 @@ export default function AddGoal({ onClose }) {
         {/* Bottom section */}
         <div className="flex flex-col gap-[2.375rem]">
           {/* Goal Title */}
-          <div className="flex flex-col gap-[1rem]">
+          <div className="flex flex-col gap-[1rem] relative">
             <label className="text-formColor">Goal Title</label>
             <input
               type="text"
@@ -171,12 +171,12 @@ export default function AddGoal({ onClose }) {
               {...register('title')}
             />
             {errors.title && (
-              <p className="text-Error text-[1rem]">{errors.title.message}</p>
+              <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.title.message}</p>
             )}
           </div>
 
           {/* Description */}
-          <div className="flex flex-col gap-[1rem]">
+          <div className="flex flex-col gap-[1rem] relative">
             <label className="text-formColor">Description</label>
             <textarea
               placeholder="Detailed description of the goal and expected outcomes..."
@@ -184,7 +184,7 @@ export default function AddGoal({ onClose }) {
               {...register('description')}
             />
             {errors.description && (
-              <p className="text-Error text-[1rem]">
+              <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
                 {errors.description.message}
               </p>
             )}

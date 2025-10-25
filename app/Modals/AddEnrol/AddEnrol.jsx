@@ -60,7 +60,7 @@ export default function AddEnrol({ onClose }) {
         <div className='space-y-[2.0625rem]'>
           <div className='flex gap-[1.125rem]'>
             {/* Employee Dropdown */}
-            <div className='flex-1'>
+            <div className='flex-1 relative'>
               <Controller
                 name='employee'
                 control={control}
@@ -78,12 +78,12 @@ export default function AddEnrol({ onClose }) {
                 )}
               />
               {errors.employee && (
-                <p className='text-Error text-[1rem]'>{errors.employee.message}</p>
+                <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.employee.message}</p>
               )}
             </div>
 
             {/* Training Program Dropdown */}
-            <div className='flex-1'>
+            <div className='flex-1 relative'>
               <Controller
                 name='trainingProgram'
                 control={control}
@@ -101,24 +101,24 @@ export default function AddEnrol({ onClose }) {
                 )}
               />
               {errors.trainingProgram && (
-                <p className='text-Error text-[1rem]'>{errors.trainingProgram.message}</p>
+                <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.trainingProgram.message}</p>
               )}
             </div>
           </div>
 
           {/* Enrolment Note */}
-          <div className='flex flex-col gap-[1rem]'>
+          <div className='flex flex-col gap-[1rem] relative'>
             <label className='text-formColor'>Enrolment Note</label>
             <textarea
               placeholder='Provide specific instruction or focus area for the feedback'
               className='text-formColor bg-inputBack rounded-[10px] placeholder-input pt-[0.59375rem] pl-[1.1875rem] resize-none h-[5.5rem]'
               {...register('note')}
             />
-            {errors.note && <p className='text-Error text-[1rem]'>{errors.note.message}</p>}
+            {errors.note && <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.note.message}</p>}
           </div>
 
           {/* Checkboxes */}
-          <div className='flex flex-col gap-[0.5rem]'>
+          <div className='flex flex-col gap-[0.5rem] '>
             <label className='inline-flex items-center cursor-pointer'>
               <input
                 type='checkbox'

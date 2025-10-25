@@ -13,16 +13,19 @@ import { useRouter } from 'next/navigation';
 const AuthSchema = z
   .object({
     role: z.string().nonempty("Role is required"),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters long")
-      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .regex(/[a-z]/, "Password must contain at least one lowercase letter"),
-    confirmPassword: z
-      .string()
-      .min(8, "Confirm Password must be at least 8 characters long")
-      .regex(/[A-Z]/, "Confirm Password must contain at least one uppercase letter")
-      .regex(/[a-z]/, "Confirm Password must contain at least one lowercase letter"),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(/[@$!%*?&]/, "Password must contain at least one special character (@, $, !, %, *, ?, &)"),
+
+    confirmPassword: z.string()
+     .min(8, "Confirm Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Confirm Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Confirm Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Confirm Password must contain at least one number")
+    .regex(/[@$!%*?&]/, "Confirm Password must contain at least one special character (@, $, !, %, *, ?, &)"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -75,7 +78,7 @@ const AddAuth = ({ onClose , employee , token , tenantId }) => {
         
         await hrmsAPI.createUser(Payload,token);
       } catch (error) {
-        console.error("❌ Failed to authorize user:", error);
+        console.error(" Failed to authorize user:", error);
         alert("Failed to authorize user.");
       }
     };

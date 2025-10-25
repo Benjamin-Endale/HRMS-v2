@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 
 // Zod schema
 const addProgramMaterialSchema = z.object({
-  documentLink: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  documentLink: z.string().url('Must be a valid URL').or(z.literal('')),
   contractFile: z
     .any()
     .refine((file) => file && file.length > 0, 'Contract file is required'),
@@ -59,7 +59,7 @@ export default function AddProgramMaterial({ onClose }) {
           <div className="flex gap-[1.125rem]">
             <div className="flex-1">
               {/* Document / Video Link */}
-              <div className="flex flex-col w-full gap-[1rem]">
+              <div className="flex flex-col w-full gap-[1rem] relative">
                 <label className="textFormColor1">Document / Video Link</label>
                 <input
                   type="text"
@@ -68,14 +68,14 @@ export default function AddProgramMaterial({ onClose }) {
                   {...register('documentLink')}
                 />
                 {errors.documentLink && (
-                  <p className="text-Error text-[1rem]">{errors.documentLink.message}</p>
+                  <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.documentLink.message}</p>
                 )}
               </div>
             </div>
           </div>
 
           {/* Contract File */}
-          <div className="flex flex-col gap-[1rem]">
+          <div className="flex flex-col gap-[1rem] relative">
             <label htmlFor="contractFile" className="text-formColor">
               Contract File
             </label>
@@ -93,7 +93,7 @@ export default function AddProgramMaterial({ onClose }) {
             </label>
             <input type="file" id="contractFile" className="hidden" {...register('contractFile')} />
             {errors.contractFile && (
-              <p className="text-Error text-[1rem]">{errors.contractFile.message}</p>
+              <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.contractFile.message}</p>
             )}
           </div>
         </div>

@@ -95,13 +95,12 @@ export default function AddSchedule({ onClose }) {
       {/* Form */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-[2.375rem]"
-      >
+        className="flex flex-col gap-[2.375rem]">
         <div className="w-full flex gap-[1.125rem]">
           {/* Left side */}
           <div className="flex flex-col gap-[2.375rem] w-[15.5625rem]">
             {/* Candidate */}
-            <div className="flex flex-col w-full gap-[1rem]">
+            <div className="flex flex-col w-full gap-[1rem] relative">
               <label className="textFormColor1">Candidate</label>
               <input
                 type="text"
@@ -110,14 +109,15 @@ export default function AddSchedule({ onClose }) {
                 {...register('candidate')}
               />
               {errors.candidate && (
-                <p className="text-Error text-[1rem]">
+                <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
                   {errors.candidate.message}
                 </p>
               )}
             </div>
 
             {/* Interview Type */}
-            <Controller
+            <div className='relative'>
+              <Controller
               name="interviewType"
               control={control}
               render={({ field }) => (
@@ -138,13 +138,14 @@ export default function AddSchedule({ onClose }) {
               )}
             />
             {errors.interviewType && (
-              <p className="text-Error text-[1rem]">
+              <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
                 {errors.interviewType.message}
               </p>
             )}
+            </div>
 
             {/* Date */}
-            <div className="flex flex-col w-full gap-[1rem]">
+            <div className="flex flex-col w-full gap-[1rem] relative">
               <label className="textFormColor1">Date</label>
               <input
                 type="date"
@@ -152,13 +153,14 @@ export default function AddSchedule({ onClose }) {
                 {...register('date')}
               />
               {errors.date && (
-                <p className="text-Error text-[1rem]">{errors.date.message}</p>
+                <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.date.message}</p>
               )}
             </div>
           </div>
 
           {/* Right side */}
           <div className="w-[15.5625rem] flex flex-col gap-[2.375rem]">
+          <div className='relative'>
             {/* Interviewer */}
             <Controller
               name="interviewer"
@@ -177,12 +179,13 @@ export default function AddSchedule({ onClose }) {
               )}
             />
             {errors.interviewer && (
-              <p className="text-Error text-[1rem]">
+              <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
                 {errors.interviewer.message}
               </p>
             )}
-
+          </div>
             {/* Duration */}
+            <div className='relative'> 
             <Controller
               name="duration"
               control={control}
@@ -200,11 +203,11 @@ export default function AddSchedule({ onClose }) {
               )}
             />
             {errors.duration && (
-              <p className="text-Error text-[1rem]">{errors.duration.message}</p>
+              <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.duration.message}</p>
             )}
-
+            </div>          
             {/* Time */}
-            <div className="flex flex-col w-full gap-[1rem]">
+            <div className="flex flex-col w-full gap-[1rem] relative">
               <label className="textFormColor1">Time</label>
               <input
                 type="text"
@@ -213,7 +216,7 @@ export default function AddSchedule({ onClose }) {
                 {...register('time')}
               />
               {errors.time && (
-                <p className="text-Error text-[1rem]m">{errors.time.message}</p>
+                <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.time.message}</p>
               )}
             </div>
           </div>
@@ -222,7 +225,7 @@ export default function AddSchedule({ onClose }) {
         {/* Location / Note */}
         <div>
           <div className="flex flex-col gap-[2.375rem]">
-            <div className="flex flex-col gap-[1rem]">
+            <div className="flex flex-col gap-[1rem] relative">
               <label className="text-formColor">Location / Meeting Link</label>
               <textarea
                 placeholder="Conference Room or Zoom link"
@@ -230,15 +233,14 @@ export default function AddSchedule({ onClose }) {
                 {...register('location')}
               />
               {errors.location && (
-                <p className="text-Error text-[1rem]">
+                <p className="text-Error text-[1rem] absolute bottom-[-2rem]">
                   {errors.location.message}
                 </p>
               )}
             </div>
 
             {/* Interview Note */}
-            {/* Interview Note */}
-<div className="flex flex-col gap-[1rem]">
+<div className="flex flex-col gap-[1rem] relative">
   <label className="text-formColor">Interview Note</label>
   <textarea
     placeholder="Add any special instructions or notes"
@@ -246,7 +248,7 @@ export default function AddSchedule({ onClose }) {
     {...register('note')}
   />
   {errors.note && (
-    <p className="text-Error text-[1rem]">{errors.note.message}</p>
+    <p className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.note.message}</p>
   )}
 </div>
 

@@ -13,11 +13,10 @@ const schema = z.object({
   hireDate: z.string().nonempty("Joining Date is required"),
 });
 
-const Page = () => {
+  const Page = () => {
   const router = useRouter();
-const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
-  
-
+  const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
+    
   const {
     register,
     control,
@@ -37,7 +36,6 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
     console.log("Form Data", data);
     router.push('/Admin/EmployeeRegistration/Compensation');         
   };
-
   
   return (
     <div className='font-semibold flex flex-col gap-[4rem]'>
@@ -70,7 +68,7 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
             {/* Left Column */}
             <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
               {/* Job Title */}
-              <div className='flex flex-col gap-[1rem]'>
+              <div className='flex flex-col gap-[1rem] relative'>
                 <label className='text-formColor'>Job Title</label>
                 <input 
                   type="text" 
@@ -78,11 +76,11 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
                   className='inputMod' 
                   {...register("jobTitle")}
                 />
-                {errors.jobTitle && <span className="text-Error">{errors.jobTitle.message}</span>}
+                {errors.jobTitle && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.jobTitle.message}</span>}
               </div>
 
               {/* Employment Type */}
-              <div>
+              <div className='relative'>
                 <Controller
                   control={control}
                   name="employmentType"
@@ -96,19 +94,19 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
                     />
                   )}
                 />
-                {errors.employmentType && <span className="text-Error text-[1rem]">{errors.employmentType.message}</span>}
+                {errors.employmentType && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.employmentType.message}</span>}
               </div>
             </div>
             <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
               {/* Joining Date */}
-              <div className='flex flex-col gap-[1rem]'>
+              <div className='flex flex-col gap-[1rem] relative'>
                 <label className='text-formColor'>Joining Date</label>
                 <input 
                   type="date" 
                   className='inputMod pr-[1.5625rem]' 
                   {...register("hireDate")}
                 />
-                {errors.hireDate && <span className="text-Error text-[1rem]">{errors.hireDate.message}</span>}
+                {errors.hireDate && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.hireDate.message}</span>}
               </div>
             </div>
           </div>

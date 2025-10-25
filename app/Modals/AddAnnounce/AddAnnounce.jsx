@@ -51,7 +51,7 @@ export default function AddAnnounce({ onClose }) {
 
       <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-[2.375rem]'>
         {/* Destination */}
-        <div className='flex-1'>
+        <div className='flex-1 relative'>
           <Controller
             control={control}
             name='Destination'
@@ -65,11 +65,11 @@ export default function AddAnnounce({ onClose }) {
               />
             )}
           />
-          {errors.Destination && <span className='text-Error text-[1rem]'>{errors.Destination.message}</span>}
+          {errors.Destination && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Destination.message}</span>}
         </div>
 
         {/* Announcement Category */}
-        <div className='flex-1'>
+        <div className='flex-1 relative'>
           <Controller
             control={control}
             name='AnnouncementCategory'
@@ -83,11 +83,11 @@ export default function AddAnnounce({ onClose }) {
               />
             )}
           />
-          {errors.AnnouncementCategory && <span className='text-Error text-[1rem]'>{errors.AnnouncementCategory.message}</span>}
+          {errors.AnnouncementCategory && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.AnnouncementCategory.message}</span>}
         </div>
 
         {/* Title */}
-        <div className='flex flex-col w-full gap-[1rem]'>
+        <div className='flex flex-col w-full gap-[1rem] relative'>
           <label className='textFormColor1'>Title</label>
           <input
             type="text"
@@ -95,20 +95,19 @@ export default function AddAnnounce({ onClose }) {
             className='inputMod pr-[1.5625rem]'
             {...register("Title")}
           />
-          {errors.Title && <span className='text-Error text-[1rem]'>{errors.Title.message}</span>}
+          {errors.Title && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Title.message}</span>}
         </div>
 
         {/* Announcement */}
-        <div className='flex flex-col gap-[1rem]'>
+        <div className='flex flex-col gap-[1rem] relative'>
           <label className='textFormColor'>Announcement</label>
           <textarea
             placeholder='Detailed description of the Program and expected outcomes..'
             className='textFormColor bg-inputBack rounded-[10px] placeholder-input placeholder:text-[15px] pt-[0.59375rem] pl-[1.1875rem] resize-none h-[5.5rem]'
             {...register("Announcement")}
           />
-          {errors.Announcement && <span className='text-Error text-[1rem]'>{errors.Announcement.message}</span>}
+          {errors.Announcement && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.Announcement.message}</span>}
         </div>
-
         {/* Submit Button */}
         <div className='w-full h-[3.4375rem] mt-[0.5rem]'>
           <button type="submit" className='w-full h-full bg-lemongreen rounded-[10px] cursor-pointer'>

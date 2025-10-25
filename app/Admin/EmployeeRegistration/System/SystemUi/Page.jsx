@@ -139,7 +139,7 @@ const onSubmit = async (data) => {
             <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
 
               {/* Work Location */}
-              <div>
+              <div className='relative'>
                 <Controller
                   control={control}
                   name='workLocation'
@@ -153,25 +153,25 @@ const onSubmit = async (data) => {
                     />
                   )}
                 />
-                {errors.workLocation && <span className='text-Error text-[1rem]'>{errors.workLocation.message}</span>}
+                {errors.workLocation && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.workLocation.message}</span>}
               </div>
 
               {/* Certification */}
-              <div className='flex flex-col gap-[1rem]'>
+              <div className='flex flex-col gap-[1rem] relative'>
                 <label className='text-formColor'>Certification</label>
                 <label className='inputModfile cursor-pointer border-none'>
                    <img src='/image/Icon/File.png' alt='' />
                   <span className='text-limeLight'>Upload Certification</span>
                   <input type='file' className='hidden' {...register('certificationFile')} />
                 </label>
-                {errors.certificationFile && <span className='text-Error text-[1rem]'>{errors.certificationFile.message}</span>}
+                {errors.certificationFile && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.certificationFile.message}</span>}
               </div>
 
             </div>
 
             <div className='w-[23.1875rem] flex flex-col gap-[35px]'>
               {/* Shift */}
-              <div>
+              <div className='relative'>
                 <Controller
                   control={control}
                   name='shiftDetails'
@@ -185,7 +185,7 @@ const onSubmit = async (data) => {
                     />
                   )}
                 />
-                {errors.shiftDetails && <span className='text-Error text-[1rem]'>{errors.shiftDetails.message}</span>}
+                {errors.shiftDetails && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.shiftDetails.message}</span>}
               </div>
 
 

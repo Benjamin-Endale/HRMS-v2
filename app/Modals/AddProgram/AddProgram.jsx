@@ -78,8 +78,9 @@ export default function AddProgram({ onClose }) {
         <div className='space-y-[2.0625rem]'>
           <div className='flex gap-[1.125rem]'>
             {/* Left column */}
-            <div className='w-[15.5625rem] flex flex-col gap-[1.75rem]'>
-              {/* Program Title */}
+            <div className='w-[15.5625rem] flex flex-col gap-[1.75rem] '>
+              <div className='relative'>
+                 {/* Program Title */}
               <Controller
                 name='programTitle'
                 control={control}
@@ -96,8 +97,10 @@ export default function AddProgram({ onClose }) {
                   />
                 )}
               />
-              {errors.programTitle && <p className='text-Error text-[1rem]'>{errors.programTitle.message}</p>}
-
+              {errors.programTitle && <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.programTitle.message}</p>}
+              </div>
+             
+            <div className='relative'>
               {/* Level */}
               <Controller
                 name='level'
@@ -115,10 +118,12 @@ export default function AddProgram({ onClose }) {
                   />
                 )}
               />
-              {errors.level && <p className='text-Error text-[1rem]'>{errors.level.message}</p>}
+              {errors.level && <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.level.message}</p>}
+            </div>
+              
 
               {/* Instructor */}
-              <div className='flex flex-col w-full gap-[1rem]'>
+              <div className='flex flex-col w-full gap-[1rem] relative'>
                 <label className='textFormColor1'>Instructor</label>
                 <input
                   type='text'
@@ -126,25 +131,26 @@ export default function AddProgram({ onClose }) {
                   className='inputMod pr-[1.5625rem]'
                   {...register('instructor')}
                 />
-                {errors.instructor && <p className='text-Error text-[1rem]'>{errors.instructor.message}</p>}
+                {errors.instructor && <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.instructor.message}</p>}
               </div>
 
               {/* Start Date */}
-              <div className='flex flex-col w-full gap-[1rem]'>
+              <div className='flex flex-col w-full gap-[1rem] relative'>
                 <label className='textFormColor1'>Start Date</label>
                 <input
                   type='date'
                   className='inputMod pr-[1.5625rem]'
                   {...register('startDate')}
                 />
-                {errors.startDate && <p className='text-Error text-[1rem]'>{errors.startDate.message}</p>}
+                {errors.startDate && <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.startDate.message}</p>}
               </div>
             </div>
 
             {/* Right column */}
             <div className='w-[15.5625rem] flex flex-col gap-[1.75rem]'>
               {/* Category */}
-              <Controller
+              <div className='relative'>
+                <Controller
                 name='category'
                 control={control}
                 render={({ field }) => (
@@ -160,10 +166,10 @@ export default function AddProgram({ onClose }) {
                   />
                 )}
               />
-              {errors.category && <p className='text-Error text-[1rem]'>{errors.category.message}</p>}
-
+              {errors.category && <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.category.message}</p>}
+              </div>
               {/* Duration */}
-              <div className='flex flex-col w-full gap-[1rem]'>
+              <div className='flex flex-col w-full gap-[1rem] relative'>
                 <label className='textFormColor1'>Duration</label>
                 <input
                   type='text'
@@ -171,11 +177,11 @@ export default function AddProgram({ onClose }) {
                   className='inputMod pr-[1.5625rem]'
                   {...register('duration')}
                 />
-                {errors.duration && <p className='text-Error text-[1rem]'>{errors.duration.message}</p>}
+                {errors.duration && <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.duration.message}</p>}
               </div>
 
               {/* Max Enrollment */}
-              <div className='flex flex-col w-full gap-[1rem]'>
+              <div className='flex flex-col w-full gap-[1rem] relative'>
                 <label className='textFormColor1'>Max Enrollment</label>
                 <input
                   type='number'
@@ -183,31 +189,31 @@ export default function AddProgram({ onClose }) {
                   className='inputMod pr-[1.5625rem]'
                   {...register('maxEnrollment')}
                 />
-                {errors.maxEnrollment && <p className='text-Error text-[1rem]'>{errors.maxEnrollment.message}</p>}
+                {errors.maxEnrollment && <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.maxEnrollment.message}</p>}
               </div>
 
               {/* End Date */}
-              <div className='flex flex-col w-full gap-[1rem]'>
+              <div className='flex flex-col w-full gap-[1rem] relative'>
                 <label className='textFormColor1'>End Date</label>
                 <input
                   type='date'
                   className='inputMod pr-[1.5625rem]'
                   {...register('endDate')}
                 />
-                {errors.endDate && <p className='text-Error text-[1rem]'>{errors.endDate.message}</p>}
+                {errors.endDate && <p className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.endDate.message}</p>}
               </div>
             </div>
           </div>
 
           {/* Description */}
-          <div className='flex flex-col gap-[1rem]'>
+          <div className='flex flex-col gap-[1rem] relative'>
             <label className='text-formColor'>Description</label>
             <textarea
               placeholder='Detailed description of the Program and expected outcomes..'
               className='text-formColor bg-inputBack rounded-[10px] placeholder-input pt-[0.59375rem] pl-[1.1875rem] resize-none h-[5.5rem]'
               {...register('description')}
             />
-            {errors.description && <p className='text-Error text-[1rem]'>{errors.description.message}</p>}
+            {errors.description && <p className='text-Error text-[1rem] absolute bottom-[-2rem] '>{errors.description.message}</p>}
           </div>
         </div>
 

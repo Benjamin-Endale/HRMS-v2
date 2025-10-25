@@ -70,7 +70,7 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
             {/* Left Column */}
             <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
               {/* Job Title */}
-              <div className='flex flex-col gap-[1rem]'>
+              <div className='flex flex-col gap-[1rem] relative'>
                 <label className='text-formColor'>Job Title</label>
                 <input 
                   type="text" 
@@ -78,11 +78,11 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
                   className='inputMod' 
                   {...register("jobTitle")}
                 />
-                {errors.jobTitle && <span className="text-Error">{errors.jobTitle.message}</span>}
+                {errors.jobTitle && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.jobTitle.message}</span>}
               </div>
 
               {/* Employment Type */}
-              <div>
+              <div className='relative'>
                 <Controller
                   control={control}
                   name="employmentType"
@@ -96,10 +96,10 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
                     />
                   )}
                 />
-                {errors.employmentType && <span className="text-Error text-[1rem]">{errors.employmentType.message}</span>}
+                {errors.employmentType && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.employmentType.message}</span>}
               </div>
             </div>
-            <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
+            <div className='flex flex-col w-[23.1875rem] gap-[35px] relative'>
               {/* Joining Date */}
               <div className='flex flex-col gap-[1rem]'>
                 <label className='text-formColor'>Joining Date</label>
@@ -109,7 +109,7 @@ const {addEmployeeSecond, setAddEmployeeSecond} = useAdminForm();
                   className='inputMod pr-[1.5625rem]' 
                   {...register("hireDate")}
                 />
-                {errors.hireDate && <span className="text-Error text-[1rem]">{errors.hireDate.message}</span>}
+                {errors.hireDate && <span className="text-Error text-[1rem] absolute bottom-[-2rem]">{errors.hireDate.message}</span>}
               </div>
             </div>
           </div>

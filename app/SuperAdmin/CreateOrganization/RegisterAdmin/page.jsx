@@ -172,14 +172,12 @@ const Page = () => {
                                 {errors.email && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.email.message}</span>}
                             </div>
 
-                            {/* Emergency Contact */}
                              {/* Emergency Contanct */}
                                 <div className='flex flex-col gap-[1rem] mb-[4.5rem] relative'>
                                     <label className='text-formColor'>Emergency Contact Name</label>
                                     <input type="text" placeholder='Benjamin Endale' className='inputMod' {...register("emergencyContactName")} />
                                     {errors.emergencyContactName && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.emergencyContactName.message}</span>}
                                 </div>
-
                                 <div>
                                     <h1 className='textFormColor'>Employment Details</h1>
                                 </div>

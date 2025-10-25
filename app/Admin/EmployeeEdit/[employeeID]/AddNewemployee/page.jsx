@@ -113,21 +113,19 @@ const onSubmit = (data) => {
                           {/* Left Column */}
                           <div className='flex flex-col w-[23.1875rem] gap-[35px]'>
                             {/* First Name */}
-                            <div className='flex flex-col gap-[1rem]'>
+                            <div className='flex flex-col gap-[1rem] relative'>
                               <label className='text-formColor'>First Name</label>
                               <input type="text" placeholder='John' className='inputMod' {...register("firstName")} />
-                              {errors.firstName && <span className='text-Error text-[1rem]'>{errors.firstName.message}</span>}
+                              {errors.firstName && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.firstName.message}</span>}
                             </div>
-
                             {/* Date of Birth */}
-                            <div className='flex flex-col gap-[1rem] '>
+                            <div className='flex flex-col gap-[1rem] relative '>
                               <label className='text-formColor'>Date Of Birth</label>
                               <input type="date" className='inputMod pr-[1.5625rem]' {...register("dateOfBirth")} />
-                              {errors.dateOfBirth && <span className='text-Error text-[1rem]'>{errors.dateOfBirth.message}</span>}
+                              {errors.dateOfBirth && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.dateOfBirth.message}</span>}
                             </div>
-
                             {/* Nationality */}
-                            <div>
+                            <div className='relative'>
                               <Controller
                                 control={control}
                                 name="nationality"
@@ -141,14 +139,14 @@ const onSubmit = (data) => {
                                   />
                                 )}
                               />
-                              {errors.nationality && <span className='text-Error text-[1rem]'>{errors.nationality.message}</span>}
+                              {errors.nationality && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.nationality.message}</span>}
                             </div>
 
                             {/* Email */}
-                            <div className='flex flex-col gap-[1rem]'>
+                            <div className='flex flex-col gap-[1rem] relative'>
                               <label className='text-formColor'>Email</label>
                               <input type="email" placeholder='example@gmail.com' className='inputMod' {...register("email")} />
-                              {errors.email && <span className='text-Error text-[1rem]'>{errors.email.message}</span>}
+                              {errors.email && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.email.message}</span>}
                             </div>
 
                             {/* EmergencyContactName */}
@@ -183,14 +181,14 @@ const onSubmit = (data) => {
                           {/* Right Column */}
                           <div className='w-[23.1875rem] flex flex-col gap-[35px]'>
                             {/* Last Name */}
-                            <div className='flex flex-col gap-[1rem]'>
+                            <div className='flex flex-col gap-[1rem] relative'>
                               <label className='text-formColor'>Last Name</label>
                               <input type="text" placeholder='Doe' className='inputMod' {...register("lastName")} />
-                              {errors.lastName && <span className='text-Error text-[1rem]'>{errors.lastName.message}</span>}
+                              {errors.lastName && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.lastName.message}</span>}
                             </div>
 
                             {/* Gender */}
-                            <div>
+                            <div className='relative'>
                               <Controller
                                 control={control}
                                 name="gender"
@@ -204,11 +202,11 @@ const onSubmit = (data) => {
                                   />
                                 )}
                               />
-                              {errors.gender && <span className='text-Error text-[1rem]'>{errors.gender.message}</span>}
+                              {errors.gender && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.gender.message}</span>}
                             </div>
 
                             {/* Marital Status */}
-                            <div>
+                            <div className='relative'>
                               <Controller
                                 control={control}
                                 name="maritalStatus"
@@ -222,26 +220,26 @@ const onSubmit = (data) => {
                                   />
                                 )}
                               />
-                              {errors.maritalStatus && <span className='text-Error text-[1rem]'>{errors.maritalStatus.message}</span>}
+                              {errors.maritalStatus && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.maritalStatus.message}</span>}
                             </div>
 
                             {/* Phone */}
-                            <div className='flex flex-col gap-[1rem]'>
+                            <div className='flex flex-col gap-[1rem] relative'>
                               <label className='text-formColor'>Phone Number</label>
                               <input type="text" placeholder='+251987654321' className='inputMod' {...register("phoneNumber")} />
-                              {errors.phoneNumber && <span className='text-Error text-[1rem]'>{errors.phoneNumber.message}</span>}
+                              {errors.phoneNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.phoneNumber.message}</span>}
                             </div>
 
                             {/* Emergency Contact */}
-                            <div className='flex flex-col gap-[1rem]'>
+                            <div className='flex flex-col gap-[1rem] relative'>
                               <label className='text-formColor'>Emergency Contact</label>
                               <input type="text" placeholder='+251987654321' className='inputMod' {...register("emergencyContactNumber")} />
-                              {errors.emergencyContactNumber && <span className='text-Error'>{errors.emergencyContactNumber.message}</span>}
+                              {errors.emergencyContactNumber && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.emergencyContactNumber.message}</span>}
                             </div>
-                            <div className='flex flex-col gap-[1rem]'>
+                            <div className='flex flex-col gap-[1rem] relative '>
                               <label className='text-formColor'>Address</label>
                               <input type="text" placeholder='Bole, Addis Ababa' className='inputMod' {...register("address")} />
-                              {errors.address && <span className='text-Error text-[1rem]'>{errors.address.message}</span>}
+                              {errors.address && <span className='text-Error text-[1rem] absolute bottom-[-2rem]'>{errors.address.message}</span>}
                             </div>
                           </div>
 
