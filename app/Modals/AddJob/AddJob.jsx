@@ -6,6 +6,8 @@ import { Dropdown } from '@/app/Components/DropDown';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { hrmsAPI } from "@/app/lib/api/client";
+
 
 const jobSchema = z.object({
   jobTitle: z.string().min(3, 'Job Title is required'),
@@ -32,7 +34,7 @@ const jobSchema = z.object({
   requirement: z.string().min(5, 'Requirement is required'),
 });
 
-export default function AddJob({ onClose }) {
+export default function AddJob({ onClose , tenantId, token  }) {
   const router = useRouter();
 
   const {
@@ -55,9 +57,30 @@ export default function AddJob({ onClose }) {
     mode: 'onChange', // 👈 live validation
   });
 
-  const onSubmit = (data) => {
-    console.log('✅ Submitted data:', data);
-    router.push('/');
+  const onSubmit = async (data) => {
+    try {
+
+      const job = {
+        ...data,
+        TenantId: tenantId,
+        DepartmentName:data.department,
+        JobDescription:data.description,
+        applicationDeadline:data.deadline
+      };
+
+
+
+      // ✅ API call
+      const JobData = await hrmsAPI.createJob(job,token);
+      console.log("✅ Department saved:", JobData);
+
+
+      router.refresh();
+      onClose();
+    } catch (err) {
+      console.error("❌ Error saving Department:", err.message || err);
+    } finally {
+    }
   };
 
   return (

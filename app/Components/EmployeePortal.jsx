@@ -52,11 +52,11 @@ const EmployeePortal = ({ readPath }) => {
                     </div>
                     {/* Leave Management */}
                    <div className='flex items-center' >
-                        <div className={`${readPath === 'EmployeePortal/LeaveRequest/Approved' || readPath === 'EmployeePortal/LeaveRequest/Pending' || readPath === 'EmployeePortal/LeaveRequest/Rejected' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
+                        <div className={`${   readPath === 'EmployeePortal/LeaveRequest' || readPath === 'EmployeePortal/LeaveRequest/Approved'  || readPath === 'EmployeePortal/LeaveRequest/Pending' || readPath === 'EmployeePortal/LeaveRequest/Rejected' ? 'flex' : 'hidden'} absolute  left-0   navBarhover `}></div>
                         <div className='navLinkconfig'>
                             <LeaveManegment readPath={readPath}/>
                             <div>
-                                <Link href="/EmployeePortal/LeaveRequest/Approved"><h4 className={`${readPath === 'EmployeePortal/LeaveRequest/Approved' || readPath === 'EmployeePortal/LeaveRequest/Pending' || readPath === 'EmployeePortal/LeaveRequest/Rejected' ? 'text-white' : 'text-limegray'} ` }>Leave Request</h4></Link>
+                                <Link href="/EmployeePortal/LeaveRequest/"><h4 className={`${readPath === 'EmployeePortal/LeaveRequest/Approved' || readPath === 'EmployeePortal/LeaveRequest' || readPath === 'EmployeePortal/LeaveRequest/Pending' || readPath === 'EmployeePortal/LeaveRequest/Rejected' ? 'text-white' : 'text-limegray'} ` }>Leave Request</h4></Link>
                             </div>
                         </div>
                     </div>

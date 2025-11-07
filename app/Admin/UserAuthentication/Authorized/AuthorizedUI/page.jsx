@@ -82,15 +82,20 @@ const page = ({users: initialUsers, token}) => {
                                 try {
                                 if (!selectedUser) return;
                                 await hrmsAPI.deleteUser(selectedUser.id,token);
-                                setUsers(users.filter((u) => u.id !== selectedUser.id)); // remove user from UI
+                                setUsers(users.filter((u) => u.id !== selectedUser.id));  
                                 setisOpen(false);
+                                window.location.reload()
                                 } catch (error) {
                                 console.error('❌ Failed to delete user:', error);
                                 alert('Failed to revoke user.');
+                                  
                                 }
                             }}
+                            
                             />
+                            
                         </ModalContainerRevoke>
+                        
                     </td>
                   </tr>
                 ))}

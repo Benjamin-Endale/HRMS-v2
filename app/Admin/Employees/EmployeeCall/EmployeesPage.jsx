@@ -93,7 +93,7 @@ const EmployeesPage = ({ employees }) => {
                   </td>
                   <td className='pt-[2.25rem]'>{emp.firstName} {emp.lastName}</td>
                   <td className='pt-[2.25rem]'>{emp.department || "--"}</td>
-                  <td className='pt-[2.25rem]'>{emp.position || "--"}</td>
+                  <td className='pt-[2.25rem]'>{emp.jobTitle || "--"}</td>
                   <td className='flex items-center gap-[2.5625rem] pt-[2.25rem]'>
                     <button className='cursor-pointer' onClick={() => router.push(`/Admin/EmployeeView/${emp.employeeID}`)}>
                       <img src="/image/Icon/Action/eye.png" alt="" />

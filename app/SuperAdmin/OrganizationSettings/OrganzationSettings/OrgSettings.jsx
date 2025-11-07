@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Dropdown } from '@/app/Components/DropDown'
 import { useRouter } from 'next/navigation'
 import { z } from 'zod'
@@ -11,7 +11,6 @@ import { hrmsAPI } from '@/app/lib/api/client'
 
 import Successful from '@/app/Modals/Successfully/Successful'
 import ModalContainerSuccessful from '@/app/Modals/Successfully/ModalContainerSuccessful'
-
 
 const orgSettingSchema = z.object({
   sSOProvider: z.string().optional(),
@@ -35,50 +34,58 @@ const orgSettingSchema = z.object({
   }
 })
 
+// Default values for when there are no permanent settings
+const defaultSettings = {
+  sSOProvider: '',
+  sessionTimerOut: 60,
+  backupFrequency: 'Daily',
+  dataRetentionYears: 5,
+  defaultExportFormat: 'CSV',
+  enableSSO: false,
+  requireTwoFactorAuth: true,
+  dataEncryptionAtRest: false,
+  emailNotifications: false,
+  pushNotifications: false,
+  criticalAlertsOnly: false,
+}
 
-const OrgSettings = ({permSettings}) => {
+const OrgSettings = ({ permSettings }) => {
   const router = useRouter()
-
-  // Remove local state for Dropdowns (react-hook-form will track)
   const [edit, setEdit] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
-  const { register, handleSubmit, control, setValue, watch,reset, formState: { errors } } = useForm({
+  // Safe settings - use provided permSettings or fall back to defaults
+  const safeSettings = permSettings && Object.keys(permSettings).length > 0 ? permSettings : defaultSettings
+
+  const { register, handleSubmit, control, setValue, watch, reset, formState: { errors } } = useForm({
     resolver: zodResolver(orgSettingSchema),
-    defaultValues: {
-      sSOProvider: permSettings.ssoProvider || '',
-      sessionTimerOut: permSettings.sessionTimeout || 60,
-      backupFrequency: permSettings.backupFrequency || '',
-      dataRetentionYears: permSettings.dataRetentionYears || 5,
-      defaultExportFormat: permSettings.defaultExportFormat || '',
-      enableSSO: permSettings.enableSSO || false,
-      requireTwoFactorAuth: permSettings.requireTwoFactorAuth || true,
-      dataEncryptionAtRest: permSettings.dataEncryptionAtRest || false,
-      emailNotifications: permSettings.emailNotifications || false,
-      pushNotifications: permSettings.pushNotifications || false,
-      criticalAlertsOnly: permSettings.criticalAlertsOnly || false,
-    },
+    defaultValues: safeSettings
   })
 
-  console.log(errors)
+  // Reset form when safeSettings changes
+  useEffect(() => {
+    reset(safeSettings)
+  }, [safeSettings, reset])
 
-  const onSubmit =  async (data) => {
-    try{
-        if (!data.enableSSO) {
-          data.sSOProvider = null
-        }
-        console.log("✅ Submitted Data:", data)
-        const pascalSettings = toPascal(data);
-        console.log("✅ Submitted Data Pascal:", pascalSettings)
+  console.log("Current form errors:", errors)
 
-        const settings = await hrmsAPI.createPermanentSettings(pascalSettings);
-        reset(data)
-        setEdit(false);
-        setIsOpen(true);
-      } catch (err) {
-        console.error('Submission Error:', err);
-        alert('Error: ' + (err.message || JSON.stringify(err)));
-      } 
+  const onSubmit = async (data) => {
+    try {
+      if (!data.enableSSO) {
+        data.sSOProvider = null
+      }
+      console.log("✅ Submitted Data:", data)
+      const pascalSettings = toPascal(data);
+      console.log("✅ Submitted Data Pascal:", pascalSettings)
+
+      const settings = await hrmsAPI.createPermanentSettings(pascalSettings);
+      reset(data)
+      setEdit(false);
+      setIsOpen(true);
+    } catch (err) {
+      console.error('Submission Error:', err);
+      alert('Error: ' + (err.message || JSON.stringify(err)));
+    }
   }
 
   // Watch toggles
@@ -113,7 +120,7 @@ const OrgSettings = ({permSettings}) => {
                   <h1 className="text-formColor">Enable Single Sign-On (SSO)</h1>
                   <h4 className="text-limegray">Allow users to login with SSO providers</h4>
                 </div>
-                <div onClick={() => edit && setValue("enableSSO", !enableSSO)} className={`${enableSSO ? ' bg-lemongreen' : ' bg-limegray'} ${!edit ? "bg-lemongreen opacity-50 pointer-events-none select-none": ''} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
+                <div onClick={() => edit && setValue("enableSSO", !enableSSO)} className={`${enableSSO ? ' bg-lemongreen' : ' bg-limegray'} ${!edit ? "bg-lemongreen opacity-50 pointer-events-none select-none": ''} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px] cursor-pointer`}>
                   <div className={`${enableSSO ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
                 </div>
               </div>
@@ -127,8 +134,8 @@ const OrgSettings = ({permSettings}) => {
                     <Dropdown
                       label="SSO Provider"
                       options={["Google Workspace", "Okta", "OneLogin", "Microsoft", "Entra ID", "Auth0", "JumpCloud"]}
-                      selected={field.value} // bind directly to react-hook-form
-                      onSelect={field.onChange} // update form state
+                      selected={field.value}
+                      onSelect={field.onChange}
                       placeholder="Google Workshop"
                     />
                   )}
@@ -157,7 +164,7 @@ const OrgSettings = ({permSettings}) => {
                           <h1 className="text-formColor">Email Notifications</h1>
                           <h4 className="text-limegray">Send system alerts and updates via email.</h4>
                         </div>
-                        <div onClick={() => edit && setValue("emailNotifications", !emailNotifications)} className={`${emailNotifications ? ' bg-lemongreen' : ' bg-limegray'} ${!edit ? "bg-lemongreen opacity-50 pointer-events-none select-none": ''} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
+                        <div onClick={() => edit && setValue("emailNotifications", !emailNotifications)} className={`${emailNotifications ? ' bg-lemongreen' : ' bg-limegray'} ${!edit ? "bg-lemongreen opacity-50 pointer-events-none select-none": ''} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px] cursor-pointer`}>
                           <div className={`${emailNotifications ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
                         </div>
                       </div>
@@ -166,7 +173,7 @@ const OrgSettings = ({permSettings}) => {
                           <h1 className="text-formColor">Push Notifications</h1>
                           <h4 className="text-limegray">Enable in-app push notifications for real-time updates.</h4>
                         </div>
-                        <div onClick={() => edit && setValue("pushNotifications", !pushNotifications)} className={`${pushNotifications ? ' bg-lemongreen' : ' bg-limegray'} ${!edit ? "bg-lemongreen opacity-50 pointer-events-none select-none": ''} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
+                        <div onClick={() => edit && setValue("pushNotifications", !pushNotifications)} className={`${pushNotifications ? ' bg-lemongreen' : ' bg-limegray'} ${!edit ? "bg-lemongreen opacity-50 pointer-events-none select-none": ''} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px] cursor-pointer`}>
                           <div className={`${pushNotifications ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
                         </div>
                       </div>
@@ -176,7 +183,7 @@ const OrgSettings = ({permSettings}) => {
                           <h1 className="text-formColor">Critical Alerts Only</h1>
                           <h4 className="text-limegray">Only send notifications for high-priority system events.</h4>
                         </div>
-                        <div onClick={() => edit && setValue("criticalAlertsOnly", !criticalAlertsOnly)} className={`${criticalAlertsOnly ? ' bg-lemongreen' : ' bg-limegray'} ${!edit ? "bg-lemongreen opacity-50 pointer-events-none select-none": ''} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
+                        <div onClick={() => edit && setValue("criticalAlertsOnly", !criticalAlertsOnly)} className={`${criticalAlertsOnly ? ' bg-lemongreen' : ' bg-limegray'} ${!edit ? "bg-lemongreen opacity-50 pointer-events-none select-none": ''} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px] cursor-pointer`}>
                           <div className={`${criticalAlertsOnly ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
                         </div>
                       </div>
@@ -189,7 +196,7 @@ const OrgSettings = ({permSettings}) => {
                         <button
                           type="button"
                           onClick={() => {
-                            reset(permSettings)
+                            reset(safeSettings)
                             setEdit(true)
                           }}
                           className='w-[19.875rem] border border-formColor textFormColor1 rounded-[10px] cursor-pointer'
@@ -202,19 +209,6 @@ const OrgSettings = ({permSettings}) => {
                         >
                           Save Changes
                         </button>
-                        {isOpen && (
-                          <ModalContainerSuccessful open={isOpen}>
-                            <Successful
-                              Header="Successfully Created"
-                              Parag="Settings Successfully Added"
-                              onNavigate={() => {
-                                setIsOpen(false);
-                              }}
-                              confirmation="Okay"
-
-                            />
-                          </ModalContainerSuccessful>
-                        )}
                       </div>
                     ) : (
                       <div className='w-full h-[3.4375rem]'>
@@ -227,19 +221,6 @@ const OrgSettings = ({permSettings}) => {
                         </button>
                       </div>
                     )}
-                        {isOpen && (
-                          <ModalContainerSuccessful open={isOpen}>
-                            <Successful
-                              Header="Successfully Created"
-                              Parag="Settings Successfully Added"
-                              onNavigate={() => {
-                                setIsOpen(false);
-                              }}
-                              confirmation="Okay"
-
-                            />
-                          </ModalContainerSuccessful>
-                        )}
                   </div>
                 </div>
               </div>
@@ -353,13 +334,27 @@ const OrgSettings = ({permSettings}) => {
                   Ensure all stored data is encrypted for maximum security.
                 </h4>
               </div>
-              <div onClick={() => edit && setValue("dataEncryptionAtRest", !dataEncryptionAtRest)} className={`${dataEncryptionAtRest ? ' bg-lemongreen' : ' bg-limegray'} ${!edit ? "bg-lemongreen opacity-50 pointer-events-none select-none": ''} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px]`}>
+              <div onClick={() => edit && setValue("dataEncryptionAtRest", !dataEncryptionAtRest)} className={`${dataEncryptionAtRest ? ' bg-lemongreen' : ' bg-limegray'} ${!edit ? "bg-lemongreen opacity-50 pointer-events-none select-none": ''} w-[4.0625rem] h-[2.1875rem] rounded-full border relative flex items-center py-[3px] cursor-pointer`}>
                 <div className={`${dataEncryptionAtRest ? 'translate-x-full' : 'translate-x-0 '} mx-[4px] absolute w-[1.8125rem] h-[1.8125rem] bg-white rounded-full transition-transform ease-in-out duration-300`}></div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Success Modal */}
+      {isOpen && (
+        <ModalContainerSuccessful open={isOpen}>
+          <Successful
+            Header="Successfully Created"
+            Parag="Settings Successfully Added"
+            onNavigate={() => {
+              setIsOpen(false);
+            }}
+            confirmation="Okay"
+          />
+        </ModalContainerSuccessful>
+      )}
     </form>
   )
 }

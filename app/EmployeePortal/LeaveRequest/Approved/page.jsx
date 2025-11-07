@@ -1,10 +1,18 @@
-import EmployeePortalSubNav from '@/app/EmployeePortalSubNav'
 import React from 'react'
+import EmployeePortalSubNav from '@/app/EmployeePortalSubNav'
+import { tr } from 'zod/v4/locales';
 
-const page = () => {
+const page = ({tenantId, leaveType,userId,token ,leaves}) => {
+ const handleState = (status) => {
+  switch (status) {
+    case 'Approved': return "text-lemongreen"
+    case "Pending": return "text-yellowCust";  
+    default: return "text-Error"; // Default case
+  }
+};
   return (
     <>
-    <EmployeePortalSubNav readPath= '/EmployeePortal/LeaveRequest/Approved'/>
+    <EmployeePortalSubNav leaves={leaves} leaveType={leaveType} userId={userId} tenantId={tenantId} token={token} readPath= '/EmployeePortal/LeaveRequest/Pending'/>
     <div className='mt-[4.5625rem] font-semibold'>
       <table>
         <thead className='text-formColor tableBordercolor'>
@@ -17,28 +25,23 @@ const page = () => {
           </tr>
         </thead>
         <tbody>
-          <tr className='text-limegray'>
-            <td className='pt-[2.3125rem]'>Annual Leave</td>
-            <td className='pt-[2.3125rem]'>5 days</td>
-            <td className='pt-[2.3125rem]'>02-43-2025</td>
-            <td className='pt-[2.3125rem]'>I am writing to respectfully request permission to be absent....</td>
-            <td className='pt-[2.3125rem]'>
-              <div>
-                  <span className='bg-[rgba(190,229,50,0.05)] text-sm px-[20px] py-[8px] rounded-full text-lemongreen'>Approved</span>
-              </div>
-            </td>
-          </tr>
-          <tr className='text-limegray'>
-            <td className='pt-[2.3125rem]'>Annual Leave</td>
-            <td className='pt-[2.3125rem]'>5 days</td>
-            <td className='pt-[2.3125rem]'>02-43-2025</td>
-            <td className='pt-[2.3125rem]'>I am writing to respectfully request permission to be absent....</td>
-            <td className='pt-[2.3125rem]'>
-              <div>
-                  <span className='bg-[rgba(190,229,50,0.05)] text-sm px-[20px] py-[8px] rounded-full text-lemongreen'>Approved</span>
-              </div>
-            </td>
-          </tr>
+          {leaves.leavesByStatus?.Approved ? (leaves.leavesByStatus.Approved.map((lvl) => (
+            <tr key={lvl.leaveId} className='text-limegray'>
+              <td className='pt-[2.3125rem]'> {lvl.leaveType}</td>
+              <td className='pt-[2.3125rem]'>{lvl.duration}</td>
+              <td className='pt-[2.3125rem]'>{lvl.date ? new Date(lvl.date).toLocaleDateString('en-GB').replace(/\//g,'-') : '--'}</td>
+              <td className='pt-[2.3125rem]'>{lvl.reason}</td>
+                <td className='pt-[2.3125rem]'>
+                  <span className={`bg-[rgba(190,229,50,0.05)] px-[20px] py-[8px] rounded-full ${handleState(lvl.status)}`}>
+                    {lvl.status || 'Unknown'}
+                  </span>
+                </td>
+            </tr>
+          ))) : (
+            <tr className=''>
+              <td colSpan='5' className=  'pt-[2.3125rem] text-limegray text-center '>No Leaves</td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

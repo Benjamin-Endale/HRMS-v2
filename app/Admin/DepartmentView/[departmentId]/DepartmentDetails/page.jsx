@@ -1,24 +1,34 @@
 'use client'
+import ModalContainerSub from '@/app/Modals/AddSub/ModalContainerSup'
+import AddSub from '@/app/Modals/AddSub/AddSup'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React , {useState} from 'react'
 // import { useSearchFilter } from '@/app/Components/useSearchFilter';
+import { useSearchFilter } from '@/app/Components/useSearchFilter';
 
-
-const page = () => {
+const page = ({dep}) => {
     const router = useRouter()
+    const [isOpen,setIsOpen] = useState(false)
 //   const { searchTerm, setSearchTerm, filteredItems } = useSearchFilter(employees, [
 //     "firstName",
 //     "lastName",
 //     "employeeCode",
 //     "email"
 //   ],[(employees) => `${employees.firstName} ${employees.lastName}`]);
+
+
+  const { searchTerm, setSearchTerm, filteredItems: filteredUsers } = useSearchFilter(dep.employees, [
+    "firstName",
+    "lastName",
+    "employeeCode",
+  ],[(dep) => `${dep.employees.firstName} ${dep.employees.lastName}`]);
   return (
-    <div className='font-semibold'>
+    <div className='font-semibold '>
         <div className=' flex flex-col gap-[3.3125rem]'>
             <div className='between'>
                 <div className='flex items-center gap-[0.9375rem]'>
                     <img onClick={() => router.back()} className='cursor-pointer' src="/image/Icon/ArrowLeft.png" alt="Back" />
-                    <h1 className='textWhite'>Employees Details</h1>
+                    <h1 className='textWhite'>{dep.departmentName} Department</h1>
                 </div>
                 <div className='flex gap-[1.5rem]'>
                     <button type="button" className='cursor-pointer'>
@@ -28,7 +38,7 @@ const page = () => {
                         </div>
                     </button>
                     <button type="button" className='cursor-pointer'>
-                        <div className='center-center w-[12.75rem] h-[3.125rem] rounded-[0.625rem] border border-limegray gap-[0.625rem] bg-inherit'>
+                        <div className='center-center w-[12.75rem] h-[3.125rem] rounded-[0.625rem] border border-limegray gap-[0.625rem] bg-inherit' onClick={()=>router.push("/Admin/AssignDepartment/Uncategorized")}>
                         <img src="/image/AddCircle.png" alt="" />
                         <span className='text-formColor'>Existing Department</span>
                         </div>
@@ -43,7 +53,7 @@ const page = () => {
 
             </div>
             {/* InformationContainers */}
-            <div className='flex gap-[1.25rem]'>
+            <div className='flex gap-[1.25rem] justify-between'>
                 <div className='carDash2'>
                     <div className='h-full between flex-col'>
                     <div className='flex justify-between'>
@@ -52,8 +62,8 @@ const page = () => {
                         </div>
                     </div>
                     <div className='flex flex-col'>
-                        <span className='text-5xl text-formColor'>12</span>
-                        <span className='text-formColor'>Active Jobs</span>
+                        <span className='text-5xl text-formColor'>{dep.totalEmployees}</span>
+                        <span className='text-formColor'>Total Employee</span>
                     </div>
                     </div>
                 </div>
@@ -65,8 +75,8 @@ const page = () => {
                         </div>
                     </div>
                     <div className='flex flex-col'>
-                        <span className='text-5xl text-formColor'>234</span>
-                        <span className='text-formColor'>Total Applications</span>
+                        <span className='text-5xl text-formColor'>{dep.newHires}</span>
+                        <span className='text-formColor'>New hires this month</span>
                     </div>
                     </div>
                 </div>
@@ -78,8 +88,8 @@ const page = () => {
                             </div>
                         </div>
                         <div className='flex flex-col'>
-                            <span className='text-5xl text-formColor'>8</span>
-                            <span className='text-formColor'>Interviews Today</span>
+                            <span className='text-5xl text-formColor'>{dep.goalStatistics}%</span>
+                            <span className='text-formColor'>Goal Achieved</span>
                         </div>
                     </div>
                 </div>
@@ -89,22 +99,22 @@ const page = () => {
               <h1 className='textFormColor'>Department Employees</h1>
             </div>
             <div className='flex gap-[1.5625rem]'>
-                <button type="button" className='cursor-pointer'>
+                <button type="button" className='cursor-pointer' onClick={()=>router.push('/Admin/DepartmentView/SubDepartmentView')}>
                     <div className='center-center w-[12.75rem] h-[3.125rem] rounded-[0.625rem] border border-limegray gap-[0.625rem] bg-inherit'>
                     <img src="/image/Icon/Action/eye.png" alt="" />
                     <span className='text-formColor '>Sub Departments</span>
                     </div>
                 </button>
-                <button type="button" className='cursor-pointer'>
+                <button type="button" className='cursor-pointer' onClick={()=>setIsOpen(true)}>
                     <div className='center-center w-[15.125rem] h-[3.125rem] rounded-[0.625rem] gap-[0.625rem] bg-lemongreen'>
                     <img src="/svg/Svgimage/PlusSign.svg" alt="" />
                     <span className='text-black'>Add Sub Department</span>
                     </div>
                 </button>
               {/* Modal */}
-                {/* <ModalContainerJob  open={isOpen}>
-                  <AddJob onClose={() => setisOpen(false)} />
-                </ModalContainerJob> */}
+                <ModalContainerSub  open={isOpen}>
+                  <AddSub onClose={() => setIsOpen(false)} />
+                </ModalContainerSub>
             </div>
           </div>
             {/* SearchArea */}
@@ -137,7 +147,9 @@ const page = () => {
                 </tr>
             </thead>
             <tbody className=''>
-                <tr>
+            {filteredUsers && filteredUsers.length > 0 ? (
+              filteredUsers.map((emp) => (
+                <tr key={emp.employeeCode}>
                     <td className='pt-[2.25rem]'>
                         <h4 className='text-limegray'>Mikiyas Mulugeta</h4>
                     </td>
@@ -162,7 +174,11 @@ const page = () => {
                         </button>
                     </td>
                 </tr>
-
+              ))
+            ) : (
+             
+              <tr><td colSpan="5" className="pt-[2rem] text-center text-Error">No employees found</td></tr>
+            )}
             </tbody>
             </table>
 

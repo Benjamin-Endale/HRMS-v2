@@ -9,6 +9,8 @@ import { useAdminForm } from '@/app/Store/AdminFormContext';
 import { hrmsAPI } from '@/app/lib/api/client';
 import { toPascal } from '@/app/lib/utils/toPascal';
 import { raw } from '@auth/core';
+import ModalContainerSuccessful from '@/app/Modals/Successfully/ModalContainerSuccessful';
+import Successful from '@/app/Modals/Successfully/Successful';
 
 
 // Zod schema
@@ -19,12 +21,12 @@ const schema = z.object({
       .any()
       .refine(file => file?.length > 0, 'Certification file is required'),
 });
-const Page = ({tenantId}) => {
+const Page = ({tenantId , organizationId}) => {
   const router = useRouter();
   const { system, setSystem } = useAdminForm();
   const { addEmployee, setAddEmployee, addEmployeeSecond, setAddEmployeeSecond,compensation,setcompensation } = useAdminForm()
   const [loading, setLoading] = useState(false);
-
+  const [isOpen , setIsOpen] = useState(false)
   const {
     register,
     control,
@@ -63,7 +65,8 @@ const onSubmit = async (data) => {
       TenantId: tenantId, 
       WorkLocation:data.workLocation,
       ShiftDetails:data.shiftDetails,
-      CertificationFile:data.certificationFile
+      CertificationFile:data.certificationFile,
+      OrganizationID:organizationId
     };
 
     console.log(rawEmployee)
@@ -90,7 +93,7 @@ const onSubmit = async (data) => {
 
     // --- Create Employee ---
     const employeeRes = await hrmsAPI.createEmployee(formData);
-
+    setIsOpen(true)
     console.log("This IS Employee data",employeeRes)
     // --- Update Local State ---
     setAddEmployee((prev) => ({ ...prev, ...data, tenantId }));
@@ -207,6 +210,14 @@ const onSubmit = async (data) => {
               >
                 Complete
               </button>
+              <ModalContainerSuccessful open={isOpen}>
+                <Successful 
+                    Header = "Successful"
+                    Parag = "Employee has been successfully added"
+                    onNavigate = {()=>router.push(`/Admin/OrganizationPages/${organizationId}/Employees`)}
+                    confirmation = 'Shal'
+                />
+              </ModalContainerSuccessful>
             </div>
           </form>
         </div>

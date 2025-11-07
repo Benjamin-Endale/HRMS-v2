@@ -2,7 +2,7 @@ import React from 'react'
 
 const Attendance = ({readPath}) => {
   return (
-    <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" stroke={readPath === 'Admin/Attendance' ||  readPath === 'EmployeePortal/Attendance' ? 'white' : '#5D6150'} strokeWidth="1.3125">
+    <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" stroke={readPath === 'Admin/' || readPath === 'Admin/OrganizationPages/Attendance' || readPath==='Admin/Attendance' ||  readPath === 'EmployeePortal/Attendance' ? 'white' : '#5D6150'} strokeWidth="1.3125">
         <path d="M8.75 6.125H1.75"  strokeLinecap="round"/>
         <path d="M7 10.5H1.75"  strokeLinecap="round"/>
         <path d="M8.75 14.875H1.75"  strokeLinecap="round"/>

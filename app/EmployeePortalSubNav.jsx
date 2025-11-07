@@ -6,9 +6,9 @@ import ModalContainerApplyLeave from './Modals/ApplyLeave/ModalContainerApplyLea
 import ApplyLeave from './Modals/ApplyLeave/ApplyLeave';
 
 
-const EmployeePortalSubNav = ({ readPath }) => {
+const EmployeePortalSubNav = ({ readPath , leaveType , tenantId , userId , token , leaves}) => {
     const leaveRequest = [
-    { label: "Approved", path: "/EmployeePortal/LeaveRequest/Approved" },
+    { label: "Approved", path: "/EmployeePortal/LeaveRequest" },
     { label: "Pending", path: "/EmployeePortal/LeaveRequest/Pending" },
     { label: "Rejected", path: "/EmployeePortal/LeaveRequest/Rejected" },
   ]
@@ -45,7 +45,7 @@ const EmployeePortalSubNav = ({ readPath }) => {
                         </div>
                     </div>
                     <div className='flex flex-col'>
-                        <span className='text-5xl text-formColor'>25</span>
+                        <span className='text-5xl text-formColor'>{leaves?.totalLeave || 0}</span>
                         <span className='text-formColor'>Total Leave</span>
                     </div>
                     </div>
@@ -58,11 +58,12 @@ const EmployeePortalSubNav = ({ readPath }) => {
                             </div>
                         </div>
                         <div className='flex flex-col'>
-                            <span className='text-5xl text-formColor'>15</span>
+                            <span className='text-5xl text-formColor'>{leaves?.usedLeave || 0}</span>
                             <span className='text-formColor'>Used Leaved</span>
                         </div>
                     </div>
                 </div>
+
             </div>
             <div className='relative'>
                 <div className="center-center gap-[1.75rem]">
@@ -85,7 +86,7 @@ const EmployeePortalSubNav = ({ readPath }) => {
                         </div>
                     </button>
                     <ModalContainerApplyLeave open={isOpen}>
-                        <ApplyLeave onClose={() => setisOpen(false)}/>
+                        <ApplyLeave leaveType={leaveType} token={token} tenantId={tenantId} userId={userId} onClose={() => setisOpen(false)}/>
                     </ModalContainerApplyLeave>
                 </div>
             </div>

@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 
 
 
-const SubNavigation = ({ readPath }) => {
+const SubNavigation = ({ readPath, jobs }) => {
   const router = useRouter()
   const pathname = usePathname()
 
@@ -35,13 +35,16 @@ const SubNavigation = ({ readPath }) => {
     { label: "All", path: "/Admin/UserAuthentication/All" },
     { label: "Authorized", path: "/Admin/UserAuthentication/Authorized" },
     ]
+    const NavAssign = [
+    { label: "Uncategorized Employees", path: "/Admin/AssignDepartment/Uncategorized" },
+    { label: "Categorized Employees", path: "/Admin/AssignDepartment/Categorized" },
+    ]
 
     const NavSettings = [
     { label: "General", path: "/Admin/SettingPages/General" },
     { label: "Core", path: "/Admin/SettingPages/Core" },
     { label: "Talent", path: "/Admin/SettingPages/Talent" },
     { label: "System", path: "/Admin/SettingPages/System" },
-
     ]
 
   return (
@@ -70,7 +73,7 @@ const SubNavigation = ({ readPath }) => {
                         </div>
                     </div>
                     <div className='flex flex-col'>
-                        <span className='text-5xl text-formColor'>234</span>
+                        <span className='text-5xl text-formColor'>12</span>
                         <span className='text-formColor'>Total Applications</span>
                     </div>
                     </div>
@@ -83,7 +86,7 @@ const SubNavigation = ({ readPath }) => {
                             </div>
                         </div>
                         <div className='flex flex-col'>
-                            <span className='text-5xl text-formColor'>8</span>
+                            <span className='text-5xl text-formColor'>12</span>
                             <span className='text-formColor'>Interviews Today</span>
                         </div>
                     </div>
@@ -223,6 +226,23 @@ const SubNavigation = ({ readPath }) => {
                         key={item.path}
                         onClick={() => router.push(item.path)}
                         className={`w-[8.875rem] center-center py-[0.875rem] relative px-[1.875rem]  text-nowrap  ${pathname === item.path ? 'text-lemongreen' : 'textLimegray1'}`}>
+                        {item.label}
+                        <div className={`${pathname === item.path ? 'absolute left-0 h-[3px] w-full bottom-0 rounded-[0.375rem] bg-lemongreen' : ''}`}></div>
+                    </div>
+                    ))}
+                    
+                </div>
+            </div>
+        </div>
+       {/* Assign */}
+        <div className={`${readPath === '/Admin/AssignDepartment/Categorized' || readPath === "/Admin/AssignDepartment/Uncategorized"   ? 'block' : 'hidden'} cursor-pointer flex flex-col gap-[3.3125rem]`}>
+            <div>
+                <div className="flex font-medium gap-[2.375rem]">
+                    {NavAssign.map(item => (
+                    <div
+                        key={item.path}
+                        onClick={() => router.push(item.path)}
+                        className={`w-[15.25rem] center-center py-[0.875rem] relative px-[1.875rem]  text-nowrap  ${pathname === item.path ? 'text-lemongreen' : 'textLimegray1'}`}>
                         {item.label}
                         <div className={`${pathname === item.path ? 'absolute left-0 h-[3px] w-full bottom-0 rounded-[0.375rem] bg-lemongreen' : ''}`}></div>
                     </div>

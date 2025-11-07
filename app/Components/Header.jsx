@@ -30,6 +30,8 @@ const Header = ({ readPath , session }) => {
     "Admin/Organization": "Organization_Management",
     "Admin/Department": "Department_Management",
     "Admin/DepartmentView": "Department_Management",
+    "Admin/DepartmentView/SubDepartmentView": "Department_Management",
+
     "Admin/Employees": "Employee_Management",
     "Admin/Attendance": "Attendance",
     "Admin/LeaveManagment": "Leave_Management",
@@ -68,6 +70,7 @@ const Header = ({ readPath , session }) => {
     'Admin/TrainingPages/Program':'Training_and_Development',
     'Admin/TrainingPages/Feedback':'Training_and_Development',
     'Admin/UserAuthentication': 'User_Authentication',
+    
     'Admin/UserAuthentication/All': 'User_Authentication',
     'Admin/UserAuthentication/Authorized': 'User_Authentication',
     "Admin/EmployeeView": "Employee_Management",
@@ -78,8 +81,9 @@ const Header = ({ readPath , session }) => {
     "Admin/SettingPages/Core": "Admin_Settings",
     "Admin/SettingPages/Talent": "Admin_Settings",
     "Admin/SettingPages/System": "Admin_Settings",
-
-
+    "Admin/AssignDepartment/Categorized": 'Department_Management',
+    "Admin/AssignDepartment/Uncategorized": 'Department_Management',
+    "Admin/AssignDepartment":'Department_Management',
 
 
   }

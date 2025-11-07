@@ -266,7 +266,7 @@ const onSubmit = (data) => {
                         </div>
                         <div className='space-y-[2.25rem]'>
                             <p className='textLimegray'>Essential personal identification and key contact information — including your full name, address, phone number, and email — are required. These details help verify your identity and prevent delays.</p>
-                            <p className='textLimegray'><strong className='text-formColor'>Tip:</strong> Double-check your spelling and numbers before submitting.</p>
+                            <p className='textLimegray text-3.75'><strong className='text-formColor'>Tip:</strong> Double-check your spelling and numbers before submitting.</p>
                         </div>
                     </div>           
                 </div>

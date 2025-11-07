@@ -99,13 +99,16 @@ async function handleTokenRefresh() {
       return { success: false, error: "No refresh token available" };
     }
 
-    const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${refreshToken}`,
-      },
-    });
+      const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          refreshToken,
+          audience: "HRMSUsers"
+        })
+      });
 
     // 🟥 If refresh token also expired or invalid
     if (refreshRes.status === 401 || refreshRes.status === 403) {
@@ -263,12 +266,6 @@ export const authAPI = {
       body: tenantData,
     }),
 
-      createOrganizations: (orgData, options = {}) =>
-        apiClient("/organizations", {
-          method: "POST",
-          body: orgData,
-          ...options,
-        }),
 
         
 
@@ -289,11 +286,11 @@ export const authAPI = {
    * @param {string} refreshToken - Refresh token
    * @returns {Promise} - New tokens
    */
-  refreshToken: (refreshToken) =>
-    apiClient('/auth/refresh', {
-      method: 'POST',
-      body: { refreshToken }
-    }),
+    refreshToken: (refreshToken) =>
+      apiClient('/auth/refresh', {
+        method: 'POST',
+        body: { refreshToken, audience: 'HRMSUsers' }
+      }),
 
   /**
    * Logout user (invalidate token)
@@ -328,6 +325,123 @@ getEmployeesTenant: (tenantId, token) =>
   }),
 
 
+
+ 
+
+
+getLeaveByTenantId: (tenantId,token) =>
+  apiClient(`/leave/stats/${tenantId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+
+  createAttendance: (userId, token) =>
+    apiClient('/attendance/clockin', {
+      method: 'POST',
+      body: userId, 
+    }, token),
+
+
+
+
+  createLeaveType: (leaveType,token) =>
+    apiClient('/leavetypes', {
+      method: 'POST',
+      body: leaveType, 
+    }, token),
+
+
+
+    
+  createJob: (jobData,token) =>
+    apiClient('/job', {
+      method: 'POST',
+      body: jobData, 
+    }, token),
+
+
+    
+  getLeaveTypeByTenantID: (tenantId , token) =>
+  apiClient(`/leavetypes/by-tenant/${tenantId} `, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+    getEmployeeLeaves: (userId , token) =>
+  apiClient(`/leave/by-user/${userId} `, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+  createAttendanceClockout: (userId, token) =>
+    apiClient('/attendance/clockout', {
+      method: 'POST',
+      body: userId, 
+    }, token),
+
+
+  createLeave: (payload, token) =>
+    apiClient('/leave', {
+      method: 'POST',
+      body: payload, 
+    }, token),
+
+
+
+
+  getEmployeesBydepartment: (tenantId, departmentId , token) =>
+  apiClient(`/employees/by-department/${tenantId}/${departmentId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+  
+
+
+
+  
+
+  getAttendance: (userId, token) =>
+  apiClient(`/attendance/user/${userId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+
+  
+  getAttendancbyTenant: (tenantId, token) =>
+  apiClient(`/attendance/today/stats/${tenantId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+
+
+
+getEmployeesTenantandOrganization: (tenantId,organizationId, token) =>
+  apiClient(`/employees/by-tenant-org/${tenantId}/${organizationId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+ 
+
+
+
   getEmployees: (token) =>
   apiClient('/employees/all', 
     { 
@@ -336,11 +450,50 @@ getEmployeesTenant: (tenantId, token) =>
 
 
 
+
 getOrganizations: (token) =>
-  apiClient('/organizations', 
-    { 
-      method: 'GET' },
-     token),
+  apiClient('/organizations', {
+    method: 'GET',
+    headers: {
+        Authorization: `Bearer ${token}`  
+    }
+  }),
+
+getOrganizationsByTenantId: (tenantId, token) =>
+  apiClient(`/organizations/by-tenant/${tenantId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+
+  getDepartmentbyTenantId: (tenantId, token) =>
+  apiClient(`/departments/overview/${tenantId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+
+  getDepartmentbyDepartmentID: (departmentId, token) =>
+  apiClient(`/departments/stats/${departmentId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+
+
+  getOrganizationsById: (id, token) =>
+  apiClient(`/organizations/${id}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
 
 
   getUser: (tenantId, token) =>
@@ -382,6 +535,19 @@ getTenantEmployees: (tenantId, token) =>
       body: tenants 
 }),
 
+  createOrganizations: (tenants) =>
+    apiClient('/organizations', { 
+      method: 'POST', 
+      body: tenants 
+}),
+
+
+  createDepartment: (tenants) =>
+    apiClient('/departments', { 
+      method: 'POST', 
+      body: tenants 
+}),
+
 
 createPermanentSettings: (settings) =>
   apiClient('/PermanentTenantSetting', {
@@ -389,11 +555,24 @@ createPermanentSettings: (settings) =>
     body: settings,  
   }),
 
+
+ 
+
+  getJobs: (tenantId,token) =>
+  apiClient(`/job/dashboard/tenant/${tenantId}`, {
+    method: 'GET',
+    headers: {
+        Authorization: `Bearer ${token}`  
+    }
+  }),
+
+  
+
 getPermanentSettings: (token) =>
   apiClient('/PermanentTenantSetting', {
     method: 'GET',
     headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`  
     }
   }),
 
@@ -416,12 +595,24 @@ getPermanentSettings: (token) =>
       method: 'POST',
     }),
 
+
+
   
   updateEmployee: (id,employeeData ,token) =>
     apiClient(`/employees/${id}`, {
       method: 'PUT',
       body: employeeData, 
     }, token),
+
+ 
+
+updateLeave: (leaveID,leaveData,token)=> 
+  apiClient(`/leave/${leaveID}/status`, {
+    method:'PUT',
+    body:leaveData,
+  },token),
+
+
 
   deleteEmployee: (id) =>
     apiClient(`/employees/${id}`, { 
