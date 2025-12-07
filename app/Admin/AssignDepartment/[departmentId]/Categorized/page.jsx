@@ -23,28 +23,20 @@ import { auth } from '@/app/auth';
 import { hrmsAPI } from '@/app/lib/api/client';
 import Categorized from './CategorizedUI/page';
 
-export default async function EmployeesServerPage() {
+export default async function EmployeesServerPage({params}) {
   const session = await auth();
   const token = session?.accessToken;
   const tenantId = session?.user?.tenantId;
 
-  // Fetch users and employees
-  const users = await hrmsAPI.getUser(tenantId, token);
-  console.log("🧾 Users fetched from backend:", users);
+   const resolvedParams = await params; // await it
+  const { departmentId } = resolvedParams;
 
-  const employees = await hrmsAPI.getEmployeesTenant(tenantId, token);
-  console.log("🧾 Employees fetched from backend:", employees);
 
-  // Merge employeeCode into users
-  const usersPayload = users.map(user => {
-    const employee = employees.find(emp => emp.employeeID === user.employeeID || emp.email === user.email);
-    return {
-      ...user,
-      employeeCode: employee?.employeeCode || null // attach employeeCode if found
-    };
-  });
+  const employeesDepartment = await hrmsAPI.getEmployeesBydepartment(departmentId, token);
+  console.log("🧾 HAHAHHAHAH fetched from backend:", employeesDepartment);
 
-  console.log("🧾 Users with employeeCode:", usersPayload);
+  const subDepartments = await hrmsAPI.getSubDepartment(departmentId, token);
+  console.log("🧾 Data fetched from backend:", subDepartments);
 
-  return <Categorized users={usersPayload || []} token={token} />;
+  return <Categorized subDepartments={subDepartments || []} employeesDepartment={employeesDepartment || []} token={token} />;
 }

@@ -6,6 +6,7 @@ import { Dropdown } from '@/app/Components/DropDown';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import DropDownSearch from '@/app/Components/DropDownSearch'
 
 // Zod Schema for Validation
 const allowedDomains=[
@@ -13,10 +14,12 @@ const allowedDomains=[
   "meet.google.com",
   "teams.microsoft.com"
 ]
+ 
 const scheduleSchema = z.object({
-  candidate: z.string().min(1, 'Candidate name is required'),
-  interviewType: z.string().min(1, 'Interview type is required'),
-  date: z.string()
+  applicantEmail: z.string().email("Invalid candidate email"),
+  jobTitle: z.string().min(1, "Job title required"),
+
+  scheduledDate: z.string()
   .min(1, 'Date is required')
   .refine(
       (value) => {
@@ -27,55 +30,65 @@ const scheduleSchema = z.object({
       },
       { message: 'Date must be today or later' }
     ),
-  interviewer: z.string().min(1, 'Interviewer is required'),
-  duration: z.string().min(1, 'Duration is required'),
-  time: z.string()
-  .min(1, 'Time is required')
-   .regex(/^(0?[1-9]|1[0-2]):[0-5][0-9]\s?(AM|PM)$/i, "Invalid time format (hh:mm AM/PM)"),
-  location:z.union([
-    // Physical location: just a non-empty string
-    z.string().min(1, "Location is required"),
+  scheduledTime: z.string().min(1, "Time required"),
 
-    // Online meeting link: must be a valid URL and include allowed domains
-    z.string()
-      .url("Invalid URL format")
-      .refine(
-        (val) => allowedDomains.some(domain => val.includes(domain)),
-        { message: "Meeting link must be Zoom, Google Meet, or Teams" }
-      )
-  ])
+  duration: z.string().min(1, "Duration is required"),
+  locationOrMeetingUrl: z.string().min(1, "Location or Meeting URL required"),
+
+  interviewerEmail: z.string().email("Invalid interviewer email"),
+  interviewNote: z.string().optional(),
+  mode: z.string().min(1, "Mode is required"),
 });
 
-export default function AddSchedule({ onClose }) {
+
+export default function AddSchedule({ onClose , addSub , ShortlIst , users }) {
   const router = useRouter();
   const [selectedDuration, setSelectedDuration] = useState('');
+  const [selectedCandidate, setSelectedCandidate] = useState('');
   const [selectedInterviewer, setSelectedInterviewer] = useState('');
-  const [selectedInterview, setSelectedInterview] = useState('');
+    const [selectedInterview, setSelectedInterview] = useState('');
+  const [isIp, setIsIp] = useState('')
+  const [time, setTime] = useState('09:00');
+    const [searchTerm, setSearchTerm] = useState('');
+  
+
+ 
 
   const {
     register,
+    setValue,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm({
     resolver: zodResolver(scheduleSchema),
     defaultValues: {
-      candidate: '',
-      interviewType: '',   
-      date: '',
-      interviewer: '',     
-      duration: '',     
-      time: '',
-      location: '',
-      note: '',
+      applicantEmail: "",
+      jobTitle: "",
+      scheduledDate: "",
+      scheduledTime: "",
+      duration: "",
+      locationOrMeetingUrl: "",
+      interviewerEmail: "",
+      interviewNote: "",
+      mode: "",
     },
   });
-
+  
+  console.log(errors)
   const onSubmit = (data) => {
     console.log('Form Data:', data);
-    router.push('/'); // redirect after submit
+    router.push('/'); // redirect after submitS
   };
 
+    // ✅ Search filtering for employees
+  const filteredUsers = ShortlIst.shortlistedApplicants.filter((cand) => {
+    const fullName = `${cand.name}`.toLowerCase();
+    return (
+      cand.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      fullName.includes(searchTerm.toLowerCase())
+    );
+  }); 
   return (
     <div className="px-[3rem] py-[2.875rem] space-y-[3.125rem] font-semibold w-full">
       {/* Header */}
@@ -97,21 +110,59 @@ export default function AddSchedule({ onClose }) {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-[2.375rem]"
       >
+            {/* Candidate Head Search */}
+            <div className="relative w-full flex flex-col ">
+            <label className='text-formColor mb-[1rem]' htmlFor="">Search Candidate</label>
+              <div className="w-full h-12.5 flex items-center gap-[1.1875rem] bg-[#1D2015] rounded-[0.625rem] px-[1.4375rem]">
+                <img src="/image/Icon/SearchIcon.png" alt="" />
+                <input
+                  type="search"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search employee by email or name"
+                  className="placeholder-input text-white w-full h-full outline-0"
+                />
+              </div>
+
+              {/* Dropdown search results */}
+              {searchTerm && filteredUsers.length > 0 && (
+                <div className="absolute top-[6rem] z-10 w-full bg-[#25281B] border border-[#3a3a3a] mt-1 rounded-md max-h-[200px] overflow-y-auto">
+                  {filteredUsers.map((user) => (
+                    <div
+                      key={user.email}
+                      onClick={() => {
+                        setSelectedCandidate(user);
+                        setSearchTerm('');
+                      }}
+                      className="p-2 hover:bg-[#343726] cursor-pointer text-white"
+                    >
+                      <div className="font-medium">
+                        {user.name}
+                      </div>
+                      <div className="text-sm text-gray-400">{user.email}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
         <div className="w-full flex gap-[1.125rem]">
           {/* Left side */}
           <div className="flex flex-col gap-[2.375rem] w-[15.5625rem]">
             {/* Candidate */}
-            <div className="flex flex-col w-full gap-[1rem]">
-              <label className="textFormColor1">Candidate</label>
+ 
+            <div className="flex flex-col w-full  relative gap-[1rem]">
+              <label className="textFormColor1">{addSub} Candidate</label>
               <input
                 type="text"
-                placeholder="e.x Frontend developer"
-                className="inputMod pr-[1.5625rem]"
+                placeholder="Select from search above"
+                value={selectedCandidate ? `${selectedCandidate.name}` : ''}
+                readOnly
+                className="inputMod pr-[1.5625rem] bg-[#2a2c1f] text-white "
                 {...register('candidate')}
               />
-              {errors.candidate && (
-                <p className="text-Error text-[1rem]">
-                  {errors.candidate.message}
+              {!selectedCandidate && (
+                <p className="text-Error absolute bottom-[-2rem] text-[1rem]">
+                  Select a   Candidate   from search
                 </p>
               )}
             </div>
@@ -128,9 +179,9 @@ export default function AddSchedule({ onClose }) {
                     'Technical Interview',
                     'Panel Interview',
                   ]}
-                  selected={selectedInterview}
+                  selected={selectedInterviewer}
                   onSelect={(value) => {
-                    setSelectedInterview(value);
+                    setSelectedInterviewer(value);
                     field.onChange(value);
                   }}
                   placeholder="Select Interview Type"
@@ -164,16 +215,27 @@ export default function AddSchedule({ onClose }) {
               name="interviewer"
               control={control}
               render={({ field }) => (
-                <Dropdown
-                  label="Interviewer"
-                  options={['Bereket Daniel', 'Benjamin Endale', 'Kaleb Seifu']}
-                  selected={selectedInterviewer}
-                  onSelect={(value) => {
-                    setSelectedInterviewer(value);
-                    field.onChange(value);
-                  }}
-                  placeholder="Select Interviewer"
-                />
+              <DropDownSearch
+                label="Interviewer"
+                options={users.map((u) => ({
+                  label: (
+                    <div>
+                      <div className="font-medium">{u.fullName}</div>
+                      <div className="text-sm text-limegray">{u.email}</div>
+                    </div>
+                  ),
+                  labelText: `${u.fullName} ${u.email}`, // for search
+                  value: u.fullName,
+                }))}
+  
+                selected={selectedInterview}
+                onSelect={(name) => {
+                  setSelectedInterview(name);
+                  field.onChange(name);
+                }}
+                placeholder="Search interviewer..."
+              />
+
               )}
             />
             {errors.interviewer && (
@@ -203,19 +265,15 @@ export default function AddSchedule({ onClose }) {
               <p className="text-Error text-[1rem]">{errors.duration.message}</p>
             )}
 
-            {/* Time */}
-            <div className="flex flex-col w-full gap-[1rem]">
-              <label className="textFormColor1">Time</label>
-              <input
-                type="text"
-                placeholder="e.x 10:00 AM"
-                className="inputMod pr-[1.5625rem]"
-                {...register('time')}
-              />
-              {errors.time && (
-                <p className="text-Error text-[1rem]m">{errors.time.message}</p>
-              )}
-            </div>
+          <div className='flex flex-col gap-[1rem] relative'>
+            <label className='text-formColor'>Time</label>
+            <input
+              type="time"
+              className="inputMod pr-[1.1875rem]"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            />
+          </div>
           </div>
         </div>
 
@@ -235,20 +293,19 @@ export default function AddSchedule({ onClose }) {
                 </p>
               )}
             </div>
-
+ 
             {/* Interview Note */}
-            {/* Interview Note */}
-<div className="flex flex-col gap-[1rem]">
-  <label className="text-formColor">Interview Note</label>
-  <textarea
-    placeholder="Add any special instructions or notes"
-    className="text-formColor bg-inputBack rounded-[10px] placeholder-input pt-[0.59375rem] pl-[1.1875rem] resize-none h-[5.5rem]"
-    {...register('note')}
-  />
-  {errors.note && (
-    <p className="text-Error text-[1rem]">{errors.note.message}</p>
-  )}
-</div>
+            <div className="flex flex-col gap-[1rem]">
+              <label className="text-formColor">Interview Note</label>
+              <textarea
+                placeholder="Add any special instructions or notes"
+                className="text-formColor bg-inputBack rounded-[10px] placeholder-input pt-[0.59375rem] pl-[1.1875rem] resize-none h-[5.5rem]"
+                {...register('note')}
+              />
+              {errors.note && (
+                <p className="text-Error text-[1rem]">{errors.note.message}</p>
+              )}
+            </div>
 
           </div>
         </div>

@@ -4,10 +4,12 @@ import SubNavigation from '@/app/SubNavigation'
 import ModalContainerAuth from '@/app/Modals/AddAuth/ModalContainerAuth'
 import AddAuth from '@/app/Modals/AddAuth/AddAuth'
 import { useSearchFilter } from '@/app/Components/useSearchFilter';
+import { hrmsAPI } from '@/app/lib/api/client'
+import { toPascal } from '@/app/lib/utils/toPascal';
+import { useRouter } from 'next/navigation'
 
-
-const UncategorizedPage = ({employees , token , tenantId}) => {
-
+const UncategorizedPage = ({employees , token , tenantId , departmentId}) => {
+  const router = useRouter()
 
   const { searchTerm, setSearchTerm, filteredItems } = useSearchFilter(employees, [
     "firstName",
@@ -18,9 +20,25 @@ const UncategorizedPage = ({employees , token , tenantId}) => {
   const [isOpen,setisOpen] = useState(false)
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   
+  const handleAssign = async   (emp) => {
+    try {
+      // ✅ API call
+      console.log("lol my departmentID,: " , departmentId)
+      const employee = await hrmsAPI.updateEmployeeDepartment(emp.employeeID,departmentId);
+      console.log("✅ Department saved:", employee);
+
+      router.refresh();
+    } catch (err) {
+      console.error("❌ Error saving Department:", err.message || err);
+    } finally {
+      // setIsSubmitting(false);
+    }
+  };
+
+
   return (
       <div className='font-semibold'>
-        <SubNavigation readPath= '/Admin/AssignDepartment/Uncategorized'/>
+        <SubNavigation readPath= {`/Admin/AssignDepartment/${departmentId}/Uncategorized`}/>
         <div className='flex w-full gap-[2.125rem] mt-[3.6875rem] '>
             <div className='w-full h-[3.4375rem]  bg-[rgba(21,24,18,1)] flex items-center gap-[1.1875rem] rounded-[0.625rem] px-[1.4375rem] '>
               <img src="/svg/SvgImage/Search.svg" alt="" />
@@ -43,7 +61,7 @@ const UncategorizedPage = ({employees , token , tenantId}) => {
                 </tr>
               </thead>
               <tbody>
-                {filteredItems.map((emp)=> (
+                {filteredItems.length > 0 ? (filteredItems.map((emp)=> (
                   <tr key={emp.employeeCode}>
                     <td className='pt-[2.25rem]'>
                         <h1 className='textLimegray1'>{emp.employeeCode}</h1>
@@ -57,16 +75,26 @@ const UncategorizedPage = ({employees , token , tenantId}) => {
                     <td className='pt-[2.25rem] '>
                         <h1 className='textLimegray1'>{emp.email}</h1>
                     </td>
-                    <td className='flex items-center gap-[2.5625rem] pt-[2.25rem]'>
-                      <button type="button"  className='cursor-pointer'>
-                        <div className='flex items-center border rounded-full  border-[#303030] gap-[0.375rem] px-[0.9375rem] py-[6px]'>
-                            <img src="/image/Icon/Action/Department.png" alt="" />
-                            <span className='text-lemongreen text-sm'>Assign Department</span>
+                    <td className="flex items-center gap-[2.5625rem] pt-[2.25rem]">
+                      <button
+                        type="button"
+                        onClick={() => handleAssign(emp)} // ✅ Fix: pass emp to the function
+                        className="cursor-pointer"
+                      >
+                        <div className="flex items-center border rounded-full border-[#303030] gap-[0.375rem] px-[0.9375rem] py-[6px]">
+                          <img src="/image/Icon/Action/Department.png" alt="" />
+                          <span className="text-lemongreen text-sm">
+                            Assign Department
+                          </span>
                         </div>
                       </button>
-                    </td>
+                  </td>
                   </tr>
-                ))}
+                ))) : (
+                  <tr>
+                    <td colSpan="5" className='text-Error text-center text-nowrap pt-10'>No Employees without Department</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

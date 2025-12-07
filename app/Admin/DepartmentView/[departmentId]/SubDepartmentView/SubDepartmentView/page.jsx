@@ -5,28 +5,27 @@ import AddDep from '@/app/Modals/AddDep/AddDep'
 import ModalContainerDep from '@/app/Modals/AddDep/ModalContainerDep'
 import { useRouter } from 'next/navigation'
 
-const Page = () => {
+const Page = ({subDepartments}) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenDep, setIsOpenDep] = useState(false)
   const [page, setPage] = useState(1)
   const router = useRouter()
 
-  const departments = [
-    { deptName: 'Engineering', Head: 'Benjamin Endale', EmpLength: '324' },
-    { deptName: 'Marketing', Head: 'Bereket Daniel', EmpLength: '234' },
-    { deptName: 'Finance', Head: 'Kaleb Saifu', EmpLength: '200' },
-    { deptName: 'Sales', Head: 'Salem Mesfin', EmpLength: '150' },
-    { deptName: 'Human Resources', Head: 'Shalom Mesfin', EmpLength: '120' },
-    { deptName: 'Operations', Head: 'Mikiyas Tesfaye', EmpLength: '210' },
-    { deptName: 'Design', Head: 'Saron Mulu', EmpLength: '115' },
-    { deptName: 'Customer Support', Head: 'Daniel Alemu', EmpLength: '180' },
-  ]
+ 
 
   // Pagination setup: 4 cards per page
   const perPage = 8
-  const totalPages = Math.ceil(departments.length / perPage)
+  const totalPages = Math.ceil(subDepartments.length / perPage)
   const startIndex = (page - 1) * perPage
-  const currentDepartments = departments.slice(startIndex, startIndex + perPage)
+  
+  
+  if(subDepartments.message === 'No sub-departments found for this main department.'){
+    return         <div className='flex-col center-center   h-175 m-auto'>
+                    <h4 className='text-Error'>No Sub Department</h4>
+                    <h4 className='text-lemongreen font-bold cursor-pointer' onClick={()=>router.back()}>Back</h4>
+                  </div>
+  }
+    const currentDepartments = subDepartments.slice(startIndex, startIndex + perPage)
 
   // Slide animation direction
   const [direction, setDirection] = useState(0)
@@ -123,20 +122,20 @@ const Page = () => {
                 className='grid grid-cols-4 gap-[2.75rem]'
               >
                 {currentDepartments.map((dep) => (
-                  <div key={dep.deptName} className='relative organizationCard'>
+                  <div key={dep.subDepartmentName} className='relative organizationCard'>
                     <button className='flex flex-col gap-[3.75rem] cursor-pointer'>
                         <div className='flex flex-col items-start'>
-                          <h1 className='textWhite'>{dep.deptName}</h1>
-                          <h4 className='text-limegray'>Head: {dep.Head}</h4>
+                          <h1 className='textWhite'>{dep.subDepartmentName}</h1>
+                          <h4 className='text-limegray'>Under: {dep.parentDepartmentName}</h4>
                         </div>
                         <div className='rounded-[2.0625rem] w-[9rem] h-[2.8125rem] bg-[rgba(190,229,50,0.05)] center-center'>
                           <h4 className='text-lemongreen text-sm'>
-                            {dep.EmpLength} employees
+                            Sub Department
                           </h4>
                         </div>
                     </button>
                   </div>
-                ))}
+                )) }
               </motion.div>
             </AnimatePresence>
           </div>

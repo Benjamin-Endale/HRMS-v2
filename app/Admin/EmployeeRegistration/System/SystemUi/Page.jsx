@@ -21,12 +21,13 @@ const schema = z.object({
       .any()
       .refine(file => file?.length > 0, 'Certification file is required'),
 });
-const Page = ({tenantId , organizationId}) => {
+const Page = ({tenantId , organizationId , departmentId}) => {
   const router = useRouter();
   const { system, setSystem } = useAdminForm();
   const { addEmployee, setAddEmployee, addEmployeeSecond, setAddEmployeeSecond,compensation,setcompensation } = useAdminForm()
   const [loading, setLoading] = useState(false);
   const [isOpen , setIsOpen] = useState(false)
+ 
   const {
     register,
     control,
@@ -66,7 +67,8 @@ const onSubmit = async (data) => {
       WorkLocation:data.workLocation,
       ShiftDetails:data.shiftDetails,
       CertificationFile:data.certificationFile,
-      OrganizationID:organizationId
+      OrganizationID:organizationId,
+      DepartmentID:departmentId
     };
 
     console.log(rawEmployee)
@@ -113,7 +115,7 @@ const onSubmit = async (data) => {
       <div className='flex flex-col gap-[2.5rem]'>
         <div className='flex items-center gap-[0.9375rem]'>
           <img
-            onClick={() => router.push('/EmployeeRegistration/Compensation')}
+            onClick={() => router.push(`/DepartmentEmployeeRegistration/${departmentId}/Compensation`)}
             src='/image/Icon/ArrowLeft.png'
             alt='Back'
           />
@@ -214,7 +216,7 @@ const onSubmit = async (data) => {
                 <Successful 
                     Header = "Successful"
                     Parag = "Employee has been successfully added"
-                    onNavigate = {()=>router.push(`/Admin/OrganizationPages/${organizationId}/Employees`)}
+                    onNavigate = {()=>router.push(`/Admin/DepartmentView/${departmentId}`)}
                     confirmation = 'Shal'
                 />
               </ModalContainerSuccessful>

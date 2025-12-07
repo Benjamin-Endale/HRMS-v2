@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -14,12 +14,22 @@ const departmentSchema = z.object({
   Description: z.string().min(1, 'Department Description is required'),
 });
 
-const AddDep = ({ onClose, tenantId, org, employees }) => {
+const AddDep = ({ onClose, tenantId, org, employees , dep , addSub , addSubSmall, departmentId}) => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedHead, setSelectedHead] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+
+    // ✅ Pre-fill department head if updating
+  useEffect(() => {
+    if (dep?.departmentHeadEmail) {
+      const existingHead = employees.find(
+        (emp) => emp.email === dep.departmentHeadEmail
+      );
+      if (existingHead) setSelectedHead(existingHead);
+    }
+  }, [dep, employees]);
   // ✅ react-hook-form setup
   const {
     register,
@@ -28,8 +38,8 @@ const AddDep = ({ onClose, tenantId, org, employees }) => {
   } = useForm({
     resolver: zodResolver(departmentSchema),
     defaultValues: {
-      DepartmentName: '',
-      Description: '',
+      DepartmentName:dep?.departmentName ||  '',
+      Description:dep?.description ||  '',
     },
   });
 
@@ -40,49 +50,57 @@ const AddDep = ({ onClose, tenantId, org, employees }) => {
       emp.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       fullName.includes(searchTerm.toLowerCase())
     );
-  });
+  }); 
 
-  // ✅ Submit Handler
-  const onSubmit = async (data) => {
-    try {
-      setIsSubmitting(true);
+const onSubmit = async (data) => {
+  try {
+    setIsSubmitting(true);
+ 
 
-      if (!selectedHead) {
-        alert("Please select a Department Head from search before creating the department.");
-        setIsSubmitting(false);
-        return;
-      }
-
-      const depData = {
-        DepartmentName: data.DepartmentName,
-        Description: data.Description,
-        TenantId: tenantId,
-        DepartmentHeadEmail: selectedHead.email, // send email to backend
-      };
-
-      console.log("📤 Department data to send:", depData);
-
-      // ✅ API call
-      const department = await hrmsAPI.createDepartment(depData);
-      console.log("✅ Department saved:", department);
-
-      router.refresh();
-      onClose();
-    } catch (err) {
-      console.error("❌ Error saving Department:", err.message || err);
-    } finally {
-      setIsSubmitting(false);
+    if (!selectedHead) {
+      alert("Please select a Department Head from search.");
+      return;
     }
-  };
+
+    const depData = {
+      departmentName: data.DepartmentName,
+      description: data.Description,
+      tenantId: tenantId,
+      departmentHeadEmail: selectedHead.email,
+    
+    };
+
+    console.log("Department Data:  " , depData)
+    let result;
+    if (departmentId) {
+      // Update existing department
+      console.log
+      result = await hrmsAPI.updateDepartment(departmentId, depData);
+      console.log("✅ Department updated:", result);
+    } else {
+      // Create new department
+      result = await hrmsAPI.createDepartment(depData);
+      console.log("✅ Department created:", result);
+    }
+
+    router.refresh();
+    onClose();
+  } catch (err) {
+    console.error("❌ Error saving Department:", err.message || err);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   return (
     <div className="px-[3rem] py-[2.875rem] space-y-[3.125rem] font-semibold w-full">
       {/* Header */}
       <div className="flex justify-between">
         <div>
-          <h1 className="textFormColor">Create New Department</h1>
+          <h1 className="textFormColor">Create New  {addSub} Department</h1>
           <h4 className="text-limegray">
-            Add a new department and its basic information.
+            Add a new {addSubSmall} department and its basic information.
           </h4>
         </div>
         <button
@@ -102,7 +120,7 @@ const AddDep = ({ onClose, tenantId, org, employees }) => {
           <div className="flex flex-col gap-[2.375rem] w-full">
             {/* Department Name */}
             <div className="flex flex-col w-full gap-[1rem]">
-              <label className="textFormColor1">Department Name</label>
+              <label className="textFormColor1">{addSub} Department Name</label>
               <input
                 type="text"
                 placeholder="ex. Marketing"
@@ -118,7 +136,7 @@ const AddDep = ({ onClose, tenantId, org, employees }) => {
 
             {/* Department Head Search */}
             <div className="relative w-full flex flex-col ">
-            <label className='text-formColor mb-[1rem]' htmlFor="">Search Department Head</label>
+            <label className='text-formColor mb-[1rem]' htmlFor="">Search {addSub} Department Head</label>
               <div className="w-full h-[3.4375rem] flex items-center gap-[1.1875rem] bg-[#1D2015] rounded-[0.625rem] px-[1.4375rem]">
                 <img src="/image/Icon/SearchIcon.png" alt="" />
                 <input
@@ -154,7 +172,7 @@ const AddDep = ({ onClose, tenantId, org, employees }) => {
 
             {/* Department Head Display */}
             <div className="flex flex-col w-full gap-[1rem]">
-              <label className="textFormColor1">Department Head</label>
+              <label className="textFormColor1">{addSub} Department Head</label>
               <input
                 type="text"
                 placeholder="Select from search above"
@@ -164,14 +182,14 @@ const AddDep = ({ onClose, tenantId, org, employees }) => {
               />
               {!selectedHead && (
                 <p className="text-Error text-[1rem]">
-                  Select a Department Head from search
+                  Select a {addSubSmall} Department Head from search
                 </p>
               )}
             </div>
 
             {/* Department Description */}
             <div className="flex flex-col gap-[1rem]">
-              <label className="text-formColor">Department Description</label>
+              <label className="text-formColor">{addSub} Department Description</label>
               <textarea
                 placeholder="Enter department description .."
                 className="text-formColor bg-inputBack rounded-[10px] placeholder-input pt-[0.59375rem] pl-[1.1875rem] resize-none h-[5.5rem]"

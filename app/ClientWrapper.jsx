@@ -10,7 +10,7 @@ import Header from './Components/Header';
 export default function ClientWrapper({ children, session }) {
   const router = useRouter();
   const pathname = usePathname() || '/';
-
+ 
   const role = session?.user?.role;
   const requiresOtp = session?.requiresOtp;
   const otpVerified = session?.otpVerified;
@@ -91,7 +91,7 @@ useEffect(() => {
 
 
 if (modules === null && ['SystemAdmin', 'HR'].includes(role)) {
-  return         <div className='h-screen bg-black text-lemongreen text-xl center-center'>
+  return <div className='h-screen bg-black text-lemongreen text-xl center-center'>
             <h1>Loading....</h1>
         </div>;
 }
@@ -117,6 +117,7 @@ if (modules === null && ['SystemAdmin', 'HR'].includes(role)) {
     return <div>Redirecting to OTP verification...</div>;
   }
 
+ 
   return (
     <div className="flex gap-[4.4375rem] bg-[url(/image/backdash.png)] bg-no-repeat bg-center bg-cover">
       <BodyComponent readPath={readPath} session={session} modules={modules} />

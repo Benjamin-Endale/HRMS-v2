@@ -21,3 +21,4 @@ export default async function EmployeesServerPage({ params }) {
 
   return <AddNewEmployee employees={employees || []} />;
 }
+  

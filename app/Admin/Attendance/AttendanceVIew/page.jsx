@@ -105,7 +105,7 @@ const page = ({AttendanceDetail}) => {
             </tr>
           </thead>
           <tbody>
-            {AttendanceDetail.clockedOutEmployees?.map((adc,index) => (
+            {AttendanceDetail.clockedOutEmployees.length > 0 ?  (AttendanceDetail.clockedOutEmployees?.map((adc,index) => (
                 <tr key={index}>
                 <td className='pt-[2.25rem]'>
                     <h4 className='text-limegray'>{adc.fullName}</h4>
@@ -134,7 +134,11 @@ const page = ({AttendanceDetail}) => {
                   </div>
                 </td>
                 </tr>
-            ))}
+            ))) : (
+              <tr>
+                <td colSpan='5' className='text-center text-Error pt-10'>No Attendance For today</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

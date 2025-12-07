@@ -141,7 +141,7 @@ const Page = () => {
             console.log(pair[0] + ': ', pair[1])
         }
 
-        // Store the actual File objects, not just the FileList
+        // Store the actual File objects, not just the FileList 
         const dataToStore = {
             ...data,
             certificationFile: data.certificationFile instanceof FileList && data.certificationFile.length > 0 

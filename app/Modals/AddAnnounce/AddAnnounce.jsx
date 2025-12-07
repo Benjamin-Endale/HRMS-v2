@@ -6,6 +6,8 @@ import { Dropdown } from '@/app/Components/DropDown';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { hrmsAPI } from '@/app/lib/api/client';
+
 
 const AnnounceSchema = z.object({
   Destination: z.string().min(2, "Destination is required"),
@@ -14,7 +16,7 @@ const AnnounceSchema = z.object({
   Announcement: z.string().min(2, "Announcement is required"),
 });
 
-export default function AddAnnounce({ onClose }) {
+export default function AddAnnounce({ onClose , tenantId , token }) {
 //   const router = useRouter();
 
   const {
@@ -32,10 +34,26 @@ export default function AddAnnounce({ onClose }) {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    // router.push('/AddAnnounce/AddAnnounce'); // redirect after submit
-  };
+const onSubmit = async (data) => {
+  try {
+ 
+ 
+    const announceData = {
+      ...data,
+      tenantId:tenantId,
+      AnnouncementContent: data.Announcement,
+      Categories:data.AnnouncementCategory,
+    }
+
+      const Announce = await hrmsAPI.createAnnouncement(announceData);
+      console.log("✅ Announcement created:", Announce);
+    onClose();
+  } catch (err) {
+    console.error("❌ Error saving Announcement:", err.message || err);
+  } finally {
+ 
+  }
+};
 
     return (
     <div className='px-[3rem] py-[2.875rem] space-y-[3.125rem] font-semibold w-full'>

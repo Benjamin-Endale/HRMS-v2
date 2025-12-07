@@ -1,4 +1,5 @@
 // lib/api/client.js
+import Announcement from "@/public/svg/DashboardSvg/Announcement";
 import { getSession, signOut } from "next-auth/react";
 
 const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5270/api";
@@ -324,6 +325,29 @@ getEmployeesTenant: (tenantId, token) =>
     },
   }),
 
+  
+
+ 
+  getSubDepartment: (departmentId, token) =>
+  apiClient(`/departments/sub-info/${departmentId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+
+
+
+  getEmployeesbyNoDep: (tenantId, token) =>
+  apiClient(`/employees/without-department/${tenantId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }),
+
+
 
 
  
@@ -394,10 +418,12 @@ getLeaveByTenantId: (tenantId,token) =>
     }, token),
 
 
+ 
 
+  
 
-  getEmployeesBydepartment: (tenantId, departmentId , token) =>
-  apiClient(`/employees/by-department/${tenantId}/${departmentId}`, {
+  getEmployeesBydepartment: (departmentId , token) =>
+  apiClient(`/employees/by-main-department/${departmentId}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -405,8 +431,6 @@ getLeaveByTenantId: (tenantId,token) =>
   }),
 
   
-
-
 
   
 
@@ -427,10 +451,7 @@ getLeaveByTenantId: (tenantId,token) =>
       Authorization: `Bearer ${token}`,
     },
   }),
-
-
-
-
+ 
 getEmployeesTenantandOrganization: (tenantId,organizationId, token) =>
   apiClient(`/employees/by-tenant-org/${tenantId}/${organizationId}`, {
     method: 'GET',
@@ -448,6 +469,8 @@ getEmployeesTenantandOrganization: (tenantId,organizationId, token) =>
       method: 'GET' },
      token),
 
+
+ 
 
 
 
@@ -495,6 +518,7 @@ getOrganizationsByTenantId: (tenantId, token) =>
     },
   }),
 
+ 
 
   getUser: (tenantId, token) =>
     apiClient(`/users/by-tenant/${tenantId}`, {
@@ -549,6 +573,13 @@ getTenantEmployees: (tenantId, token) =>
 }),
 
 
+  createSubDepartment: (tenants) =>
+    apiClient('/departments', { 
+      method: 'POST', 
+      body: tenants 
+}),
+
+
 createPermanentSettings: (settings) =>
   apiClient('/PermanentTenantSetting', {
     method: 'POST',
@@ -565,8 +596,15 @@ createPermanentSettings: (settings) =>
         Authorization: `Bearer ${token}`  
     }
   }),
+ 
+  getShortList: (tenantId,token) =>
+  apiClient(`/shortlist/shortlisted-with-summary/tenant/${tenantId}`, {
+    method: 'GET',
+    headers: {
+        Authorization: `Bearer ${token}`  
+    }
+  }),
 
-  
 
 getPermanentSettings: (token) =>
   apiClient('/PermanentTenantSetting', {
@@ -587,6 +625,20 @@ getPermanentSettings: (token) =>
       method: 'POST', 
       body: userData 
     }),
+
+ 
+
+  createInterview: (id) =>
+    apiClient(`/shortlist/move/${id}`, { 
+      method: 'POST', 
+    }),
+
+  createAnnouncement: (announce) =>
+    apiClient('/announcement ', { 
+      method: 'POST', 
+      body: announce 
+    }),
+
 
 
 
@@ -613,9 +665,37 @@ updateLeave: (leaveID,leaveData,token)=>
   },token),
 
 
+  updateEmployeeDepartment: (employeeId, departmentId, token) =>
+  apiClient(`/employees/${employeeId}/department`, {
+    method: 'PUT',
+    body: { departmentId },
+  }, token),
+
+  updateDepartment: (departmentId, departmentData, token) =>
+  apiClient(`/departments/${departmentId}`, {
+    method: 'PUT',
+    body:  departmentData ,
+  }, token),
+
+ 
+
+
+  updateEmployeeSubDepartment: (dataEmp,token) =>
+  apiClient(`/employees/update-department`, {
+    method: 'PUT',
+    body:dataEmp,
+  }, token),
+
+
 
   deleteEmployee: (id) =>
     apiClient(`/employees/${id}`, { 
+      method: 'DELETE' 
+    }),
+
+ 
+  deleteApplicant: (id) =>
+    apiClient(`/applicant/${id}`, { 
       method: 'DELETE' 
     }),
 
@@ -623,6 +703,17 @@ updateLeave: (leaveID,leaveData,token)=>
     apiClient(`/users/${id}`, { 
       method: 'DELETE' 
     }),
+
+ 
+  deleteCandidateShortlist: (id) =>
+    apiClient(`/shortlist/${id}`, { 
+      method: 'DELETE' 
+    }),
+    
+    deleteEmployeeDepartmentId:(id) => 
+      apiClient(`/employees/${id}/department` , {
+        method:'DELETE'
+      }),
 
   // Organization management
     getTenant: (token) =>
@@ -640,6 +731,33 @@ updateLeave: (leaveID,leaveData,token)=>
             Authorization: `Bearer ${token}`,
           },
         }),
+
+ 
+      getAnnouncementByTenantID: (id, token) =>
+        apiClient(`/announcement/tenant/${id}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+
+ 
+      getApplicant: (tenantId, token) =>
+        apiClient(`/applicant/applicants-with-summary/tenant/${tenantId}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+
+      getAnnouncementByUserID: (id, token) =>
+        apiClient(`/announcement/user/${id}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+
 
   // Attendance management
   getAttendanceRecords: (params = {}) =>

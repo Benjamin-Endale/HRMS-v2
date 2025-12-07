@@ -63,7 +63,7 @@ const page = ({token, tenantId , jobs}) => {
                   </tr>
                 </thead>
                 <tbody className='space-y-[1.375rem]'>
-                    {jobs.jobs.map((jbs) => (
+                    {jobs.jobs.length != 0 ? (jobs.jobs.map((jbs) => (
                         <tr key={jbs.id}>
                             <td className='pt-[1.625rem] '>
                             <div className='flex flex-col'>
@@ -92,7 +92,11 @@ const page = ({token, tenantId , jobs}) => {
                             </button>
                             </td>
                         </tr>
-                    ))}
+                    ))) : (
+                      <tr className='text-center  '>
+                          <td colSpan="5" className='text-lemongreen pt-19'>No Job Posted recently</td>
+                      </tr>
+                    )}
                 </tbody>
               </table>
             </div>

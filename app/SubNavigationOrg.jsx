@@ -9,6 +9,9 @@ const SubNavigation = ({ readPath }) => {
   const router = useRouter()
   const pathname = usePathname()
 
+
+
+
     const NavRecruitment = [
     { label: "Job Posting", path: "/Admin/RecruitmentPages/Jobposting" },
     { label: "Candidates", path: "/Admin/RecruitmentPages/Candidates" },
@@ -36,7 +39,7 @@ const SubNavigation = ({ readPath }) => {
     { label: "Authorized", path: "/Admin/UserAuthentication/Authorized" },
     ]
     const NavAssign = [
-    { label: "Uncategorized Employees", path: "/Admin/AssignDepartment/Uncategorized" },
+    { label: "Uncategorized Employees", path: "/Admin/AssignDepartment" },
     { label: "Categorized Employees", path: "/Admin/AssignDepartment/Categorized" },
     ]
 
@@ -235,7 +238,7 @@ const SubNavigation = ({ readPath }) => {
             </div>
         </div>
        {/* Assign */}
-        <div className={`${readPath === '/Admin/AssignDepartment/Categorized' || readPath === "/Admin/AssignDepartment/Uncategorized"   ? 'block' : 'hidden'} cursor-pointer flex flex-col gap-[3.3125rem]`}>
+        <div className={`${readPath === '/Admin/AssignDepartment/Categorized' || readPath === "/Admin/AssignDepartment"   ? 'block' : 'hidden'} cursor-pointer flex flex-col gap-[3.3125rem]`}>
             <div>
                 <div className="flex font-medium gap-[2.375rem]">
                     {NavAssign.map(item => (

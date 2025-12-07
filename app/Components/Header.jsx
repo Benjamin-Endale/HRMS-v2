@@ -85,6 +85,11 @@ const Header = ({ readPath , session }) => {
     "Admin/AssignDepartment/Uncategorized": 'Department_Management',
     "Admin/AssignDepartment":'Department_Management',
 
+   "Admin/DepartmentEmployeeRegistration/AddNewemployee": 'Add_New_Employee',
+    "Admin/DepartmentEmployeeRegistration/AddNewemployeesecond": 'Add_New_Employee',
+    "Admin/DepartmentEmployeeRegistration/Compensation": "Add_New_Employee",
+    "Admin/DepartmentEmployeeRegistration/System": "Add_New_Employee",
+
 
   }
 

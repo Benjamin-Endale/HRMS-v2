@@ -5,10 +5,21 @@ import { useRouter } from 'next/navigation'
 import React , {useState} from 'react'
 // import { useSearchFilter } from '@/app/Components/useSearchFilter';
 import { useSearchFilter } from '@/app/Components/useSearchFilter';
+import ModalContainerDep from '@/app/Modals/AddDep/ModalContainerDep'
+import AddDep from '@/app/Modals/AddDep/AddDep'
+import ModalContainerRevoke from '@/app/Modals/Revoke/ModalContainerRevoke'
+import Revoke from '@/app/Modals/Revoke/Revoke'
+import { hrmsAPI } from '@/app/lib/api/client'
 
-const page = ({dep}) => {
+
+const page = ({dep , departmentId , employees , tenantId}) => {
     const router = useRouter()
     const [isOpen,setIsOpen] = useState(false)
+        const [isOpen2,setIsOpen2] = useState(false)
+    const [selectedUser,setSelectedUser] = useState()
+    const [EmpinDepList, setEmployeeDep] = useState(dep.employees || []); 
+
+    const [isOpen1,setIsOpen1] = useState(false)
 //   const { searchTerm, setSearchTerm, filteredItems } = useSearchFilter(employees, [
 //     "firstName",
 //     "lastName",
@@ -16,6 +27,19 @@ const page = ({dep}) => {
 //     "email"
 //   ],[(employees) => `${employees.firstName} ${employees.lastName}`]);
 
+
+  const handleRevoke = async (dep) => {
+    try {
+      console.log("MY User", dep.employeeID);
+      await hrmsAPI.deleteEmployeeDepartmentId(dep.employeeID);
+
+      // Remove from local state instantly
+      setEmployeeDep(prev => prev.filter(emp => emp.employeeID !== dep.employeeID));
+      setIsOpen2(false);
+    } catch (err) {
+      console.error("❌ Error saving Employee:", err.message || err);
+    }
+  };
 
   const { searchTerm, setSearchTerm, filteredItems: filteredUsers } = useSearchFilter(dep.employees, [
     "firstName",
@@ -30,21 +54,24 @@ const page = ({dep}) => {
                     <img onClick={() => router.back()} className='cursor-pointer' src="/image/Icon/ArrowLeft.png" alt="Back" />
                     <h1 className='textWhite'>{dep.departmentName} Department</h1>
                 </div>
-                <div className='flex gap-[1.5rem]'>
-                    <button type="button" className='cursor-pointer'>
+                <div className='flex gap-[1.5rem]' >
+                    <button type="button" className='cursor-pointer' onClick={()=>setIsOpen1(true)} >
                         <div className='center-center w-[12.75rem] h-[3.125rem] rounded-[0.625rem] border border-limegray gap-[0.625rem] bg-inherit'>
                         <img src="/image/Icon/Action/Penx.png" alt="" />
                         <span className='text-formColor '>Edit Department</span>
                         </div>
                     </button>
+                    <ModalContainerDep open={isOpen1}>
+                        <AddDep tenantId={tenantId} addSub={'Sub'} addSubSmall={'sub'}   dep={dep} employees={employees} departmentId={departmentId}  onClose={() => setIsOpen1(false)} />
+                    </ModalContainerDep>
                     <button type="button" className='cursor-pointer'>
-                        <div className='center-center w-[12.75rem] h-[3.125rem] rounded-[0.625rem] border border-limegray gap-[0.625rem] bg-inherit' onClick={()=>router.push("/Admin/AssignDepartment/Uncategorized")}>
-                        <img src="/image/AddCircle.png" alt="" />
-                        <span className='text-formColor'>Existing Department</span>
+                        <div className='center-center w-[12.75rem] h-[3.125rem] rounded-[0.625rem] border border-limegray gap-[0.625rem] bg-inherit' onClick={()=>router.push(`/Admin/AssignDepartment/${departmentId}/Uncategorized`)}>
+                            <img src="/image/AddCircle.png" alt="" />
+                            <span className='text-formColor' >Add Existing Employee</span>
                         </div>
                     </button>
                     <button type="button" className='cursor-pointer'>
-                        <div className='center-center w-[12.75rem] h-[3.125rem] rounded-[0.625rem] gap-[0.625rem] bg-lemongreen'>
+                        <div className='center-center w-[12.75rem] h-[3.125rem] rounded-[0.625rem] gap-[0.625rem] bg-lemongreen' onClick={()=>router.push(`/Admin/DepartmentEmployeeRegistration/${departmentId}/AddNewemployee`)}>
                         <img src="/svg/Svgimage/PlusSign.svg" alt="" />
                         <span className='text-black'>Add Employees</span>
                         </div>
@@ -99,7 +126,7 @@ const page = ({dep}) => {
               <h1 className='textFormColor'>Department Employees</h1>
             </div>
             <div className='flex gap-[1.5625rem]'>
-                <button type="button" className='cursor-pointer' onClick={()=>router.push('/Admin/DepartmentView/SubDepartmentView')}>
+                <button type="button" className='cursor-pointer' onClick={()=>router.push(`/Admin/DepartmentView/${departmentId}/SubDepartmentView`)}>
                     <div className='center-center w-[12.75rem] h-[3.125rem] rounded-[0.625rem] border border-limegray gap-[0.625rem] bg-inherit'>
                     <img src="/image/Icon/Action/eye.png" alt="" />
                     <span className='text-formColor '>Sub Departments</span>
@@ -113,7 +140,7 @@ const page = ({dep}) => {
                 </button>
               {/* Modal */}
                 <ModalContainerSub  open={isOpen}>
-                  <AddSub onClose={() => setIsOpen(false)} />
+                     <AddSub tenantId={tenantId}   dep={dep} employees={employees} departmentId={departmentId} onClose={() => setIsOpen(false)} />
                 </ModalContainerSub>
             </div>
           </div>
@@ -147,31 +174,45 @@ const page = ({dep}) => {
                 </tr>
             </thead>
             <tbody className=''>
-            {filteredUsers && filteredUsers.length > 0 ? (
-              filteredUsers.map((emp) => (
-                <tr key={emp.employeeCode}>
+            {EmpinDepList && EmpinDepList.length > 0 ? (
+              EmpinDepList.map((dep) => (
+                <tr key={dep.employeeID}>
                     <td className='pt-[2.25rem]'>
-                        <h4 className='text-limegray'>Mikiyas Mulugeta</h4>
+                        <h4 className='text-limegray'>{dep.employeeName}</h4>
                     </td>
                     <td className='pt-[2.25rem]'>
-                        <h4 className='text-limegray'>Senior Software Developer</h4>
+                        <h4 className='text-limegray'>{dep.jobTitle}</h4>
                     </td>
                     <td className='pt-[2.25rem]'>
-                        <h4 className='text-limegray'>mikiyasmulugeta01@gmail.com</h4>
+                        <h4 className='text-limegray'>{dep.email}</h4>
                     </td>
                     <td className='pt-[2.25rem]'>
-                        <h4 className='text-limegray'>Front End</h4>
+                        <h4 className='text-limegray'>{dep.departmentName || '--'}</h4>
                     </td>
                     <td className='pt-[2.25rem]'>
-                        <h4 className='text-limegray'>+251966442525</h4>
+                        <h4 className='text-limegray'>{dep.phoneNumber || '--'}</h4>
                     </td>
                     <td className='flex items-center gap-[2.5625rem] pt-[1.9375rem]'>
                         <button className='cursor-pointer' onClick={() => router.push(`/Admin/EmployeeEdit/${emp.employeeID}`)}>
                         <img src="/image/Icon/Action/pen.png" alt="" />
                         </button>
-                        <button>
-                        <img src="/image/Icon/Action/Trash.png" alt="" />
-                        </button>
+                      <button onClick={() => {
+                      setSelectedUser(dep);setIsOpen2(true);}} type="button" className='cursor-pointer'>
+                        <div>
+                            <img src="/image/Icon/Action/Trash.png" alt="" />
+                        </div>
+                      </button>
+                      {/* Modal */}
+                        <ModalContainerRevoke open={isOpen2}>
+                            <Revoke
+                            Header='Are you sure?'
+                            Parag={`Are you sure you want to revoke ${selectedUser?.firstName || 'this user'}?`}
+                            confirmation='Revoke'
+                            onNavigate={() => setIsOpen2(false)}
+                            onConfirm={()=>handleRevoke(dep)}
+                            color='bg-Error'
+                            />
+                        </ModalContainerRevoke>
                     </td>
                 </tr>
               ))

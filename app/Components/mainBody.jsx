@@ -108,7 +108,13 @@ const MainBody = ({ readPath, modules, session }) => {
     (item.path === '/Admin/Department'  &&
       ['Admin/DepartmentView' , 'Admin/DepartmentView/SubDepartmentView'].includes(readPath)) ||
     (item.path === '/Admin/SettingPages/General' &&
-      ['Admin/SettingPages/Core', 'Admin/SettingPages/Talent', 'Admin/SettingPages/System' ].includes(readPath));
+      ['Admin/SettingPages/Core', 'Admin/SettingPages/Talent', 'Admin/SettingPages/System' ].includes(readPath)) || 
+(item.path === '/Admin/Department' &&
+  ['Admin/DepartmentView', 'Admin/DepartmentView/SubDepartmentView', 
+   'Admin/AssignDepartment/Categorized', 'Admin/AssignDepartment/Uncategorized'].includes(readPath)) ||
+    (item.path === '/Admin/RecruitmentPages/Jobposting' &&
+      ['Admin/RecruitmentPages/Shortlist', 'Admin/RecruitmentPages/Candidates', 'Admin/RecruitmentPages/Interviews' ].includes(readPath))  
+
 
   return (
     <aside className="font-semibold customBorder scrollBar w-[20.5rem] h-screen flex flex-col gap-[4.25rem] relative pt-[3.5rem] overflow-y-auto">

@@ -5,9 +5,11 @@ import { usePathname } from 'next/navigation';
 
 
 
-const SubNavigation = ({ readPath, jobs }) => {
+const SubNavigation = ({ readPath, jobs , departmentId }) => {
   const router = useRouter()
   const pathname = usePathname()
+
+ 
 
     const NavRecruitment = [
     { label: "Job Posting", path: "/Admin/RecruitmentPages/Jobposting" },
@@ -36,8 +38,8 @@ const SubNavigation = ({ readPath, jobs }) => {
     { label: "Authorized", path: "/Admin/UserAuthentication/Authorized" },
     ]
     const NavAssign = [
-    { label: "Uncategorized Employees", path: "/Admin/AssignDepartment/Uncategorized" },
-    { label: "Categorized Employees", path: "/Admin/AssignDepartment/Categorized" },
+    { label: "Uncategorized Employees", path: `/Admin/AssignDepartment/${departmentId}/Uncategorized` },
+    { label: "Categorized Employees", path: `/Admin/AssignDepartment/${departmentId}/Categorized` },
     ]
 
     const NavSettings = [
@@ -46,6 +48,8 @@ const SubNavigation = ({ readPath, jobs }) => {
     { label: "Talent", path: "/Admin/SettingPages/Talent" },
     { label: "System", path: "/Admin/SettingPages/System" },
     ]
+
+ 
 
   return (
     <div className='w-full'>
@@ -60,7 +64,7 @@ const SubNavigation = ({ readPath, jobs }) => {
                         </div>
                     </div>
                     <div className='flex flex-col'>
-                        <span className='text-5xl text-formColor'>12</span>
+                        <span className='text-5xl text-formColor'>{jobs?.activeJobsCount || 0}</span>
                         <span className='text-formColor'>Active Jobs</span>
                     </div>
                     </div>
@@ -73,7 +77,7 @@ const SubNavigation = ({ readPath, jobs }) => {
                         </div>
                     </div>
                     <div className='flex flex-col'>
-                        <span className='text-5xl text-formColor'>12</span>
+                        <span className='text-5xl text-formColor'>{jobs?.totalApplications || 0}</span>
                         <span className='text-formColor'>Total Applications</span>
                     </div>
                     </div>
@@ -86,7 +90,7 @@ const SubNavigation = ({ readPath, jobs }) => {
                             </div>
                         </div>
                         <div className='flex flex-col'>
-                            <span className='text-5xl text-formColor'>12</span>
+                            <span className='text-5xl text-formColor'>{jobs?.interviewsToday || 0}</span>
                             <span className='text-formColor'>Interviews Today</span>
                         </div>
                     </div>

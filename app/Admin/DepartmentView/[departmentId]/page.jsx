@@ -18,7 +18,10 @@ export default async function OrganizationServerPage({ params }) {
   const org = await hrmsAPI.getOrganizationsByTenantId(tenantId,token)
   const dep = await hrmsAPI.getDepartmentbyDepartmentID(departmentId,token)
   const employees = await hrmsAPI.getEmployeesTenant(tenantId, token);
+  
+
 
     console.log("Salems Dep: " ,dep)
-  return <DepartmentDetails dep={dep} />;
+    console.log("salems Dep: " , employees)
+  return <DepartmentDetails dep={dep} departmentId={departmentId} tenantId={tenantId} employees={employees} />;
 }
